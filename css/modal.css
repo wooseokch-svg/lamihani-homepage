@@ -588,3 +588,114 @@
   #policyOverlay .policy-modal { max-height: 90vh; }
   #policyOverlay .policy-body { padding: 20px 18px 24px; }
 }
+
+/* ====================================================
+   홈페이지 간편 예약 모달 (#reserveOverlay)
+   ==================================================== */
+#reserveOverlay, #reserveOverlay *, #reserveOverlay *::before, #reserveOverlay *::after {
+  box-sizing: border-box;
+}
+#reserveOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 2000;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  overflow-y: auto;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  color: #2c2c2a;
+}
+#reserveOverlay.open { display: flex; }
+#reserveOverlay .rsv-modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: yejinSlideUp 0.3s ease;
+}
+#reserveOverlay .rsv-header {
+  background: linear-gradient(135deg, #ff9d63 0%, #e87c3e 100%);
+  padding: 24px 24px 20px;
+  position: relative;
+}
+#reserveOverlay .rsv-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-bottom: 9px;
+}
+#reserveOverlay .rsv-header h2 { color: #fff; font-size: 20px; font-weight: 700; }
+#reserveOverlay .rsv-header p { color: rgba(255,255,255,0.85); font-size: 12px; margin-top: 6px; }
+#reserveOverlay .rsv-close {
+  position: absolute; top: 16px; right: 18px;
+  width: 32px; height: 32px; border: none; border-radius: 50%;
+  background: rgba(255,255,255,0.2); color: #fff; font-size: 17px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+#reserveOverlay .rsv-close:hover { background: rgba(255,255,255,0.35); }
+
+#reserveOverlay .rsv-body { padding: 22px 24px 24px; }
+#reserveOverlay .rsv-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }
+#reserveOverlay .rsv-field label { font-size: 12px; font-weight: 600; color: #555; }
+#reserveOverlay .rsv-field input,
+#reserveOverlay .rsv-field select,
+#reserveOverlay .rsv-field textarea {
+  border: 1px solid #e5e0da; border-radius: 8px; padding: 10px 12px;
+  font-size: 14px; color: #2c2c2a; background: #fafaf8; outline: none;
+  font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
+}
+#reserveOverlay .rsv-field input:focus,
+#reserveOverlay .rsv-field select:focus,
+#reserveOverlay .rsv-field textarea:focus {
+  border-color: #ff9d63; box-shadow: 0 0 0 3px rgba(255,157,99,0.15); background: #fff;
+}
+#reserveOverlay .rsv-field textarea { resize: none; line-height: 1.6; }
+#reserveOverlay .rsv-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#reserveOverlay .rsv-radio { display: flex; gap: 10px; }
+#reserveOverlay .rsv-radio label {
+  flex: 1; display: flex; align-items: center; gap: 6px; cursor: pointer;
+  border: 1.5px solid #e5e0da; border-radius: 9px; padding: 10px 12px;
+  font-size: 13px; color: #444; background: #fafaf8; font-weight: 500;
+}
+#reserveOverlay .rsv-radio input { accent-color: #ff9d63; }
+#reserveOverlay .rsv-err { color: #d33; font-size: 12px; min-height: 16px; margin: 2px 0 8px; }
+#reserveOverlay .rsv-submit {
+  width: 100%; background: linear-gradient(135deg, #ff9d63 0%, #e87c3e 100%);
+  color: #fff; border: none; border-radius: 11px; padding: 15px; font-size: 15px;
+  font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+}
+#reserveOverlay .rsv-submit:hover { opacity: 0.9; }
+#reserveOverlay .rsv-submit:disabled { opacity: 0.6; cursor: default; }
+#reserveOverlay .rsv-naver-link {
+  display: block; text-align: center; margin-top: 14px;
+  font-size: 13px; color: #57a700; font-weight: 600; text-decoration: none;
+}
+#reserveOverlay .rsv-naver-link:hover { text-decoration: underline; }
+
+#reserveOverlay .rsv-success { display: none; padding: 44px 32px; text-align: center; }
+#reserveOverlay .rsv-success-icon {
+  width: 66px; height: 66px; background: linear-gradient(135deg, #ff9d63, #e87c3e);
+  border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center;
+  justify-content: center; font-size: 30px; color: #fff;
+}
+#reserveOverlay .rsv-success h3 { font-size: 19px; color: #2c2c2a; margin-bottom: 8px; }
+#reserveOverlay .rsv-success p { font-size: 13px; color: #888; line-height: 1.7; }
+#reserveOverlay .rsv-success-phone { display: block; font-size: 20px; font-weight: 700; color: #e87c3e; margin: 14px 0 4px; }
+#reserveOverlay .rsv-close-success {
+  margin-top: 20px; background: #fff3ea; color: #e87c3e; border: 1.5px solid #ffd8bc;
+  border-radius: 10px; padding: 11px 30px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+
+@media (max-width: 480px) {
+  #reserveOverlay .rsv-row { grid-template-columns: 1fr; }
+  #reserveOverlay .rsv-radio { flex-direction: column; }
+}

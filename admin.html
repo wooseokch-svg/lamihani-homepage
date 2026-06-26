@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>라미한의원 관리자</title>
+<link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="login-wrap" id="loginView">
+  <div class="login-card">
+    <h1>라미한의원 관리자</h1>
+    <p>관리자 계정으로 로그인하세요</p>
+    <input id="email" type="email" placeholder="이메일" autocomplete="username">
+    <input id="password" type="password" placeholder="비밀번호" autocomplete="current-password">
+    <button id="loginBtn">로그인</button>
+    <div class="login-msg" id="loginMsg"></div>
+    <div class="login-note" id="loginNote"></div>
+  </div>
+</div>
+
+<!-- 관리자 -->
+<div id="adminView" hidden>
+  <header class="adm-header">
+    <span class="brand">라미한의원 관리자</span>
+    <span class="who" id="who"></span>
+    <span class="spacer"></span>
+    <a class="naver-link" id="naverLink" href="#" target="_blank" rel="noopener">네이버 예약 관리</a>
+    <button class="logout" id="logoutBtn">로그아웃</button>
+  </header>
+
+  <nav class="adm-tabs">
+    <button data-tab="reservations" class="active">예약 <span class="badge" id="cntRes">0</span></button>
+    <button data-tab="intakes">예진표 <span class="badge" id="cntInt">0</span></button>
+    <button data-tab="notices">공지사항</button>
+  </nav>
+
+  <main>
+    <!-- 예약 -->
+    <section id="tab-reservations">
+      <div class="panel">
+        <h2>홈페이지 예약 신청</h2>
+        <div id="resList"><div class="empty">불러오는 중...</div></div>
+      </div>
+    </section>
+
+    <!-- 예진표 -->
+    <section id="tab-intakes" hidden>
+      <div class="panel">
+        <h2>1:1 비대면 예진표</h2>
+        <div id="intList"><div class="empty">불러오는 중...</div></div>
+      </div>
+    </section>
+
+    <!-- 공지 -->
+    <section id="tab-notices" hidden>
+      <div class="panel">
+        <h2 id="noticeFormTitle">공지 작성</h2>
+        <input type="hidden" id="noticeId">
+        <div class="nf-row">
+          <label>제목</label>
+          <input id="noticeTitle" type="text" placeholder="공지 제목">
+        </div>
+        <div class="nf-row">
+          <label>내용</label>
+          <textarea id="noticeContent" placeholder="공지 내용"></textarea>
+        </div>
+        <div class="nf-inline" style="margin-bottom:14px">
+          <input type="checkbox" id="noticePinned">
+          <label for="noticePinned">상단 고정(공지 강조)</label>
+        </div>
+        <button class="btn-primary" id="noticeSaveBtn">등록</button>
+        <button class="btn-ghost" id="noticeCancelBtn" hidden>취소</button>
+      </div>
+      <div class="panel">
+        <h2>등록된 공지</h2>
+        <div id="noticeList"><div class="empty">불러오는 중...</div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/db.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

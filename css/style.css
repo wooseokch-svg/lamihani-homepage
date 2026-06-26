@@ -266,3 +266,25 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
   .hero-content h1{ font-size: 30px; }
   h2{ font-size: 28px; }
 }
+
+/* ===== 공지사항 목록 ===== */
+.notice-list{ max-width: 760px; margin: 28px auto 0; text-align: left; }
+.notice-empty{ text-align: center; color: #aaa; padding: 40px 0; }
+.notice-item{ border-bottom: 1px solid #e8e4de; }
+.notice-head{
+  width: 100%; background: none; border: 0; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 6px; text-align: left; font-family: inherit;
+}
+.notice-pin{
+  flex-shrink: 0; background: var(--orange); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 20px;
+}
+.notice-title{ flex: 1; font-size: 16px; color: #3e3e3e; font-weight: 500; }
+.notice-date{ flex-shrink: 0; font-size: 13px; color: #aaa; }
+.notice-body{
+  display: none; padding: 4px 6px 22px; color: #666;
+  font-size: 15px; line-height: 1.8;
+}
+.notice-item.open .notice-body{ display: block; }
+.notice-item.open .notice-title{ color: var(--orange); }
