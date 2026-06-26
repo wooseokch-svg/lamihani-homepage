@@ -68,13 +68,18 @@ function submitForm() {
 }
 
 /* ===== 이용약관 / 개인정보처리방침 정책 모달 ===== */
-function openPolicy() {
+function showPolicy(which) {
+  var isPrivacy = (which === 'privacy');
+  document.getElementById('policyTitle').textContent = isPrivacy ? '개인정보처리방침' : '이용약관';
+  document.getElementById('policyTerms').hidden = isPrivacy;
+  document.getElementById('policyPrivacy').hidden = !isPrivacy;
   document.getElementById('policyOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   var body = document.querySelector('#policyOverlay .policy-body');
   if (body) body.scrollTop = 0;
 }
-function openTerms() { openPolicy(); }
+function openTerms() { showPolicy('terms'); }
+function openPrivacy() { showPolicy('privacy'); }
 
 function closePolicy() {
   document.getElementById('policyOverlay').classList.remove('open');
