@@ -67,7 +67,27 @@ function submitForm() {
   if (modal) modal.scrollTop = 0;
 }
 
+/* ===== 이용약관 / 개인정보처리방침 정책 모달 ===== */
+function openPolicy() {
+  document.getElementById('policyOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var body = document.querySelector('#policyOverlay .policy-body');
+  if (body) body.scrollTop = 0;
+}
+function openTerms() { openPolicy(); }
+
+function closePolicy() {
+  document.getElementById('policyOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handlePolicyOverlayClick(e) {
+  if (e.target === document.getElementById('policyOverlay')) closePolicy();
+}
+
 // ESC 키로 닫기
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    closePolicy();
+  }
 });

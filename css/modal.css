@@ -480,3 +480,111 @@
   #modalOverlay .modal-body { max-height: 70vh; }
   #modalOverlay .inline-row { flex-wrap: wrap; }
 }
+
+/* ====================================================
+   이용약관 / 개인정보처리방침 정책 모달
+   - #policyOverlay 안으로 격리
+   ==================================================== */
+#policyOverlay, #policyOverlay *, #policyOverlay *::before, #policyOverlay *::after {
+  box-sizing: border-box;
+}
+#policyOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2000;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  overflow-y: auto;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  color: #3e3e3e;
+  -webkit-font-smoothing: antialiased;
+}
+#policyOverlay.open { display: flex; }
+
+#policyOverlay .policy-modal {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 720px;
+  margin: auto;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: yejinSlideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+}
+#policyOverlay .policy-header {
+  background: linear-gradient(135deg, #ff9d63 0%, #e87c3e 100%);
+  padding: 20px 24px;
+  position: relative;
+  flex-shrink: 0;
+}
+#policyOverlay .policy-header h2 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+#policyOverlay .policy-close {
+  position: absolute;
+  top: 15px; right: 18px;
+  width: 32px; height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+#policyOverlay .policy-close:hover { background: rgba(255,255,255,0.35); }
+
+#policyOverlay .policy-body {
+  padding: 24px 26px 30px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #555;
+}
+#policyOverlay .policy-body::-webkit-scrollbar { width: 5px; }
+#policyOverlay .policy-body::-webkit-scrollbar-thumb { background: #e0dbd5; border-radius: 4px; }
+
+#policyOverlay .policy-body h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #c25f1a;
+  margin: 22px 0 8px;
+}
+#policyOverlay .policy-body h3:first-child { margin-top: 0; }
+#policyOverlay .policy-body p { margin: 4px 0; }
+#policyOverlay .policy-body ul {
+  margin: 4px 0 6px;
+  padding: 0;
+  list-style: none;
+}
+#policyOverlay .policy-body ul li {
+  padding-left: 13px;
+  position: relative;
+}
+#policyOverlay .policy-body ul li::before {
+  content: '-';
+  position: absolute;
+  left: 0;
+  color: #bbb;
+}
+#policyOverlay .policy-bujik {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0ece6;
+  color: #888;
+}
+
+@media (max-width: 480px) {
+  #policyOverlay .policy-modal { max-height: 90vh; }
+  #policyOverlay .policy-body { padding: 20px 18px 24px; }
+}
