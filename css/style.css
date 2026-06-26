@@ -67,7 +67,7 @@ ul{ list-style: none; }
   display: flex; align-items: center; gap: 20px;
   padding: 0 40px;
 }
-.logo img{ height: 30px; width: auto; }
+.logo img{ height: 44px; width: auto; }
 .gnb{ display: flex; gap: 10px; margin-left: auto; }
 .gnb a{
   font-family: "Nanum Myeongjo", serif;
