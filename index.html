@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 
@@ -94,7 +95,7 @@
       </article>
     </div>
     <div class="center" style="margin-top:40px;">
-      <a class="btn btn-line" href="https://map.naver.com/p/entry/place/1137949987" target="_blank" rel="noopener">1:1 비대면 예진표 작성</a>
+      <a class="btn btn-line" href="#" role="button" onclick="openModal();return false;">1:1 비대면 예진표 작성</a>
     </div>
   </div>
 </section>
@@ -105,7 +106,7 @@
   <div class="container center banner-content reveal">
     <h2><span class="point">몸이 보내는 신호,</span><br><span class="white">이제는 나에게 맞는 처방으로</span></h2>
     <p>라미한의원은 한 사람의 체질과 생활습관을 고려한 맞춤 한방 진료를 제공합니다.</p>
-    <a class="btn btn-fill" href="https://map.naver.com/p/entry/place/1137949987" target="_blank" rel="noopener">1:1 비대면 예진표 작성</a>
+    <a class="btn btn-fill" href="#" role="button" onclick="openModal();return false;">1:1 비대면 예진표 작성</a>
   </div>
 </section>
 
@@ -330,6 +331,338 @@
 
 </main>
 
+<!-- ===== 1:1 비대면 예진표 모달 ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+
+    <!-- 헤더 -->
+    <div class="modal-header">
+      <button class="close-btn" onclick="closeModal()" aria-label="닫기">✕</button>
+      <div class="badge">라미한의원 1:1 맞춤 상담</div>
+      <h2>방문 전 예진표 작성</h2>
+      <p>작성하신 내용을 바탕으로 더 빠르고 정확한 진료를 안내드립니다</p>
+    </div>
+
+    <!-- 폼 화면 -->
+    <div id="formView">
+      <div class="modal-body">
+
+        <!-- 진행 표시 -->
+        <div class="step-bar">
+          <div class="step-seg done" id="seg1"></div>
+          <div class="step-seg"      id="seg2"></div>
+          <div class="step-seg"      id="seg3"></div>
+          <div class="step-seg"      id="seg4"></div>
+        </div>
+
+        <!-- 개인정보 동의 -->
+        <div class="section">
+          <div class="section-title">개인정보 수집 및 활용 동의</div>
+          <div class="privacy-box">
+            원활한 진료 안내를 위해 아래 항목을 수집합니다.
+            <div class="privacy-items">
+              <span class="privacy-pill">성함</span>
+              <span class="privacy-pill">생년월일</span>
+              <span class="privacy-pill">성별</span>
+              <span class="privacy-pill">연락처</span>
+            </div>
+          </div>
+          <div class="agree-row">
+            <input type="checkbox" id="agreePrivacy">
+            <label for="agreePrivacy">개인정보 수집 및 활용에 동의합니다 <span style="color:#e87c3e;font-weight:700">(필수)</span></label>
+          </div>
+        </div>
+
+        <!-- 기본 정보 -->
+        <div class="section">
+          <div class="section-title">기본 정보</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>성함 <span style="color:#e87c3e">*</span></label>
+              <input type="text" placeholder="홍길동">
+            </div>
+            <div class="form-group">
+              <label>생년월일 <span style="color:#e87c3e">*</span></label>
+              <input type="date">
+            </div>
+            <div class="form-group">
+              <label>성별 <span style="color:#e87c3e">*</span></label>
+              <select>
+                <option value="">선택해 주세요</option>
+                <option>남성</option>
+                <option>여성</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>연락처 <span style="color:#e87c3e">*</span></label>
+              <input type="tel" placeholder="010-0000-0000">
+            </div>
+          </div>
+        </div>
+
+        <!-- 방문 유형 -->
+        <div class="section">
+          <div class="section-title">방문 유형</div>
+          <div class="radio-group">
+            <label class="radio-card" onclick="selectVisit(this)">
+              <input type="radio" name="visit" value="first"> 🌱 첫 방문 (초진)
+            </label>
+            <label class="radio-card" onclick="selectVisit(this)">
+              <input type="radio" name="visit" value="re"> 🔄 재방문 (재진)
+            </label>
+          </div>
+        </div>
+
+        <!-- 방문 희망 일시 -->
+        <div class="section">
+          <div class="section-title">방문 희망 일시</div>
+          <div class="datetime-row">
+            <div class="form-group">
+              <label>희망 날짜</label>
+              <input type="date">
+            </div>
+            <div class="form-group">
+              <label>희망 시간대</label>
+              <select>
+                <option value="">선택해 주세요</option>
+                <option>오전 10:00</option>
+                <option>오전 11:00</option>
+                <option>오후 12:00</option>
+                <option>오후 1:00</option>
+                <option>오후 2:00</option>
+                <option>오후 3:00</option>
+                <option>오후 4:00</option>
+                <option>오후 5:00</option>
+                <option>오후 6:00</option>
+                <option>오후 7:00</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 고민 유형 선택 -->
+        <div class="section">
+          <div class="section-title">오늘 어떤 고민으로 찾아오셨나요?</div>
+          <p style="font-size:11px;color:#aaa;margin-bottom:10px">중복 선택 가능합니다</p>
+          <div class="symptom-grid">
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" name="concern" value="student">
+              <span>📚 수험생 한약<br><span style="color:#aaa;font-size:11px">집중력·만성피로·체력 관리</span></span>
+            </label>
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" name="concern" value="beauty">
+              <span>✨ 한방 미용<br><span style="color:#aaa;font-size:11px">동안침·피부·매선</span></span>
+            </label>
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" name="concern" value="diet">
+              <span>🌿 다이어트<br><span style="color:#aaa;font-size:11px">체중감량·디톡스·산후 비만</span></span>
+            </label>
+            <label class="check-card" onclick="toggleCard(this)">
+              <input type="checkbox" name="concern" value="herb">
+              <span>🌱 체질 한약<br><span style="color:#aaa;font-size:11px">맞춤보약·만성질환·면역력</span></span>
+            </label>
+            <label class="check-card" onclick="toggleCard(this)" style="grid-column:1/-1">
+              <input type="checkbox" name="concern" value="accident">
+              <span>🚗 교통사고 후유증<br><span style="color:#aaa;font-size:11px">자동차보험 치료</span></span>
+            </label>
+          </div>
+
+          <!-- ① 수험생 한약 -->
+          <div class="sub-section" id="sub-student">
+            <div class="sub-title"><span class="icon-num">①</span> 수험생 한약 상세</div>
+            <div class="inline-row">
+              <label>현재 학년/연령</label>
+              <select class="inline-select">
+                <option>중등</option>
+                <option>고등</option>
+                <option>수험생·고시생</option>
+              </select>
+            </div>
+            <div class="sub-label">가장 개선하고 싶은 증상 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 집중력 저하 및 뇌피로</label>
+              <label class="sub-check"><input type="checkbox"> 만성 피로 및 체력 저하</label>
+              <label class="sub-check"><input type="checkbox"> 시험 불안 및 스트레스</label>
+              <label class="sub-check"><input type="checkbox"> 소화불량·과민성 대장</label>
+              <label class="sub-check"><input type="checkbox"> 수면 부족 및 불면</label>
+            </div>
+            <div class="inline-row">
+              <label>평소 하루 수면 시간</label>
+              <input class="inline-input" type="number" min="1" max="12" placeholder="6">
+              <span class="unit">시간</span>
+            </div>
+          </div>
+
+          <!-- ② 한방 미용 -->
+          <div class="sub-section" id="sub-beauty">
+            <div class="sub-title"><span class="icon-num">②</span> 한방 미용 상세</div>
+            <div class="sub-label">가장 고민되는 부위 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 얼굴 탄력 저하 및 처짐</label>
+              <label class="sub-check"><input type="checkbox"> 안면 비대칭</label>
+              <label class="sub-check"><input type="checkbox"> 주름 (팔자·이마·눈가)</label>
+              <label class="sub-check"><input type="checkbox"> 안색 어두움 (기미·잡티)</label>
+              <label class="sub-check"><input type="checkbox"> 여드름 및 피부 트러블</label>
+            </div>
+            <div class="sub-label">시술 경험</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="radio" name="beautyExp"> 없음</label>
+              <label class="sub-check"><input type="radio" name="beautyExp"> 한방 미용 시술 경험</label>
+              <label class="sub-check"><input type="radio" name="beautyExp"> 피부과/성형외과 시술 경험</label>
+            </div>
+          </div>
+
+          <!-- ③ 다이어트 -->
+          <div class="sub-section" id="sub-diet">
+            <div class="sub-title"><span class="icon-num">③</span> 다이어트 상세</div>
+            <div class="inline-row">
+              <label>현재 체중</label>
+              <input class="inline-input" type="number" placeholder="60">
+              <span class="unit">kg</span>
+              <label style="margin-left:10px">희망 체중</label>
+              <input class="inline-input" type="number" placeholder="55">
+              <span class="unit">kg</span>
+            </div>
+            <div class="sub-label">다이어트 목적</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="radio" name="dietPurpose"> 미용 목적</label>
+              <label class="sub-check"><input type="radio" name="dietPurpose"> 건강 관리 (고혈압·관절통)</label>
+              <label class="sub-check"><input type="radio" name="dietPurpose"> 산후 다이어트</label>
+              <label class="sub-check"><input type="radio" name="dietPurpose"> 소아/청소년 비만</label>
+            </div>
+            <div class="sub-label">과거 다이어트 경험 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 한약</label>
+              <label class="sub-check"><input type="checkbox"> 양약</label>
+              <label class="sub-check"><input type="checkbox"> 굶기/원푸드</label>
+              <label class="sub-check"><input type="checkbox"> 운동</label>
+              <label class="sub-check"><input type="checkbox"> 경험 없음</label>
+            </div>
+            <div class="sub-label">평소 식습관 문제점 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 야식/야식 증후군</label>
+              <label class="sub-check"><input type="checkbox"> 폭식/과식</label>
+              <label class="sub-check"><input type="checkbox"> 불규칙한 식사</label>
+              <label class="sub-check"><input type="checkbox"> 단 음식/탄수화물 중독</label>
+            </div>
+          </div>
+
+          <!-- ④ 체질 한약 -->
+          <div class="sub-section" id="sub-herb">
+            <div class="sub-title"><span class="icon-num">④</span> 체질 한약 상세</div>
+            <div class="sub-label">한약 복용 주된 이유 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 기력 회복 (보약)</label>
+              <label class="sub-check"><input type="checkbox"> 면역력 강화</label>
+              <label class="sub-check"><input type="checkbox"> 만성 소화불량</label>
+              <label class="sub-check"><input type="checkbox"> 냉증 (손발 차가움)</label>
+              <label class="sub-check"><input type="checkbox"> 산후조리/유산 후 몸조리</label>
+            </div>
+            <div class="sub-label">자주 느끼는 불편함 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 추위를 많이 탐</label>
+              <label class="sub-check"><input type="checkbox"> 더위를 많이 타고 땀이 많음</label>
+              <label class="sub-check"><input type="checkbox"> 쉽게 피로하고 몸이 무거움</label>
+              <label class="sub-check"><input type="checkbox"> 잠이 잘 오지 않음</label>
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label style="font-size:12px;color:#888">기존 진단받은 만성 질환 (자유 기술)</label>
+              <input type="text" placeholder="예: 고혈압, 당뇨, 갑상선 질환 등" style="background:#fff">
+            </div>
+          </div>
+
+          <!-- ⑤ 교통사고 후유증 -->
+          <div class="sub-section" id="sub-accident">
+            <div class="sub-title"><span class="icon-num">⑤</span> 교통사고 후유증 상세</div>
+            <div class="inline-row">
+              <label>사고 발생일</label>
+              <input class="inline-input" type="number" placeholder="2024" style="width:72px">
+              <span class="unit">년</span>
+              <input class="inline-input" type="number" min="1" max="12" placeholder="1" style="width:52px">
+              <span class="unit">월</span>
+              <input class="inline-input" type="number" min="1" max="31" placeholder="1" style="width:52px">
+              <span class="unit">일</span>
+            </div>
+            <div class="sub-label">가장 통증이 심한 부위 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 목/덜미</label>
+              <label class="sub-check"><input type="checkbox"> 어깨/등</label>
+              <label class="sub-check"><input type="checkbox"> 허리/골반</label>
+              <label class="sub-check"><input type="checkbox"> 손목/발목</label>
+              <label class="sub-check"><input type="checkbox"> 두통/어지럼증</label>
+              <label class="sub-check"><input type="checkbox"> 가슴 두근거림 및 불안</label>
+            </div>
+            <div class="sub-label">통증 양상 (복수 선택)</div>
+            <div class="sub-check-grid">
+              <label class="sub-check"><input type="checkbox"> 가만히 있어도 쑤시고 아프다</label>
+              <label class="sub-check"><input type="checkbox"> 움직일 때 찌릿하다</label>
+              <label class="sub-check"><input type="checkbox"> 밤에 통증이 더 심해진다</label>
+              <label class="sub-check"><input type="checkbox"> 몸이 무겁고 붓는 느낌이다</label>
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label style="font-size:12px;color:#888">사고 접수 정보 <span style="font-weight:400">(선택 입력)</span></label>
+              <input type="text" placeholder="보험사명 / 대인접수번호" style="background:#fff">
+            </div>
+            <div class="accident-note">
+              💡 <b>접수번호를 미리 받아두시면</b> 내원 시 대기 시간을 대폭 줄일 수 있습니다.
+            </div>
+          </div>
+        </div><!-- /고민 유형 섹션 -->
+
+        <!-- 추가 정보 -->
+        <div class="section" style="margin-top:20px">
+          <div class="section-title">추가 정보</div>
+          <div class="common-section">
+            <div class="form-group" style="margin-bottom:14px">
+              <label>현재 복용 중인 약물</label>
+              <input type="text" placeholder="예: 혈압약, 양약, 건강기능식품 등 (없으면 빈칸)">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label>임신 가능성 여부 <span style="color:#aaa;font-size:11px;font-weight:400">(여성만 해당)</span></label>
+              <div class="sub-check-grid" style="grid-template-columns:1fr 1fr;gap:6px">
+                <label class="sub-check"><input type="radio" name="pregnant"> 해당 없음</label>
+                <label class="sub-check"><input type="radio" name="pregnant"> 임신 중</label>
+                <label class="sub-check"><input type="radio" name="pregnant"> 임신 가능성 있음</label>
+                <label class="sub-check"><input type="radio" name="pregnant"> 수유 중</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>의료진에게 추가로 하고 싶은 말씀</label>
+              <textarea rows="3" placeholder="자유롭게 작성해 주세요"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <div class="footer-note">
+          설문 작성해주셔서 감사합니다 🙏<br>
+          확인 후 곧 전화 드리겠습니다. 통화가 어려우신 경우<br>
+          진료시간 중에 연락 주세요.
+          <span class="footer-phone">02-538-1075</span>
+        </div>
+        <button class="submit-btn" onclick="submitForm()">상담 예진표 제출하기</button>
+      </div>
+    </div><!-- /formView -->
+
+    <!-- 제출 완료 화면 -->
+    <div class="success-screen" id="successView">
+      <div class="success-icon">✓</div>
+      <h3>예진표 제출 완료!</h3>
+      <p>
+        설문 작성해주셔서 감사합니다 🙏<br>
+        확인 후 곧 전화 드리겠습니다.<br><br>
+        통화가 어려우신 경우 진료시간 중에<br>아래 번호로 연락해 주세요.
+      </p>
+      <span class="success-phone">02-538-1075</span>
+      <p class="success-address">라미한의원 · 서울시 강남구 삼성로 212-2 2층</p>
+      <button class="close-success-btn" onclick="closeModal()">확인</button>
+    </div>
+
+  </div><!-- /modal -->
+</div><!-- /modal-overlay -->
+
 <!-- ===== Footer ===== -->
 <footer class="site-footer">
   <div class="container center">
@@ -358,5 +691,6 @@
 <a class="to-top" id="toTop" aria-label="맨 위로">↑</a>
 
 <script src="js/main.js"></script>
+<script src="js/modal.js"></script>
 </body>
 </html>
