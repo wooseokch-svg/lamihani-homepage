@@ -5,6 +5,7 @@
    - reservations 테이블 1곳에 저장 (kind: '예진표' / '예약')
    ===================================================================== */
 var YJ = { mode: 'full', settings: null, viewY: 0, viewM: 0, selDate: '', selTime: '' };
+var LAMI_CID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
 
 function openModal(mode) {
   YJ.mode = (mode === 'reserve') ? 'reserve' : 'full';
@@ -42,7 +43,7 @@ function openModal(mode) {
 
   if (YJ.settings) { renderYjCal(); return; }
   if (window.lamiDB) {
-    window.lamiDB.from('clinic_settings').select('*').eq('id', 1).single().then(function (res) {
+    window.lamiDB.from('clinic_settings').select('*').eq('clinic_id', LAMI_CID).single().then(function (res) {
       YJ.settings = (res && res.data)
         ? { hours: res.data.hours, slot_minutes: res.data.slot_minutes, holidays: res.data.holidays || [] }
         : window.LamiBooking.DEFAULT_SETTINGS;
@@ -136,7 +137,7 @@ function yjPickDate(ds) {
   }
 
   if (!window.lamiDB) { render({}); return; }
-  window.lamiDB.rpc('taken_slots', { d: ds }).then(function (res) {
+  window.lamiDB.rpc('taken_slots', { d: ds, cid: LAMI_CID }).then(function (res) {
     var taken = {};
     (res && res.data ? res.data : []).forEach(function (row) { taken[(row && row.t != null) ? row.t : row] = true; });
     render(taken);
@@ -259,6 +260,7 @@ function submitForm() {
   data.desired_time = YJ.selTime;
   data.kind = (YJ.mode === 'full') ? '예진표' : '예약';
   data.source = '홈페이지';
+  data.clinic_id = LAMI_CID;
   if (YJ.mode !== 'full') { data.concerns = []; data.details = {}; data.meds = null; data.pregnancy = null; data.message = null; }
 
   if (!window.lamiDB) { showSuccess(); return; }
@@ -267,7 +269,7 @@ function submitForm() {
   var orig = btn.textContent;
   btn.disabled = true; btn.textContent = '신청 중...';
 
-  window.lamiDB.rpc('taken_slots', { d: YJ.selDate }).then(function (res) {
+  window.lamiDB.rpc('taken_slots', { d: YJ.selDate, cid: LAMI_CID }).then(function (res) {
     var taken = (res && res.data ? res.data : []).some(function (r) { var t = (r && r.t != null) ? r.t : r; return t === YJ.selTime; });
     if (taken) {
       btn.disabled = false; btn.textContent = orig;

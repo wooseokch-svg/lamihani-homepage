@@ -52,7 +52,8 @@
     ul.innerHTML = lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
   }
 
-  window.lamiDB.from('clinic_settings').select('*').eq('id', 1).single().then(function (res) {
+  var CID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
+  window.lamiDB.from('clinic_settings').select('*').eq('clinic_id', CID).single().then(function (res) {
     if (res && res.data) {
       render({ hours: res.data.hours, holidays: res.data.holidays || [] });
     }

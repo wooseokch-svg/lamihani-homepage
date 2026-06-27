@@ -7,6 +7,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var db = window.lamiDB;
+  var CID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
 
   // ---- 설정 전 안내 ----
   if (!db) {
@@ -140,7 +141,7 @@
   function delBooking(id) { if (confirm('이 예약을 삭제할까요?')) db.from('reservations').delete().eq('id', id).then(loadBookings); }
 
   function loadBookings() {
-    db.from('reservations').select('*').order('created_at', { ascending: false }).then(function (res) {
+    db.from('reservations').select('*').eq('clinic_id', CID).order('created_at', { ascending: false }).then(function (res) {
       if (res.error) { $('listUpcoming').innerHTML = '<div class="empty">불러오기 오류: ' + esc(res.error.message) + '</div>'; return; }
       bookings = res.data || [];
       $('cntInt').textContent = bookings.filter(function (r) { return r.status === '신규'; }).length;
@@ -290,6 +291,7 @@
       pinned: $('noticePinned').checked
     };
     if (!row.title || !row.content) { alert('제목과 내용을 입력하세요.'); return; }
+    if (!id) row.clinic_id = CID;
     var q = id ? db.from('notices').update(row).eq('id', id) : db.from('notices').insert([row]);
     q.then(function (res) {
       if (res.error) { alert('저장 오류: ' + res.error.message); return; }
@@ -300,7 +302,7 @@
   $('noticeCancelBtn').addEventListener('click', resetNoticeForm);
 
   function loadNotices() {
-    db.from('notices').select('*').order('pinned', { ascending: false })
+    db.from('notices').select('*').eq('clinic_id', CID).order('pinned', { ascending: false })
       .order('created_at', { ascending: false }).then(function (res) {
       var box = $('noticeList');
       if (res.error) { box.innerHTML = '<div class="empty">불러오기 오류: ' + esc(res.error.message) + '</div>'; return; }
@@ -353,7 +355,7 @@
   var curSettings = null;
 
   function loadSettings() {
-    db.from('clinic_settings').select('*').eq('id', 1).single().then(function (res) {
+    db.from('clinic_settings').select('*').eq('clinic_id', CID).single().then(function (res) {
       curSettings = (res && res.data) ? {
         hours: res.data.hours || {}, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || []
       } : JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
@@ -412,13 +414,13 @@
       hours[wd] = o;
     });
     var payload = {
-      id: 1, hours: hours,
+      clinic_id: CID, hours: hours,
       slot_minutes: parseInt($('slotMinutes').value, 10),
       holidays: curSettings.holidays || [],
       updated_at: new Date().toISOString()
     };
     var msg = $('settingsMsg'); msg.textContent = '저장 중...';
-    db.from('clinic_settings').upsert(payload).then(function (res) {
+    db.from('clinic_settings').upsert(payload, { onConflict: 'clinic_id' }).then(function (res) {
       if (res.error) { msg.textContent = '오류: ' + res.error.message; msg.style.color = '#d33'; return; }
       curSettings.hours = hours; curSettings.slot_minutes = payload.slot_minutes;
       msg.textContent = '저장되었습니다 ✓'; msg.style.color = '#2e7d32';
@@ -428,9 +430,9 @@
 
   function saveHolidays() {
     return db.from('clinic_settings').upsert({
-      id: 1, hours: curSettings.hours, slot_minutes: curSettings.slot_minutes,
+      clinic_id: CID, hours: curSettings.hours, slot_minutes: curSettings.slot_minutes,
       holidays: curSettings.holidays, updated_at: new Date().toISOString()
-    });
+    }, { onConflict: 'clinic_id' });
   }
 
   function renderHolidays() {

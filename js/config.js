@@ -13,6 +13,9 @@ window.LAMI_CONFIG = {
   SUPABASE_URL: 'https://gjopkfbwrduvxamznkhc.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqb3BrZmJ3cmR1dnhhbXpua2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjE2MTEsImV4cCI6MjA5ODAzNzYxMX0.jMfZAX1wjfgOzEuU-gQM7K9lga9OkIuRoSCnQbWK8Zo',
 
+  // 병원 식별자 (멀티테넌트) — 병원마다 고유값. 새 병원은 이 값만 바꾸면 됩니다.
+  CLINIC_ID: 'lamihani',
+
   // 네이버 예약 링크 (관리자 페이지 바로가기 및 폴백에 사용)
   NAVER_RESERVE_URL: 'https://map.naver.com/p/entry/place/1137949987'
 };

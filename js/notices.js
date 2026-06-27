@@ -20,9 +20,11 @@
       String(d.getDate()).padStart(2, '0');
   }
 
+  var CID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
   window.lamiDB
     .from('notices')
     .select('id,title,content,pinned,created_at')
+    .eq('clinic_id', CID)
     .order('pinned', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(20)
