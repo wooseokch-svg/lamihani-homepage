@@ -170,11 +170,13 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 .philosophy-text p{ font-size: 18px; color: var(--text); }
 
 /* ===== Methods ===== */
-.method-grid{ display: grid; grid-template-columns: repeat(5,1fr); gap: 30px; margin-top: 64px; }
-.method-item{ text-align: center; }
-.method-item img{ width: 100%; border-radius: 10px; margin-bottom: 18px; }
-.method-item h3{ font-size: 26px; font-weight: 800; margin-bottom: 14px; }
-.method-item p{ font-size: 16px; color: var(--text); line-height: 1.6; }
+.method-grid{ display: grid; grid-template-columns: repeat(3,1fr); gap: 44px 40px; align-items: start; }
+.method-head{ display: flex; align-items: center; padding: 6px 8px; }
+.method-head h2{ font-size: 40px; font-weight: 800; line-height: 1.35; text-align: left; }
+.method-item{ text-align: center; border-top: 2px dotted #cbc5bd; padding-top: 30px; }
+.method-item img{ width: 78px; height: auto; border-radius: 0; margin: 0 auto 18px; display: block; }
+.method-item h3{ font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+.method-item p{ font-size: 15px; color: var(--text); line-height: 1.7; }
 
 /* ===== Doctor ===== */
 .doctor-wrap{ display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; align-items: start; }
@@ -254,8 +256,10 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
   .philosophy-row, .philosophy-row.reverse{ grid-template-columns: 1fr; direction: ltr; gap: 20px; }
   .philosophy-text h3{ font-size: 26px; }
   .philosophy-text p{ font-size: 16px; }
-  .method-grid{ grid-template-columns: 1fr; gap: 30px; }
-  .method-item h3{ font-size: 24px; }
+  .method-grid{ grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+  .method-head{ grid-column: 1 / -1; justify-content: center; }
+  .method-head h2{ font-size: 30px; text-align: center; }
+  .method-item h3{ font-size: 21px; }
   .doctor-wrap{ grid-template-columns: 1fr; gap: 24px; }
   .doctor-info{ padding-top: 0; }
   .hours-grid{ grid-template-columns: 1fr; }
@@ -268,6 +272,7 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
   .container{ padding: 0 16px; }
   .hero-content h1{ font-size: 30px; }
   h2{ font-size: 28px; }
+  .method-grid{ grid-template-columns: 1fr; }
 }
 
 /* ===== 공지사항 목록 ===== */
