@@ -37,7 +37,7 @@
   <nav class="adm-tabs">
     <button data-tab="intakes" class="active">예진표 예약 <span class="badge" id="cntInt">0</span></button>
     <button data-tab="notices">공지사항</button>
-    <button data-tab="settings">예약설정</button>
+    <button data-tab="settings">병원 운영시간 설정</button>
   </nav>
 
   <main>
@@ -53,8 +53,12 @@
         </div>
       </div>
       <div class="panel">
-        <h2>예진표·예약 목록</h2>
-        <div id="bookingList"><div class="empty">불러오는 중...</div></div>
+        <div class="sub-tabs">
+          <button class="sub-tab active" data-sub="upcoming">예약 <span id="cntUp">0</span></button>
+          <button class="sub-tab" data-sub="past">지난예약 <span id="cntPast">0</span></button>
+        </div>
+        <div id="listUpcoming"><div class="empty">불러오는 중...</div></div>
+        <div id="listPast" hidden></div>
       </div>
     </section>
 
