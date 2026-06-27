@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=6">
+<link rel="stylesheet" href="css/admin.css?v=7">
 </head>
 <body>
 
@@ -44,7 +44,10 @@
     <!-- 예진표 예약 -->
     <section id="tab-intakes">
       <div class="panel">
-        <h2>예약 캘린더</h2>
+        <div class="panel-head">
+          <h2>예약 캘린더</h2>
+          <button class="btn-primary" onclick="openAdd()">＋ 예약 직접 추가</button>
+        </div>
         <div id="admCal" class="adm-cal"></div>
         <div class="adm-cal-legend">
           <span><i class="dot s-신규"></i> 신규</span>
@@ -128,10 +131,43 @@
   </div>
 </div>
 
+<!-- 예약 직접 추가 모달 -->
+<div class="adm-detail-overlay" id="admAddOverlay">
+  <div class="adm-detail">
+    <button class="adm-detail-close" onclick="closeAdd()" aria-label="닫기">✕</button>
+    <h3 class="adm-detail-title">예약 직접 추가</h3>
+    <p class="add-hint">네이버·전화·방문 예약을 캘린더에 직접 등록합니다.</p>
+    <div class="add-form">
+      <div class="nf-row"><label>성함 *</label><input id="addName" type="text" placeholder="홍길동"></div>
+      <div class="nf-row"><label>연락처</label><input id="addPhone" type="tel" placeholder="010-0000-0000"></div>
+      <div class="add-row2">
+        <div class="nf-row"><label>날짜 *</label><input id="addDate" type="date"></div>
+        <div class="nf-row"><label>시간 *</label><input id="addTime" type="time"></div>
+      </div>
+      <div class="add-row2">
+        <div class="nf-row"><label>방문유형</label>
+          <select id="addVisit"><option>초진</option><option>재진</option></select>
+        </div>
+        <div class="nf-row"><label>출처</label>
+          <select id="addSource"><option>네이버</option><option>전화</option><option>방문</option><option>기타</option></select>
+        </div>
+      </div>
+      <div class="add-row2">
+        <div class="nf-row"><label>상태</label>
+          <select id="addStatus"><option>예약확정</option><option>신규</option></select>
+        </div>
+        <div class="nf-row"><label>메모</label><input id="addMemo" type="text" placeholder="비고"></div>
+      </div>
+      <p class="add-err" id="addErr"></p>
+      <button class="btn-primary" id="addSaveBtn">예약 추가</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/config.js?v=6"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=6"></script>
+<script src="js/admin.js?v=7"></script>
 </body>
 </html>

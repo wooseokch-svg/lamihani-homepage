@@ -272,6 +272,50 @@
     if (e.target === $('admDetailOverlay')) closeDetail();
   });
 
+  // ----- 예약 직접 추가 (네이버/전화/방문) -----
+  window.openAdd = function () {
+    ['addName', 'addPhone', 'addTime', 'addMemo'].forEach(function (id) { $(id).value = ''; });
+    $('addDate').value = window.LamiBooking.todayStr();
+    $('addVisit').selectedIndex = 0;
+    $('addSource').selectedIndex = 0;
+    $('addStatus').selectedIndex = 0;
+    $('addErr').textContent = '';
+    $('admAddOverlay').classList.add('open');
+  };
+  window.closeAdd = function () { $('admAddOverlay').classList.remove('open'); };
+  $('admAddOverlay').addEventListener('click', function (e) {
+    if (e.target === $('admAddOverlay')) closeAdd();
+  });
+
+  $('addSaveBtn').addEventListener('click', function () {
+    var err = $('addErr'); err.textContent = '';
+    var name = $('addName').value.trim();
+    var date = $('addDate').value;
+    var time = $('addTime').value;
+    if (!name) { err.textContent = '성함을 입력하세요.'; return; }
+    if (!date) { err.textContent = '날짜를 선택하세요.'; return; }
+    if (!time) { err.textContent = '시간을 선택하세요.'; return; }
+    var row = {
+      clinic_id: CID,
+      name: name,
+      phone: $('addPhone').value.trim() || null,
+      visit_type: $('addVisit').value,
+      desired_date: date,
+      desired_time: time,
+      memo: $('addMemo').value.trim() || null,
+      source: $('addSource').value,
+      kind: '예약',
+      status: $('addStatus').value
+    };
+    var btn = $('addSaveBtn'); btn.disabled = true; btn.textContent = '추가 중...';
+    db.from('reservations').insert([row]).then(function (res) {
+      btn.disabled = false; btn.textContent = '예약 추가';
+      if (res.error) { err.textContent = '오류: ' + res.error.message; return; }
+      closeAdd();
+      loadBookings();
+    });
+  });
+
   // =================== 공지 ===================
   function resetNoticeForm() {
     $('noticeId').value = '';

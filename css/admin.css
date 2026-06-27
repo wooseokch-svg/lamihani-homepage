@@ -181,3 +181,16 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .adm-cell.past{ background:#faf9f7; }
 .adm-cell.past .adm-day{ color:#ccc; }
 .adm-chip.past{ background:#ececec !important; color:#aaa !important; }
+
+/* ===== 예약 직접 추가 ===== */
+.panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.panel-head h2{ margin:0; }
+.panel-head .btn-primary{ padding:9px 16px; font-size:13px; }
+.add-hint{ font-size:13px; color:#888; margin-bottom:16px; }
+.add-form .nf-row{ margin-bottom:12px; }
+.add-form .nf-row select{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:14px; font-family:inherit; background:#fafaf8; outline:none; }
+.add-form .nf-row select:focus{ border-color:var(--orange); background:#fff; }
+.add-form input[type=time]{ font-family:inherit; }
+.add-row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.add-err{ color:#d33; font-size:13px; min-height:18px; margin:2px 0 8px; }
+.add-form .btn-primary{ width:100%; padding:13px; }
