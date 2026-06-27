@@ -222,10 +222,10 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 .footer-sns a:hover{ opacity: .7; }
 .footer-sns a svg{ height: 20px; width: auto; display: block; }
 .footer-nav{ display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
-.footer-nav a{ font-size: 13px; padding: 3px 8px; }
-.footer-brand{ font-size: 22px; font-weight: 700; margin-bottom: 14px; }
+.footer-nav a{ font-family: 'Gowun Batang', serif; font-size: 14px; padding: 3px 8px; }
+.footer-brand{ font-family: 'Gowun Batang', serif; font-size: 24px; font-weight: 700; margin-bottom: 14px; }
 .footer-policy{ margin-bottom: 12px; font-size: 12px; }
-.footer-policy a{ padding: 0 8px; }
+.footer-policy a{ font-family: 'Gowun Batang', serif; padding: 0 8px; }
 .footer-copy{ font-size: 11px; opacity: .9; }
 
 /* ===== To top ===== */
