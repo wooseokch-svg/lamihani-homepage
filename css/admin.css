@@ -98,3 +98,28 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .detail-toggle{ font-size:13px; color:var(--orange); background:none; border:0; padding:0; font-weight:600; }
 .kv{ font-size:13px; color:#555; line-height:1.8; }
 .kv b{ color:#333; }
+
+/* ===== 예약설정 (영업시간/공휴일) ===== */
+.hours-head{ display:grid; grid-template-columns: 90px 50px 1fr 1fr; gap:10px; font-size:12px; color:#999; padding:0 4px 8px; border-bottom:1px solid var(--line); }
+.hours-row{ display:grid; grid-template-columns: 90px 50px 1fr 1fr; gap:10px; align-items:center; padding:10px 4px; border-bottom:1px solid #f3efe9; }
+.hr-name{ font-weight:600; font-size:14px; }
+.hr-closed{ display:flex; justify-content:center; }
+.hr-closed input{ width:18px; height:18px; accent-color:var(--orange); }
+.hr-time{ display:flex; align-items:center; gap:6px; font-size:13px; color:#999; }
+.hr-time input[type=time]{ border:1px solid var(--line); border-radius:7px; padding:6px 8px; font-size:13px; font-family:inherit; background:#fafaf8; outline:none; }
+.hr-time input[type=time]:focus{ border-color:var(--orange); background:#fff; }
+.hr-time input:disabled{ opacity:.4; }
+.set-foot{ display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap; }
+.set-foot label{ font-size:13px; color:#555; }
+.set-foot select{ border:1px solid var(--line); border-radius:7px; padding:7px 10px; font-family:inherit; margin-left:6px; }
+.set-msg{ font-size:13px; }
+.set-note{ font-size:13px; color:#888; line-height:1.6; margin-bottom:14px; }
+.set-holiday-add{ display:flex; gap:8px; margin-bottom:14px; }
+.set-holiday-add input{ border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:14px; }
+.holiday-chip{ display:inline-flex; align-items:center; gap:8px; background:#fff3ea; color:#c25f1a; border:1px solid #ffd8bc; border-radius:20px; padding:6px 8px 6px 14px; font-size:13px; margin:0 8px 8px 0; }
+.holiday-chip button{ background:#ffd8bc; border:0; border-radius:50%; width:18px; height:18px; color:#c25f1a; font-size:11px; line-height:1; cursor:pointer; }
+
+@media (max-width:600px){
+  .hours-head, .hours-row{ grid-template-columns: 64px 40px 1fr; }
+  .hours-head span:last-child, .hr-time:last-child{ grid-column: 1/-1; justify-content:flex-start; padding-left:4px; }
+}

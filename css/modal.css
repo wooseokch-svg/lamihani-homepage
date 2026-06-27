@@ -613,7 +613,7 @@
   background: #fff;
   border-radius: 18px;
   width: 100%;
-  max-width: 440px;
+  max-width: 480px;
   margin: auto;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
@@ -698,4 +698,60 @@
 @media (max-width: 480px) {
   #reserveOverlay .rsv-row { grid-template-columns: 1fr; }
   #reserveOverlay .rsv-radio { flex-direction: column; }
+}
+
+/* ====================================================
+   예약 달력 + 시간 슬롯 (#reserveOverlay)
+   ==================================================== */
+#reserveOverlay .rsv-step-label {
+  font-size: 13px; font-weight: 700; color: #e87c3e; margin: 18px 0 10px;
+}
+#reserveOverlay .rsv-step-label:first-child { margin-top: 0; }
+
+#reserveOverlay .rsv-cal { border: 1px solid #eee4db; border-radius: 12px; padding: 12px; }
+#reserveOverlay .rsv-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+#reserveOverlay .rsv-cal-title { font-size: 15px; font-weight: 700; color: #3e3e3e; }
+#reserveOverlay .rsv-cal-nav {
+  width: 32px; height: 32px; border: 1px solid #eee; border-radius: 8px; background: #fff;
+  font-size: 17px; color: #888; cursor: pointer; line-height: 1;
+}
+#reserveOverlay .rsv-cal-nav:hover { border-color: #ff9d63; color: #e87c3e; }
+#reserveOverlay .rsv-cal-nav:disabled { opacity: .35; cursor: default; }
+#reserveOverlay .rsv-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+#reserveOverlay .rsv-dow { text-align: center; font-size: 11px; color: #aaa; padding: 4px 0; }
+#reserveOverlay .rsv-dow.sun { color: #e06464; }
+#reserveOverlay .rsv-dow.sat { color: #5b86d6; }
+#reserveOverlay .rsv-cell {
+  aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; border-radius: 8px; color: #444;
+}
+#reserveOverlay .rsv-cell.empty { visibility: hidden; }
+#reserveOverlay .rsv-cell.ok { cursor: pointer; background: #fff6ef; color: #c25f1a; font-weight: 600; }
+#reserveOverlay .rsv-cell.ok:hover { background: #ffe6d3; }
+#reserveOverlay .rsv-cell.sel { background: linear-gradient(135deg,#ff9d63,#e87c3e); color: #fff; }
+#reserveOverlay .rsv-cell.past { color: #d0d0d0; }
+#reserveOverlay .rsv-cell.off { color: #c5c5c5; }
+#reserveOverlay .rsv-cell.holiday { color: #e06464; }
+#reserveOverlay .rsv-cell.holiday::after { content: ''; }
+
+#reserveOverlay .rsv-legend { display: flex; gap: 14px; justify-content: center; margin-top: 10px; font-size: 11px; color: #999; }
+#reserveOverlay .rsv-legend .lg { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 3px; vertical-align: middle; }
+#reserveOverlay .rsv-legend .lg-ok { background: #ffd9bd; }
+#reserveOverlay .rsv-legend .lg-holiday { background: #f3b6b6; }
+#reserveOverlay .rsv-legend .lg-off { background: #e0e0e0; }
+
+#reserveOverlay .rsv-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+#reserveOverlay .rsv-hint { grid-column: 1/-1; color: #aaa; font-size: 13px; text-align: center; padding: 14px 0; }
+#reserveOverlay .rsv-slot {
+  border: 1.5px solid #e5e0da; border-radius: 9px; background: #fafaf8; color: #444;
+  padding: 9px 4px; font-size: 12px; cursor: pointer; font-family: inherit; position: relative;
+}
+#reserveOverlay .rsv-slot:hover { border-color: #ff9d63; background: #fff6ef; }
+#reserveOverlay .rsv-slot.sel { border-color: #e87c3e; background: #fff3ea; color: #c25f1a; font-weight: 700; }
+#reserveOverlay .rsv-slot.taken { color: #c5c5c5; background: #f4f4f4; cursor: default; border-color: #eee; }
+#reserveOverlay .rsv-slot .x { display: block; font-size: 10px; color: #c5c5c5; }
+
+#reserveOverlay .rsv-summary {
+  background: #fff8f4; border: 1px solid #ffd8bc; border-radius: 10px;
+  padding: 11px 14px; font-size: 13px; color: #c25f1a; margin: 16px 0 6px;
 }

@@ -38,6 +38,7 @@
     <button data-tab="reservations" class="active">예약 <span class="badge" id="cntRes">0</span></button>
     <button data-tab="intakes">예진표 <span class="badge" id="cntInt">0</span></button>
     <button data-tab="notices">공지사항</button>
+    <button data-tab="settings">예약설정</button>
   </nav>
 
   <main>
@@ -82,12 +83,46 @@
         <div id="noticeList"><div class="empty">불러오는 중...</div></div>
       </div>
     </section>
+
+    <!-- 예약설정 -->
+    <section id="tab-settings" hidden>
+      <div class="panel">
+        <h2>영업시간 · 휴원 요일</h2>
+        <div class="hours-head">
+          <span>요일</span><span>휴무</span><span>진료시간</span><span>점심시간</span>
+        </div>
+        <div id="hoursEditor"></div>
+        <div class="set-foot">
+          <label>예약 간격
+            <select id="slotMinutes">
+              <option value="15">15분</option>
+              <option value="20">20분</option>
+              <option value="30" selected>30분</option>
+              <option value="60">60분</option>
+            </select>
+          </label>
+          <button class="btn-primary" id="settingsSaveBtn">설정 저장</button>
+          <span class="set-msg" id="settingsMsg"></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>공휴일 · 임시 휴원일</h2>
+        <p class="set-note">신정·삼일절·어린이날·현충일·광복절·개천절·한글날·성탄절은 <b>자동 표시</b>됩니다. 설날·추석·부처님오신날 등 음력 공휴일과 임시 휴원일만 아래에서 추가하세요.</p>
+        <div class="set-holiday-add">
+          <input type="date" id="holidayInput">
+          <button class="btn-ghost" id="holidayAddBtn">휴무일 추가</button>
+        </div>
+        <div id="holidayList"></div>
+      </div>
+    </section>
   </main>
 </div>
 
 <script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js"></script>
+<script src="js/booking.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

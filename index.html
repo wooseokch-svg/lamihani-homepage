@@ -679,8 +679,23 @@
     </div>
 
     <div class="rsv-body" id="reserveFormView">
+      <!-- 1. 날짜 선택 (달력) -->
+      <div class="rsv-step-label">1. 날짜를 선택하세요</div>
+      <div class="rsv-cal" id="rsvCal"></div>
+      <div class="rsv-legend">
+        <span><i class="lg lg-ok"></i> 예약가능</span>
+        <span><i class="lg lg-holiday"></i> 공휴일·휴무</span>
+        <span><i class="lg lg-off"></i> 휴진</span>
+      </div>
+
+      <!-- 2. 시간 선택 -->
+      <div class="rsv-step-label">2. 시간을 선택하세요</div>
+      <div class="rsv-slots" id="rsvSlots"><p class="rsv-hint">날짜를 먼저 선택해 주세요.</p></div>
+
+      <!-- 3. 정보 입력 -->
+      <div class="rsv-step-label">3. 예약자 정보</div>
       <div class="rsv-field">
-        <label>성함 <span style="color:#ffe">*</span></label>
+        <label>성함 *</label>
         <input id="rsvName" type="text" placeholder="홍길동">
       </div>
       <div class="rsv-field">
@@ -694,32 +709,12 @@
           <label><input type="radio" name="rsvVisit" value="재진"> 재방문(재진)</label>
         </div>
       </div>
-      <div class="rsv-row">
-        <div class="rsv-field">
-          <label>희망 날짜</label>
-          <input id="rsvDate" type="date">
-        </div>
-        <div class="rsv-field">
-          <label>희망 시간대</label>
-          <select id="rsvTime">
-            <option value="">선택</option>
-            <option>오전 10:00</option>
-            <option>오전 11:00</option>
-            <option>오후 12:00</option>
-            <option>오후 1:00</option>
-            <option>오후 2:00</option>
-            <option>오후 3:00</option>
-            <option>오후 4:00</option>
-            <option>오후 5:00</option>
-            <option>오후 6:00</option>
-            <option>오후 7:00</option>
-          </select>
-        </div>
-      </div>
       <div class="rsv-field">
         <label>메모 <span style="font-weight:400;color:#aaa">(증상·요청사항)</span></label>
         <textarea id="rsvMemo" rows="2" placeholder="예: 허리 통증으로 상담 원합니다"></textarea>
       </div>
+
+      <div class="rsv-summary" id="rsvSummary" hidden></div>
       <p class="rsv-err" id="rsvErr"></p>
       <button class="rsv-submit" onclick="submitReserve()">예약 신청하기</button>
       <a class="rsv-naver-link" id="rsvNaverLink" href="https://map.naver.com/p/entry/place/1137949987" target="_blank" rel="noopener">또는 네이버 예약으로 바로 예약하기 →</a>
@@ -898,6 +893,7 @@
 <script src="js/db.js"></script>
 <script src="js/main.js"></script>
 <script src="js/modal.js"></script>
+<script src="js/booking.js"></script>
 <script src="js/reservation.js"></script>
 <script src="js/notices.js"></script>
 </body>

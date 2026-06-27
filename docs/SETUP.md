@@ -10,6 +10,8 @@
 1. <https://supabase.com> 가입 → **New project** 생성 (Region: `Northeast Asia (Seoul)` 권장)
 2. 프로젝트가 생성되면 좌측 **SQL Editor** → `supabase/schema.sql` 내용을 붙여넣고 **Run**
    - 공지/예약/예진표 테이블과 보안 정책(RLS)이 생성됩니다.
+2-1. **예약 캘린더 기능**을 쓰려면 **SQL Editor**에서 `supabase/booking.sql` 도 한 번 더 실행하세요.
+   (영업시간·공휴일 설정 테이블 `clinic_settings` 와 예약 슬롯 조회 함수가 생성됩니다.)
 3. 좌측 **Project Settings → API** 에서 두 값을 복사
    - **Project URL**
    - **anon public** key (← 공개돼도 안전한 키)

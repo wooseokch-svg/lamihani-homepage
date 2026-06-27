@@ -42,6 +42,7 @@
     loadReservations();
     loadIntakes();
     loadNotices();
+    loadSettings();
   }
   function showLogin() {
     $('adminView').hidden = true;
@@ -81,7 +82,7 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['reservations', 'intakes', 'notices'].forEach(function (t) {
+      ['reservations', 'intakes', 'notices', 'settings'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
     });
@@ -282,4 +283,106 @@
       });
     });
   }
+
+  // =================== 예약설정 (영업시간/공휴일) ===================
+  var WD = [
+    { k: '1', n: '월요일' }, { k: '2', n: '화요일' }, { k: '3', n: '수요일' },
+    { k: '4', n: '목요일' }, { k: '5', n: '금요일' }, { k: '6', n: '토요일' }, { k: '0', n: '일요일' }
+  ];
+  var curSettings = null;
+
+  function loadSettings() {
+    db.from('clinic_settings').select('*').eq('id', 1).single().then(function (res) {
+      curSettings = (res && res.data) ? {
+        hours: res.data.hours || {}, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || []
+      } : JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
+      renderHours();
+      renderHolidays();
+      $('slotMinutes').value = String(curSettings.slot_minutes);
+    });
+  }
+
+  function renderHours() {
+    var box = $('hoursEditor');
+    box.innerHTML = WD.map(function (w) {
+      var c = curSettings.hours[w.k] || { closed: true };
+      var dis = c.closed ? 'disabled' : '';
+      return '<div class="hours-row" data-wd="' + w.k + '">' +
+        '<span class="hr-name">' + w.n + '</span>' +
+        '<label class="hr-closed"><input type="checkbox" class="hr-off"' + (c.closed ? ' checked' : '') + '></label>' +
+        '<span class="hr-time">' +
+          '<input type="time" class="hr-open" value="' + (c.open || '10:00') + '" ' + dis + '> ~ ' +
+          '<input type="time" class="hr-close" value="' + (c.close || '18:00') + '" ' + dis + '>' +
+        '</span>' +
+        '<span class="hr-time">' +
+          '<input type="time" class="hr-ls" value="' + (c.lunchStart || '') + '" ' + dis + '> ~ ' +
+          '<input type="time" class="hr-le" value="' + (c.lunchEnd || '') + '" ' + dis + '>' +
+        '</span>' +
+      '</div>';
+    }).join('');
+
+    box.querySelectorAll('.hr-off').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var row = cb.closest('.hours-row');
+        row.querySelectorAll('input[type="time"]').forEach(function (i) { i.disabled = cb.checked; });
+      });
+    });
+  }
+
+  $('settingsSaveBtn').addEventListener('click', function () {
+    var hours = {};
+    $('hoursEditor').querySelectorAll('.hours-row').forEach(function (row) {
+      var wd = row.dataset.wd;
+      var closed = row.querySelector('.hr-off').checked;
+      if (closed) { hours[wd] = { closed: true }; return; }
+      var o = { closed: false, open: row.querySelector('.hr-open').value, close: row.querySelector('.hr-close').value };
+      var ls = row.querySelector('.hr-ls').value, le = row.querySelector('.hr-le').value;
+      if (ls && le) { o.lunchStart = ls; o.lunchEnd = le; }
+      hours[wd] = o;
+    });
+    var payload = {
+      id: 1, hours: hours,
+      slot_minutes: parseInt($('slotMinutes').value, 10),
+      holidays: curSettings.holidays || [],
+      updated_at: new Date().toISOString()
+    };
+    var msg = $('settingsMsg'); msg.textContent = '저장 중...';
+    db.from('clinic_settings').upsert(payload).then(function (res) {
+      if (res.error) { msg.textContent = '오류: ' + res.error.message; msg.style.color = '#d33'; return; }
+      curSettings.hours = hours; curSettings.slot_minutes = payload.slot_minutes;
+      msg.textContent = '저장되었습니다 ✓'; msg.style.color = '#2e7d32';
+      setTimeout(function () { msg.textContent = ''; }, 2500);
+    });
+  });
+
+  function saveHolidays() {
+    return db.from('clinic_settings').upsert({
+      id: 1, hours: curSettings.hours, slot_minutes: curSettings.slot_minutes,
+      holidays: curSettings.holidays, updated_at: new Date().toISOString()
+    });
+  }
+
+  function renderHolidays() {
+    var box = $('holidayList');
+    var list = (curSettings.holidays || []).slice().sort();
+    if (!list.length) { box.innerHTML = '<div class="empty" style="padding:18px 0">추가된 휴무일이 없습니다.</div>'; return; }
+    box.innerHTML = list.map(function (d) {
+      return '<div class="holiday-chip">' + d + '<button type="button" data-h="' + d + '">✕</button></div>';
+    }).join('');
+    box.querySelectorAll('[data-h]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        curSettings.holidays = curSettings.holidays.filter(function (x) { return x !== b.dataset.h; });
+        saveHolidays().then(renderHolidays);
+      });
+    });
+  }
+
+  $('holidayAddBtn').addEventListener('click', function () {
+    var v = $('holidayInput').value;
+    if (!v) return;
+    if (curSettings.holidays.indexOf(v) === -1) {
+      curSettings.holidays.push(v);
+      saveHolidays().then(function () { $('holidayInput').value = ''; renderHolidays(); });
+    }
+  });
 })();
