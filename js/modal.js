@@ -220,12 +220,30 @@ function collectIntake() {
   };
 }
 
+function resetForm() {
+  var ov = document.getElementById('modalOverlay');
+  ov.querySelectorAll('input[type="text"], input[type="tel"], input[type="date"], input[type="number"], textarea').forEach(function (i) { i.value = ''; });
+  ov.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
+  ov.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(function (c) { c.checked = false; });
+  ov.querySelectorAll('.radio-card.selected, .check-card.selected').forEach(function (el) { el.classList.remove('selected'); });
+  ov.querySelectorAll('.sub-section.visible').forEach(function (el) { el.classList.remove('visible'); });
+  for (var i = 1; i <= 4; i++) {
+    var seg = document.getElementById('seg' + i);
+    if (seg) seg.className = 'step-seg' + (i === 1 ? ' done' : '');
+  }
+  YJ.selDate = ''; YJ.selTime = '';
+  var sm = document.getElementById('yjSummary'); if (sm) sm.hidden = true;
+  var sl = document.getElementById('yjSlots'); if (sl) sl.innerHTML = '<p class="bk-hint">날짜를 먼저 선택해 주세요.</p>';
+  if (YJ.settings) renderYjCal();
+}
+
 function showSuccess() {
   document.getElementById('successTitle').textContent = (YJ.mode === 'full') ? '예진표 제출 완료!' : '예약 신청 완료!';
   document.getElementById('formView').style.display = 'none';
   document.getElementById('successView').style.display = 'block';
   var modal = document.querySelector('#modalOverlay .modal');
   if (modal) modal.scrollTop = 0;
+  resetForm();  // 완료 후 입력값 초기화 (다시 열면 빈 폼)
 }
 
 function submitForm() {
