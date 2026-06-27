@@ -100,15 +100,21 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .kv b{ color:#333; }
 
 /* ===== 예약설정 (영업시간/공휴일) ===== */
-.hours-head{ display:grid; grid-template-columns: 90px 50px 1fr 1fr; gap:10px; font-size:12px; color:#999; padding:0 4px 8px; border-bottom:1px solid var(--line); }
-.hours-row{ display:grid; grid-template-columns: 90px 50px 1fr 1fr; gap:10px; align-items:center; padding:10px 4px; border-bottom:1px solid #f3efe9; }
-.hr-name{ font-weight:600; font-size:14px; }
-.hr-closed{ display:flex; justify-content:center; }
-.hr-closed input{ width:18px; height:18px; accent-color:var(--orange); }
-.hr-time{ display:flex; align-items:center; gap:6px; font-size:13px; color:#999; }
-.hr-time input[type=time]{ border:1px solid var(--line); border-radius:7px; padding:6px 8px; font-size:13px; font-family:inherit; background:#fafaf8; outline:none; }
-.hr-time input[type=time]:focus{ border-color:var(--orange); background:#fff; }
-.hr-time input:disabled{ opacity:.4; }
+.hours-head{ display:none; }
+.day-card{ border:1px solid var(--line); border-radius:11px; padding:14px 16px; margin-bottom:10px; }
+.day-card.off{ background:#faf8f5; }
+.day-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.day-name{ font-weight:700; font-size:15px; }
+.day-off{ font-size:13px; color:#888; display:flex; align-items:center; gap:6px; cursor:pointer; }
+.day-off input{ width:17px; height:17px; accent-color:var(--orange); }
+.day-card.off .day-fields{ opacity:.45; }
+.day-fields{ display:flex; flex-direction:column; gap:8px; }
+.ff{ display:flex; align-items:center; gap:7px; font-size:13px; color:#777; flex-wrap:wrap; }
+.ff > label{ width:64px; flex-shrink:0; font-weight:600; color:#555; }
+.ff input[type=time]{ border:1px solid var(--line); border-radius:7px; padding:6px 8px; font-size:13px; font-family:inherit; background:#fafaf8; outline:none; }
+.ff input[type=time]:focus{ border-color:var(--orange); background:#fff; }
+.ff input:disabled{ opacity:.4; }
+.ff-hint{ font-size:11px; color:#bbb; }
 .set-foot{ display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap; }
 .set-foot label{ font-size:13px; color:#555; }
 .set-foot select{ border:1px solid var(--line); border-radius:7px; padding:7px 10px; font-family:inherit; margin-left:6px; }

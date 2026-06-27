@@ -307,37 +307,47 @@
     box.innerHTML = WD.map(function (w) {
       var c = curSettings.hours[w.k] || { closed: true };
       var dis = c.closed ? 'disabled' : '';
-      return '<div class="hours-row" data-wd="' + w.k + '">' +
-        '<span class="hr-name">' + w.n + '</span>' +
-        '<label class="hr-closed"><input type="checkbox" class="hr-off"' + (c.closed ? ' checked' : '') + '></label>' +
-        '<span class="hr-time">' +
-          '<input type="time" class="hr-open" value="' + (c.open || '10:00') + '" ' + dis + '> ~ ' +
-          '<input type="time" class="hr-close" value="' + (c.close || '18:00') + '" ' + dis + '>' +
-        '</span>' +
-        '<span class="hr-time">' +
-          '<input type="time" class="hr-ls" value="' + (c.lunchStart || '') + '" ' + dis + '> ~ ' +
-          '<input type="time" class="hr-le" value="' + (c.lunchEnd || '') + '" ' + dis + '>' +
-        '</span>' +
+      return '<div class="day-card' + (c.closed ? ' off' : '') + '" data-wd="' + w.k + '">' +
+        '<div class="day-top">' +
+          '<span class="day-name">' + w.n + '</span>' +
+          '<label class="day-off"><input type="checkbox" class="hr-off"' + (c.closed ? ' checked' : '') + '> 휴무</label>' +
+        '</div>' +
+        '<div class="day-fields">' +
+          '<div class="ff"><label>진료시간</label>' +
+            '<input type="time" class="hr-open" value="' + (c.open || '10:00') + '" ' + dis + '> ~ ' +
+            '<input type="time" class="hr-close" value="' + (c.close || '17:30') + '" ' + dis + '></div>' +
+          '<div class="ff"><label>휴게시간</label>' +
+            '<input type="time" class="hr-ls" value="' + (c.lunchStart || '') + '" ' + dis + '> ~ ' +
+            '<input type="time" class="hr-le" value="' + (c.lunchEnd || '') + '" ' + dis + '>' +
+            '<span class="ff-hint">(없으면 비워두기)</span></div>' +
+          '<div class="ff"><label>접수마감</label>' +
+            '점심 <input type="time" class="hr-al" value="' + (c.acceptLunch || '') + '" ' + dis + '> ' +
+            '종료 <input type="time" class="hr-ac" value="' + (c.acceptClose || '') + '" ' + dis + '></div>' +
+        '</div>' +
       '</div>';
     }).join('');
 
     box.querySelectorAll('.hr-off').forEach(function (cb) {
       cb.addEventListener('change', function () {
-        var row = cb.closest('.hours-row');
-        row.querySelectorAll('input[type="time"]').forEach(function (i) { i.disabled = cb.checked; });
+        var card = cb.closest('.day-card');
+        card.classList.toggle('off', cb.checked);
+        card.querySelectorAll('input[type="time"]').forEach(function (i) { i.disabled = cb.checked; });
       });
     });
   }
 
   $('settingsSaveBtn').addEventListener('click', function () {
     var hours = {};
-    $('hoursEditor').querySelectorAll('.hours-row').forEach(function (row) {
+    $('hoursEditor').querySelectorAll('.day-card').forEach(function (row) {
       var wd = row.dataset.wd;
       var closed = row.querySelector('.hr-off').checked;
       if (closed) { hours[wd] = { closed: true }; return; }
       var o = { closed: false, open: row.querySelector('.hr-open').value, close: row.querySelector('.hr-close').value };
       var ls = row.querySelector('.hr-ls').value, le = row.querySelector('.hr-le').value;
       if (ls && le) { o.lunchStart = ls; o.lunchEnd = le; }
+      var al = row.querySelector('.hr-al').value, ac = row.querySelector('.hr-ac').value;
+      if (al) o.acceptLunch = al;
+      if (ac) o.acceptClose = ac;
       hours[wd] = o;
     });
     var payload = {

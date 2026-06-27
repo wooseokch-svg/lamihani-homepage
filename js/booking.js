@@ -3,16 +3,14 @@
    - 영업시간/휴무/공휴일 → 예약 가능 날짜·시간 계산
    ===================================================================== */
 (function () {
-  // 설정이 없을 때 사용할 기본 영업시간 (DB 기본값과 동일)
+  // 설정이 없을 때 사용할 기본 영업시간 (실제 운영시간)
+  //   acceptLunch = 점심 전 접수마감, acceptClose = 종료 전 접수마감
+  var WD_WEEK = { closed: false, open: '10:00', close: '17:30', lunchStart: '13:00', lunchEnd: '14:00', acceptLunch: '12:20', acceptClose: '16:50' };
   var DEFAULT_SETTINGS = {
     hours: {
       '0': { closed: true },
-      '1': { closed: false, open: '10:00', close: '18:00', lunchStart: '13:00', lunchEnd: '14:00' },
-      '2': { closed: false, open: '10:00', close: '18:00', lunchStart: '13:00', lunchEnd: '14:00' },
-      '3': { closed: false, open: '10:00', close: '18:00', lunchStart: '13:00', lunchEnd: '14:00' },
-      '4': { closed: false, open: '10:00', close: '18:00', lunchStart: '13:00', lunchEnd: '14:00' },
-      '5': { closed: false, open: '10:00', close: '18:00', lunchStart: '13:00', lunchEnd: '14:00' },
-      '6': { closed: false, open: '10:00', close: '14:00' }
+      '1': WD_WEEK, '2': WD_WEEK, '3': WD_WEEK, '4': WD_WEEK, '5': WD_WEEK,
+      '6': { closed: false, open: '10:00', close: '14:00', acceptClose: '13:20' }
     },
     slot_minutes: 30,
     holidays: []
@@ -73,19 +71,33 @@
     return !!(cfg && !cfg.closed && cfg.open && cfg.close);
   }
 
-  // 해당 날짜의 전체 슬롯('HH:MM' 배열) — 점심시간 제외
+  // 해당 날짜의 전체 슬롯('HH:MM' 배열)
+  //  - 점심시간 제외
+  //  - 접수마감(acceptLunch: 점심 전 / acceptClose: 종료 전) 반영
   function allSlots(dateStr, settings) {
     var d = new Date(dateStr + 'T00:00:00');
     var cfg = settings.hours[String(d.getDay())];
     if (!cfg || cfg.closed || !cfg.open || !cfg.close) return [];
     var step = settings.slot_minutes || 30;
     var open = toMin(cfg.open), close = toMin(cfg.close);
-    var ls = cfg.lunchStart ? toMin(cfg.lunchStart) : null;
-    var le = cfg.lunchEnd ? toMin(cfg.lunchEnd) : null;
+    var hasLunch = cfg.lunchStart && cfg.lunchEnd;
     var out = [];
-    for (var t = open; t < close; t += step) {
-      if (ls !== null && t >= ls && t < le) continue;
-      out.push(toHHMM(t));
+
+    function addRange(startMin, endMin) {           // endMin 포함(<=)
+      for (var t = startMin; t <= endMin; t += step) out.push(toHHMM(t));
+    }
+
+    if (hasLunch) {
+      var ls = toMin(cfg.lunchStart), le = toMin(cfg.lunchEnd);
+      // 오전: open ~ (점심 접수마감 또는 점심 시작 전)
+      var amEnd = cfg.acceptLunch ? Math.min(toMin(cfg.acceptLunch), ls - step) : (ls - step);
+      addRange(open, amEnd);
+      // 오후: 점심 종료 ~ (종료 접수마감 또는 종료 전)
+      var pmEnd = cfg.acceptClose ? Math.min(toMin(cfg.acceptClose), close - step) : (close - step);
+      addRange(le, pmEnd);
+    } else {
+      var dayEnd = cfg.acceptClose ? Math.min(toMin(cfg.acceptClose), close - step) : (close - step);
+      addRange(open, dayEnd);
     }
     return out;
   }

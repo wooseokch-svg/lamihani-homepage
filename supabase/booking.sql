@@ -15,18 +15,19 @@ create table if not exists public.clinic_settings (
   constraint clinic_settings_single check (id = 1)
 );
 
--- 기본값 1행 (월~금 10:00-18:00 점심 13-14, 토 10:00-14:00, 일 휴무)
+-- 기본값 1행 (실제 운영시간)
+--   월~금 10:00-17:30 / 점심 13:00-14:00 / 접수마감 12:20·16:50, 토 10:00-14:00 접수마감 13:20, 일 휴무
 insert into public.clinic_settings (id, hours, slot_minutes, holidays)
 values (
   1,
   '{
     "0": {"closed": true},
-    "1": {"closed": false, "open": "10:00", "close": "18:00", "lunchStart": "13:00", "lunchEnd": "14:00"},
-    "2": {"closed": false, "open": "10:00", "close": "18:00", "lunchStart": "13:00", "lunchEnd": "14:00"},
-    "3": {"closed": false, "open": "10:00", "close": "18:00", "lunchStart": "13:00", "lunchEnd": "14:00"},
-    "4": {"closed": false, "open": "10:00", "close": "18:00", "lunchStart": "13:00", "lunchEnd": "14:00"},
-    "5": {"closed": false, "open": "10:00", "close": "18:00", "lunchStart": "13:00", "lunchEnd": "14:00"},
-    "6": {"closed": false, "open": "10:00", "close": "14:00"}
+    "1": {"closed": false, "open": "10:00", "close": "17:30", "lunchStart": "13:00", "lunchEnd": "14:00", "acceptLunch": "12:20", "acceptClose": "16:50"},
+    "2": {"closed": false, "open": "10:00", "close": "17:30", "lunchStart": "13:00", "lunchEnd": "14:00", "acceptLunch": "12:20", "acceptClose": "16:50"},
+    "3": {"closed": false, "open": "10:00", "close": "17:30", "lunchStart": "13:00", "lunchEnd": "14:00", "acceptLunch": "12:20", "acceptClose": "16:50"},
+    "4": {"closed": false, "open": "10:00", "close": "17:30", "lunchStart": "13:00", "lunchEnd": "14:00", "acceptLunch": "12:20", "acceptClose": "16:50"},
+    "5": {"closed": false, "open": "10:00", "close": "17:30", "lunchStart": "13:00", "lunchEnd": "14:00", "acceptLunch": "12:20", "acceptClose": "16:50"},
+    "6": {"closed": false, "open": "10:00", "close": "14:00", "acceptClose": "13:20"}
   }'::jsonb,
   30,
   '[]'::jsonb
