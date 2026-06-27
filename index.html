@@ -34,7 +34,7 @@
       <a href="#location">위치안내</a>
       <a href="#notice">공지사항</a>
     </nav>
-    <a class="btn btn-reserve" href="#" role="button" onclick="openReserve();return false;">예약하기</a>
+    <a class="btn btn-reserve" href="#" role="button" onclick="openModal('reserve');return false;">예약하기</a>
     <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -50,7 +50,7 @@
     <a href="#location">위치안내</a>
     <a href="#notice">공지사항</a>
   </nav>
-  <a class="btn btn-reserve full" href="#" role="button" onclick="openReserve();return false;">예약하기</a>
+  <a class="btn btn-reserve full" href="#" role="button" onclick="openModal('reserve');return false;">예약하기</a>
 </div>
 <div class="overlay-bg" id="overlayBg"></div>
 
@@ -343,9 +343,9 @@
     <!-- 헤더 -->
     <div class="modal-header">
       <button class="close-btn" onclick="closeModal()" aria-label="닫기">✕</button>
-      <div class="badge">라미한의원 1:1 맞춤 상담</div>
-      <h2>방문 전 예진표 작성</h2>
-      <p>작성하신 내용을 바탕으로 더 빠르고 정확한 진료를 안내드립니다</p>
+      <div class="badge">라미한의원</div>
+      <h2 id="mTitle">방문 전 예진표 작성</h2>
+      <p id="mDesc">작성하신 내용을 바탕으로 더 빠르고 정확한 진료를 안내드립니다</p>
     </div>
 
     <!-- 폼 화면 -->
@@ -353,7 +353,7 @@
       <div class="modal-body">
 
         <!-- 진행 표시 -->
-        <div class="step-bar">
+        <div class="step-bar yj-full-only">
           <div class="step-seg done" id="seg1"></div>
           <div class="step-seg"      id="seg2"></div>
           <div class="step-seg"      id="seg3"></div>
@@ -418,35 +418,21 @@
           </div>
         </div>
 
-        <!-- 방문 희망 일시 -->
+        <!-- 예약 날짜·시간 (달력) -->
         <div class="section">
-          <div class="section-title">방문 희망 일시</div>
-          <div class="datetime-row">
-            <div class="form-group">
-              <label>희망 날짜</label>
-              <input id="inDate" type="date">
-            </div>
-            <div class="form-group">
-              <label>희망 시간대</label>
-              <select id="inTime">
-                <option value="">선택해 주세요</option>
-                <option>오전 10:00</option>
-                <option>오전 11:00</option>
-                <option>오후 12:00</option>
-                <option>오후 1:00</option>
-                <option>오후 2:00</option>
-                <option>오후 3:00</option>
-                <option>오후 4:00</option>
-                <option>오후 5:00</option>
-                <option>오후 6:00</option>
-                <option>오후 7:00</option>
-              </select>
-            </div>
+          <div class="section-title">예약 날짜·시간 선택</div>
+          <div class="bk-cal" id="yjCal"></div>
+          <div class="bk-legend">
+            <span><i class="bk-lg bk-ok"></i> 예약가능</span>
+            <span><i class="bk-lg bk-holiday"></i> 공휴일·휴무</span>
+            <span><i class="bk-lg bk-off"></i> 휴진</span>
           </div>
+          <div class="bk-slots" id="yjSlots"><p class="bk-hint">날짜를 먼저 선택해 주세요.</p></div>
+          <div class="bk-summary" id="yjSummary" hidden></div>
         </div>
 
         <!-- 고민 유형 선택 -->
-        <div class="section">
+        <div class="section yj-full-only">
           <div class="section-title">오늘 어떤 고민으로 찾아오셨나요?</div>
           <p style="font-size:11px;color:#aaa;margin-bottom:10px">중복 선택 가능합니다</p>
           <div class="symptom-grid">
@@ -615,7 +601,7 @@
         </div><!-- /고민 유형 섹션 -->
 
         <!-- 추가 정보 -->
-        <div class="section" style="margin-top:20px">
+        <div class="section yj-full-only" style="margin-top:20px">
           <div class="section-title">추가 정보</div>
           <div class="common-section">
             <div class="form-group" style="margin-bottom:14px">
@@ -642,19 +628,18 @@
 
       <div class="modal-footer">
         <div class="footer-note">
-          설문 작성해주셔서 감사합니다 🙏<br>
-          확인 후 곧 전화 드리겠습니다. 통화가 어려우신 경우<br>
-          진료시간 중에 연락 주세요.
+          남겨주신 정보를 확인 후 전화로 예약을 확정해 드립니다.<br>
+          통화가 어려우실 경우 진료시간 중 연락 주세요.
           <span class="footer-phone">02-538-1075</span>
         </div>
-        <button class="submit-btn" onclick="submitForm()">상담 예진표 제출하기</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">예진표 제출하고 예약하기</button>
       </div>
     </div><!-- /formView -->
 
     <!-- 제출 완료 화면 -->
     <div class="success-screen" id="successView">
       <div class="success-icon">✓</div>
-      <h3>예진표 제출 완료!</h3>
+      <h3 id="successTitle">예약 신청 완료!</h3>
       <p>
         설문 작성해주셔서 감사합니다 🙏<br>
         확인 후 곧 전화 드리겠습니다.<br><br>
@@ -667,68 +652,6 @@
 
   </div><!-- /modal -->
 </div><!-- /modal-overlay -->
-
-<!-- ===== 홈페이지 간편 예약 모달 ===== -->
-<div class="rsv-overlay" id="reserveOverlay" onclick="handleReserveOverlayClick(event)">
-  <div class="rsv-modal">
-    <div class="rsv-header">
-      <button class="rsv-close" onclick="closeReserve()" aria-label="닫기">✕</button>
-      <div class="rsv-badge">라미한의원 예약</div>
-      <h2>홈페이지 간편 예약</h2>
-      <p>아래 내용을 남겨주시면 확인 후 예약을 도와드립니다</p>
-    </div>
-
-    <div class="rsv-body" id="reserveFormView">
-      <!-- 1. 날짜 선택 (달력) -->
-      <div class="rsv-step-label">1. 날짜를 선택하세요</div>
-      <div class="rsv-cal" id="rsvCal"></div>
-      <div class="rsv-legend">
-        <span><i class="lg lg-ok"></i> 예약가능</span>
-        <span><i class="lg lg-holiday"></i> 공휴일·휴무</span>
-        <span><i class="lg lg-off"></i> 휴진</span>
-      </div>
-
-      <!-- 2. 시간 선택 -->
-      <div class="rsv-step-label">2. 시간을 선택하세요</div>
-      <div class="rsv-slots" id="rsvSlots"><p class="rsv-hint">날짜를 먼저 선택해 주세요.</p></div>
-
-      <!-- 3. 정보 입력 -->
-      <div class="rsv-step-label">3. 예약자 정보</div>
-      <div class="rsv-field">
-        <label>성함 *</label>
-        <input id="rsvName" type="text" placeholder="홍길동">
-      </div>
-      <div class="rsv-field">
-        <label>연락처 *</label>
-        <input id="rsvPhone" type="tel" placeholder="010-0000-0000">
-      </div>
-      <div class="rsv-field">
-        <label>방문 유형</label>
-        <div class="rsv-radio">
-          <label><input type="radio" name="rsvVisit" value="초진" checked> 첫 방문(초진)</label>
-          <label><input type="radio" name="rsvVisit" value="재진"> 재방문(재진)</label>
-        </div>
-      </div>
-      <div class="rsv-field">
-        <label>메모 <span style="font-weight:400;color:#aaa">(증상·요청사항)</span></label>
-        <textarea id="rsvMemo" rows="2" placeholder="예: 허리 통증으로 상담 원합니다"></textarea>
-      </div>
-
-      <div class="rsv-summary" id="rsvSummary" hidden></div>
-      <p class="rsv-err" id="rsvErr"></p>
-      <button class="rsv-submit" onclick="submitReserve()">예약 신청하기</button>
-      <a class="rsv-naver-link" id="rsvNaverLink" href="https://map.naver.com/p/entry/place/1137949987" target="_blank" rel="noopener">또는 네이버 예약으로 바로 예약하기 →</a>
-    </div>
-
-    <div class="rsv-success" id="reserveSuccessView">
-      <div class="rsv-success-icon">✓</div>
-      <h3>예약 신청 완료!</h3>
-      <p>확인 후 빠르게 연락드리겠습니다.<br>감사합니다 🙏</p>
-      <span class="rsv-success-phone">0507-1378-1076</span>
-      <button class="rsv-close-success" onclick="closeReserve()">확인</button>
-    </div>
-  </div>
-</div>
 
 <!-- ===== 이용약관 / 개인정보처리방침 모달 ===== -->
 <div class="policy-overlay" id="policyOverlay" onclick="handlePolicyOverlayClick(event)">
@@ -906,10 +829,9 @@
 <script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js"></script>
+<script src="js/booking.js"></script>
 <script src="js/main.js"></script>
 <script src="js/modal.js"></script>
-<script src="js/booking.js"></script>
-<script src="js/reservation.js"></script>
 <script src="js/notices.js"></script>
 </body>
 </html>

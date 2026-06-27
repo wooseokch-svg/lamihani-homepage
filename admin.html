@@ -35,26 +35,26 @@
   </header>
 
   <nav class="adm-tabs">
-    <button data-tab="reservations" class="active">예약 <span class="badge" id="cntRes">0</span></button>
-    <button data-tab="intakes">예진표 <span class="badge" id="cntInt">0</span></button>
+    <button data-tab="intakes" class="active">예진표 예약 <span class="badge" id="cntInt">0</span></button>
     <button data-tab="notices">공지사항</button>
     <button data-tab="settings">예약설정</button>
   </nav>
 
   <main>
-    <!-- 예약 -->
-    <section id="tab-reservations">
+    <!-- 예진표 예약 -->
+    <section id="tab-intakes">
       <div class="panel">
-        <h2>홈페이지 예약 신청</h2>
-        <div id="resList"><div class="empty">불러오는 중...</div></div>
+        <h2>예약 캘린더</h2>
+        <div id="admCal" class="adm-cal"></div>
+        <div class="adm-cal-legend">
+          <span><i class="dot s-신규"></i> 신규</span>
+          <span><i class="dot s-예약확정"></i> 예약확정</span>
+          <span class="adm-cal-hint">날짜의 이름을 누르면 상세보기</span>
+        </div>
       </div>
-    </section>
-
-    <!-- 예진표 -->
-    <section id="tab-intakes" hidden>
       <div class="panel">
-        <h2>1:1 비대면 예진표</h2>
-        <div id="intList"><div class="empty">불러오는 중...</div></div>
+        <h2>예진표·예약 목록</h2>
+        <div id="bookingList"><div class="empty">불러오는 중...</div></div>
       </div>
     </section>
 
@@ -114,6 +114,14 @@
       </div>
     </section>
   </main>
+</div>
+
+<!-- 예약 상세 모달 -->
+<div class="adm-detail-overlay" id="admDetailOverlay">
+  <div class="adm-detail">
+    <button class="adm-detail-close" onclick="closeDetail()" aria-label="닫기">✕</button>
+    <div id="admDetailBody"></div>
+  </div>
 </div>
 
 <script src="js/config.js"></script>

@@ -39,8 +39,7 @@
     $('loginView').hidden = true;
     $('adminView').hidden = false;
     $('who').textContent = session.user.email;
-    loadReservations();
-    loadIntakes();
+    loadBookings();
     loadNotices();
     loadSettings();
   }
@@ -82,62 +81,16 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['reservations', 'intakes', 'notices', 'settings'].forEach(function (t) {
+      ['intakes', 'notices', 'settings'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
     });
   });
 
-  // =================== 예약 ===================
-  var RES_STATUS = ['신규', '확정', '취소', '완료'];
-
-  function loadReservations() {
-    db.from('reservations').select('*').order('created_at', { ascending: false }).then(function (res) {
-      var box = $('resList');
-      if (res.error) { box.innerHTML = '<div class="empty">불러오기 오류: ' + esc(res.error.message) + '</div>'; return; }
-      var rows = res.data || [];
-      var nw = rows.filter(function (r) { return r.status === '신규'; }).length;
-      $('cntRes').textContent = nw;
-      if (!rows.length) { box.innerHTML = '<div class="empty">접수된 예약이 없습니다.</div>'; return; }
-      box.innerHTML = rows.map(function (r) {
-        return '<div class="rec">' +
-          '<div class="rec-top">' +
-            '<span class="rec-name">' + esc(r.name) + '</span>' +
-            '<span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
-            '<span class="rec-meta">' + esc(r.source || '') + '</span>' +
-            '<span class="rec-spacer"></span>' +
-            '<span class="rec-meta">' + fmt(r.created_at) + '</span>' +
-          '</div>' +
-          '<div class="rec-body">' +
-            '☎ ' + esc(r.phone) + ' · ' + esc(r.visit_type || '-') +
-            ' · 희망: ' + esc(r.desired_date || '-') + ' ' + esc(r.desired_time || '') +
-            (r.memo ? '\n📝 ' + esc(r.memo) : '') +
-          '</div>' +
-          '<div class="rec-actions">' +
-            '<select class="status-sel" data-id="' + r.id + '">' +
-              RES_STATUS.map(function (s) { return '<option' + (s === r.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
-            '</select>' +
-            '<button class="btn-danger" data-del="' + r.id + '">삭제</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-
-      box.querySelectorAll('.status-sel').forEach(function (sel) {
-        sel.addEventListener('change', function () {
-          db.from('reservations').update({ status: sel.value }).eq('id', sel.dataset.id).then(loadReservations);
-        });
-      });
-      box.querySelectorAll('[data-del]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          if (!confirm('이 예약을 삭제할까요?')) return;
-          db.from('reservations').delete().eq('id', b.dataset.del).then(loadReservations);
-        });
-      });
-    });
-  }
-
-  // =================== 예진표 ===================
-  var INT_STATUS = ['신규', '확인', '완료'];
+  // =================== 예진표 예약 (통합) ===================
+  var STATUSES = ['신규', '예약확정', '취소'];
+  var bookings = [];
+  var advY = 0, advM = 0;
 
   function detailsHtml(d) {
     if (!d || typeof d !== 'object') return '';
@@ -150,42 +103,59 @@
     return parts.join('');
   }
 
-  function loadIntakes() {
-    db.from('intakes').select('*').order('created_at', { ascending: false }).then(function (res) {
-      var box = $('intList');
+  function bookingFullHtml(r) {
+    var concerns = Array.isArray(r.concerns) && r.concerns.length ? r.concerns.join(', ') : '';
+    var h = '<div class="kv"><b>이름:</b> ' + esc(r.name || '-') + ' (' + esc(r.kind || '예약') + ')</div>' +
+      '<div class="kv"><b>연락처:</b> ' + esc(r.phone || '-') + '</div>' +
+      '<div class="kv"><b>예약일시:</b> ' + esc(r.desired_date || '-') + ' ' + esc(r.desired_time ? window.LamiBooking.fmtSlot(r.desired_time) : '') + '</div>' +
+      '<div class="kv"><b>방문유형:</b> ' + esc(r.visit_type || '-') + '</div>';
+    if (r.gender || r.birth) h += '<div class="kv"><b>성별/생년:</b> ' + esc(r.gender || '-') + ' / ' + esc(r.birth || '-') + '</div>';
+    if (concerns) h += '<div class="kv"><b>고민:</b> ' + esc(concerns) + '</div>';
+    h += detailsHtml(r.details);
+    if (r.meds) h += '<div class="kv"><b>복용 약물:</b> ' + esc(r.meds) + '</div>';
+    if (r.pregnancy) h += '<div class="kv"><b>임신 여부:</b> ' + esc(r.pregnancy) + '</div>';
+    if (r.message) h += '<div class="kv"><b>남긴 말:</b> ' + esc(r.message) + '</div>';
+    if (r.memo) h += '<div class="kv"><b>메모:</b> ' + esc(r.memo) + '</div>';
+    h += '<div class="kv" style="color:#aaa;margin-top:6px">접수: ' + fmt(r.created_at) + '</div>';
+    return h;
+  }
+
+  function statusBtns(r) {
+    return STATUSES.map(function (s) {
+      return '<button class="st-btn' + (s === r.status ? ' active s-' + s : '') + '" data-st="' + s + '" data-id="' + r.id + '">' + s + '</button>';
+    }).join('') + '<button class="btn-danger" data-del="' + r.id + '">삭제</button>';
+  }
+
+  function setStatus(id, st) { db.from('reservations').update({ status: st }).eq('id', id).then(loadBookings); }
+  function delBooking(id) { if (confirm('이 예약을 삭제할까요?')) db.from('reservations').delete().eq('id', id).then(loadBookings); }
+
+  function loadBookings() {
+    db.from('reservations').select('*').order('created_at', { ascending: false }).then(function (res) {
+      var box = $('bookingList');
       if (res.error) { box.innerHTML = '<div class="empty">불러오기 오류: ' + esc(res.error.message) + '</div>'; return; }
-      var rows = res.data || [];
-      $('cntInt').textContent = rows.filter(function (r) { return r.status === '신규'; }).length;
-      if (!rows.length) { box.innerHTML = '<div class="empty">접수된 예진표가 없습니다.</div>'; return; }
-      box.innerHTML = rows.map(function (r) {
-        var concerns = Array.isArray(r.concerns) ? r.concerns.join(', ') : '';
+      bookings = res.data || [];
+      $('cntInt').textContent = bookings.filter(function (r) { return r.status === '신규'; }).length;
+
+      var now = new Date(); advY = now.getFullYear(); advM = now.getMonth();
+      renderAdminCal();
+
+      if (!bookings.length) { box.innerHTML = '<div class="empty">접수된 예약이 없습니다.</div>'; return; }
+      box.innerHTML = bookings.map(function (r) {
+        var concerns = Array.isArray(r.concerns) && r.concerns.length ? r.concerns.join(', ') : '';
+        var isYj = (r.kind === '예진표');
         return '<div class="rec">' +
           '<div class="rec-top">' +
             '<span class="rec-name">' + esc(r.name || '(이름 없음)') + '</span>' +
+            '<span class="kind-tag' + (isYj ? ' yj' : '') + '">' + esc(r.kind || '예약') + '</span>' +
             '<span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
             '<span class="rec-spacer"></span>' +
-            '<span class="rec-meta">' + fmt(r.created_at) + '</span>' +
+            '<span class="rec-meta">' + esc(r.desired_date || '') + ' ' + esc(r.desired_time ? window.LamiBooking.fmtSlot(r.desired_time) : '') + '</span>' +
           '</div>' +
-          '<div class="rec-body">' +
-            '☎ ' + esc(r.phone || '-') + ' · ' + esc(r.gender || '-') + ' · ' + esc(r.birth || '-') +
-            ' · ' + esc(r.visit_type || '-') +
-            ' · 희망: ' + esc(r.desired_date || '-') + ' ' + esc(r.desired_time || '') +
-            (concerns ? '\n🩺 고민: ' + esc(concerns) : '') +
-          '</div>' +
-          '<div class="rec-actions">' +
-            '<button class="detail-toggle" data-detail="' + r.id + '">상세 보기</button>' +
-            '<span class="rec-spacer"></span>' +
-            '<select class="status-sel" data-id="' + r.id + '">' +
-              INT_STATUS.map(function (s) { return '<option' + (s === r.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
-            '</select>' +
-            '<button class="btn-danger" data-del="' + r.id + '">삭제</button>' +
-          '</div>' +
-          '<div class="rec-detail" id="det-' + r.id + '" hidden style="margin-top:10px">' +
-            detailsHtml(r.details) +
-            (r.meds ? '<div class="kv"><b>복용 약물:</b> ' + esc(r.meds) + '</div>' : '') +
-            (r.pregnancy ? '<div class="kv"><b>임신 여부:</b> ' + esc(r.pregnancy) + '</div>' : '') +
-            (r.message ? '<div class="kv"><b>남긴 말:</b> ' + esc(r.message) + '</div>' : '') +
-          '</div>' +
+          '<div class="rec-body">☎ ' + esc(r.phone || '-') + ' · ' + esc(r.visit_type || '-') +
+            (concerns ? ' · 🩺 ' + esc(concerns) : '') + '</div>' +
+          (isYj ? '<button class="detail-toggle" data-detail="' + r.id + '">상세 보기</button>' +
+            '<div class="rec-detail" id="det-' + r.id + '" hidden style="margin-top:8px">' + bookingFullHtml(r) + '</div>' : '') +
+          '<div class="rec-actions">' + statusBtns(r) + '</div>' +
         '</div>';
       }).join('');
 
@@ -196,19 +166,81 @@
           b.textContent = el.hidden ? '상세 보기' : '접기';
         });
       });
-      box.querySelectorAll('.status-sel').forEach(function (sel) {
-        sel.addEventListener('change', function () {
-          db.from('intakes').update({ status: sel.value }).eq('id', sel.dataset.id).then(loadIntakes);
-        });
+      box.querySelectorAll('.st-btn').forEach(function (b) {
+        b.addEventListener('click', function () { setStatus(b.dataset.id, b.dataset.st); });
       });
       box.querySelectorAll('[data-del]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          if (!confirm('이 예진표를 삭제할까요?')) return;
-          db.from('intakes').delete().eq('id', b.dataset.del).then(loadIntakes);
-        });
+        b.addEventListener('click', function () { delBooking(b.dataset.del); });
       });
     });
   }
+
+  // ----- 예약 캘린더 -----
+  window.admMonthShift = function (delta) {
+    var m = advM + delta, y = advY;
+    if (m < 0) { m = 11; y--; } else if (m > 11) { m = 0; y++; }
+    advY = y; advM = m; renderAdminCal();
+  };
+
+  function renderAdminCal() {
+    var B = window.LamiBooking;
+    var byDate = {};
+    bookings.forEach(function (r) {
+      if (!r.desired_date || (r.status !== '신규' && r.status !== '예약확정')) return;
+      (byDate[r.desired_date] = byDate[r.desired_date] || []).push(r);
+    });
+    Object.keys(byDate).forEach(function (k) {
+      byDate[k].sort(function (a, b) { return (a.desired_time || '').localeCompare(b.desired_time || ''); });
+    });
+
+    var first = new Date(advY, advM, 1), startDow = first.getDay();
+    var daysIn = new Date(advY, advM + 1, 0).getDate();
+
+    var html = '<div class="adm-cal-head">' +
+      '<button type="button" class="adm-cal-nav" onclick="admMonthShift(-1)">‹</button>' +
+      '<span class="adm-cal-title">' + advY + '년 ' + (advM + 1) + '월</span>' +
+      '<button type="button" class="adm-cal-nav" onclick="admMonthShift(1)">›</button></div>';
+    html += '<div class="adm-cal-grid">';
+    ['일', '월', '화', '수', '목', '금', '토'].forEach(function (w, i) {
+      html += '<div class="adm-dow' + (i === 0 ? ' sun' : (i === 6 ? ' sat' : '')) + '">' + w + '</div>';
+    });
+    for (var b = 0; b < startDow; b++) html += '<div class="adm-cell empty"></div>';
+    for (var d = 1; d <= daysIn; d++) {
+      var ds = B.ymd(new Date(advY, advM, d));
+      var chips = (byDate[ds] || []).map(function (r) {
+        return '<button type="button" class="adm-chip s-' + esc(r.status) + '" data-id="' + r.id + '">' +
+          esc(r.desired_time ? r.desired_time.slice(0, 5) + ' ' : '') + esc(r.name || '예약') + '</button>';
+      }).join('');
+      html += '<div class="adm-cell"><span class="adm-day">' + d + '</span><div class="adm-chips">' + chips + '</div></div>';
+    }
+    html += '</div>';
+    $('admCal').innerHTML = html;
+
+    $('admCal').querySelectorAll('.adm-chip').forEach(function (c) {
+      c.addEventListener('click', function () { openDetail(c.dataset.id); });
+    });
+  }
+
+  // ----- 상세 모달 -----
+  window.openDetail = function (id) {
+    var r = bookings.filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!r) return;
+    $('admDetailBody').innerHTML =
+      '<h3 class="adm-detail-title">' + esc(r.name || '예약') + ' <span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span></h3>' +
+      '<div class="adm-detail-kv">' + bookingFullHtml(r) + '</div>' +
+      '<div class="adm-detail-actions">' + statusBtns(r) + '</div>';
+    $('admDetailBody').querySelectorAll('.st-btn').forEach(function (b) {
+      b.addEventListener('click', function () { setStatus(b.dataset.id, b.dataset.st); closeDetail(); });
+    });
+    $('admDetailBody').querySelectorAll('[data-del]').forEach(function (b) {
+      b.addEventListener('click', function () { delBooking(b.dataset.del); closeDetail(); });
+    });
+    $('admDetailOverlay').classList.add('open');
+  };
+  window.closeDetail = function () { $('admDetailOverlay').classList.remove('open'); };
+  $('admDetailOverlay').addEventListener('click', function (e) {
+    if (e.target === $('admDetailOverlay')) closeDetail();
+  });
 
   // =================== 공지 ===================
   function resetNoticeForm() {
