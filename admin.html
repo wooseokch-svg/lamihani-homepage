@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=7">
+<link rel="stylesheet" href="css/admin.css?v=8">
 </head>
 <body>
 
@@ -140,9 +140,11 @@
     <div class="add-form">
       <div class="nf-row"><label>성함 *</label><input id="addName" type="text" placeholder="홍길동"></div>
       <div class="nf-row"><label>연락처</label><input id="addPhone" type="tel" placeholder="010-0000-0000"></div>
-      <div class="add-row2">
-        <div class="nf-row"><label>날짜 *</label><input id="addDate" type="date"></div>
-        <div class="nf-row"><label>시간 *</label><input id="addTime" type="time"></div>
+      <div class="nf-row">
+        <label>예약 날짜 · 시간 *</label>
+        <div id="addCal" class="addpk-cal"></div>
+        <div id="addSummary" class="addpk-summary" hidden></div>
+        <div id="addSlots" class="addpk-slots"><p class="addpk-hint">날짜를 먼저 선택해 주세요.</p></div>
       </div>
       <div class="add-row2">
         <div class="nf-row"><label>방문유형</label>
@@ -168,6 +170,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=8"></script>
+<script src="js/admin.js?v=9"></script>
 </body>
 </html>

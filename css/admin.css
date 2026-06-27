@@ -194,3 +194,31 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .add-row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .add-err{ color:#d33; font-size:13px; min-height:18px; margin:2px 0 8px; }
 .add-form .btn-primary{ width:100%; padding:13px; }
+
+/* 출처 표시 */
+.src-tag{ display:inline-block; background:#eef1f5; color:#5a6b80; font-size:12px; font-weight:600; padding:1px 8px; border-radius:20px; }
+
+/* 직접 추가 - 날짜/시간 캘린더 선택 */
+.addpk-head{ display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:10px; }
+.addpk-title{ font-size:14px; font-weight:700; }
+.addpk-nav{ width:30px; height:30px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:16px; color:#888; }
+.addpk-nav:hover{ border-color:var(--orange); color:var(--orange); }
+.addpk-nav:disabled{ opacity:.3; cursor:default; }
+.addpk-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.addpk-dow{ text-align:center; font-size:11px; color:#aaa; padding:3px 0; }
+.addpk-dow.sun{ color:#e06464; } .addpk-dow.sat{ color:#5b86d6; }
+.addpk-cell{ text-align:center; padding:8px 0; border-radius:8px; font-size:13px; color:#444; border:1px solid transparent; }
+.addpk-cell.empty{ border:0; }
+.addpk-cell.ok{ cursor:pointer; background:#fafaf8; border-color:#f0ece6; }
+.addpk-cell.ok:hover{ border-color:var(--orange); color:var(--orange); }
+.addpk-cell.sel{ background:var(--orange); color:#fff; border-color:var(--orange); font-weight:700; }
+.addpk-cell.off, .addpk-cell.past{ color:#ccc; }
+.addpk-cell.holiday{ color:#e0a0a0; }
+.addpk-summary{ margin:10px 0; padding:9px 12px; background:#fff3ea; border-radius:8px; font-size:13px; color:#c25f1a; }
+.addpk-slots{ display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:6px; margin-top:8px; }
+.addpk-hint{ grid-column:1/-1; font-size:13px; color:#999; padding:8px 0; }
+.addpk-slot{ position:relative; border:1px solid var(--line); background:#fff; border-radius:7px; padding:8px 4px; font-size:12px; color:#444; font-family:inherit; }
+.addpk-slot:hover{ border-color:var(--orange); color:var(--orange); }
+.addpk-slot.sel{ background:var(--orange); color:#fff; border-color:var(--orange); font-weight:700; }
+.addpk-slot.taken{ background:#f4f1ec; color:#bbb; cursor:default; }
+.addpk-slot .x{ display:block; font-size:10px; }

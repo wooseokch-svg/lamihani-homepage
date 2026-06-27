@@ -114,7 +114,8 @@
     var h = '<div class="kv"><b>이름:</b> ' + esc(r.name || '-') + ' (' + esc(r.kind || '예약') + ')</div>' +
       '<div class="kv"><b>연락처:</b> ' + esc(r.phone || '-') + '</div>' +
       '<div class="kv"><b>예약일시:</b> ' + esc(r.desired_date || '-') + ' ' + esc(r.desired_time ? window.LamiBooking.fmtSlot(r.desired_time) : '') + '</div>' +
-      '<div class="kv"><b>방문유형:</b> ' + esc(r.visit_type || '-') + '</div>';
+      '<div class="kv"><b>방문유형:</b> ' + esc(r.visit_type || '-') + '</div>' +
+      '<div class="kv"><b>출처:</b> ' + esc(r.source || '홈페이지') + '</div>';
     if (r.gender || r.birth) h += '<div class="kv"><b>성별/생년:</b> ' + esc(r.gender || '-') + ' / ' + esc(r.birth || '-') + '</div>';
     if (concerns) h += '<div class="kv"><b>고민:</b> ' + esc(concerns) + '</div>';
     h += detailsHtml(r.details);
@@ -172,6 +173,7 @@
         '<span class="rec-meta">' + esc(r.desired_date || '') + ' ' + esc(r.desired_time ? window.LamiBooking.fmtSlot(r.desired_time) : '') + '</span>' +
       '</div>' +
       '<div class="rec-body">☎ ' + esc(r.phone || '-') + ' · ' + esc(r.visit_type || '-') +
+        ' · <span class="src-tag">' + esc(r.source || '홈페이지') + '</span>' +
         (concerns ? ' · 🩺 ' + esc(concerns) : '') + '</div>' +
       (isYj ? '<button class="detail-toggle" data-detail="' + r.id + '">상세 보기</button>' +
         '<div class="rec-detail" id="det-' + r.id + '" hidden style="margin-top:8px">' + bookingFullHtml(r) + '</div>' : '') +
@@ -268,13 +270,116 @@
   });
 
   // ----- 예약 직접 추가 (네이버/전화/방문) -----
+  var ADD = { viewY: 0, viewM: 0, selDate: '', selTime: '' };
+
+  function addSettings() {
+    return curSettings || JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
+  }
+
+  window.addMonthShift = function (delta) {
+    var m = ADD.viewM + delta, y = ADD.viewY;
+    if (m < 0) { m = 11; y--; } else if (m > 11) { m = 0; y++; }
+    var now = new Date();
+    if (y < now.getFullYear() || (y === now.getFullYear() && m < now.getMonth())) return;
+    ADD.viewY = y; ADD.viewM = m; renderAddCal();
+  };
+
+  function renderAddCal() {
+    var B = window.LamiBooking, S = addSettings();
+    var first = new Date(ADD.viewY, ADD.viewM, 1), startDow = first.getDay();
+    var daysIn = new Date(ADD.viewY, ADD.viewM + 1, 0).getDate();
+    var now = new Date();
+    var canPrev = !(ADD.viewY === now.getFullYear() && ADD.viewM === now.getMonth());
+
+    var html = '<div class="addpk-head">' +
+      '<button type="button" class="addpk-nav"' + (canPrev ? '' : ' disabled') + ' onclick="addMonthShift(-1)">‹</button>' +
+      '<span class="addpk-title">' + ADD.viewY + '년 ' + (ADD.viewM + 1) + '월</span>' +
+      '<button type="button" class="addpk-nav" onclick="addMonthShift(1)">›</button></div>';
+    html += '<div class="addpk-grid">';
+    ['일', '월', '화', '수', '목', '금', '토'].forEach(function (w, i) {
+      html += '<div class="addpk-dow' + (i === 0 ? ' sun' : (i === 6 ? ' sat' : '')) + '">' + w + '</div>';
+    });
+    for (var b = 0; b < startDow; b++) html += '<div class="addpk-cell empty"></div>';
+    for (var d = 1; d <= daysIn; d++) {
+      var ds = B.ymd(new Date(ADD.viewY, ADD.viewM, d));
+      var open = B.isOpenDay(ds, S), holiday = B.isHoliday(ds, S), past = ds < B.todayStr();
+      var cls = 'addpk-cell', data = '';
+      if (past) cls += ' past';
+      else if (holiday) cls += ' holiday';
+      else if (!open) cls += ' off';
+      else { cls += ' ok'; data = ' data-d="' + ds + '"'; }
+      if (ds === ADD.selDate) cls += ' sel';
+      html += '<div class="' + cls + '"' + data + '>' + d + '</div>';
+    }
+    html += '</div>';
+    var box = $('addCal'); box.innerHTML = html;
+    box.querySelectorAll('[data-d]').forEach(function (c) {
+      c.addEventListener('click', function () { addPickDate(c.dataset.d); });
+    });
+  }
+
+  function addPickDate(ds) {
+    ADD.selDate = ds; ADD.selTime = '';
+    renderAddCal();
+    addUpdateSummary();
+    var slotBox = $('addSlots');
+    var B = window.LamiBooking, S = addSettings();
+    var all = B.allSlots(ds, S);
+    if (!all.length) { slotBox.innerHTML = '<p class="addpk-hint">해당 날짜는 예약이 불가합니다.</p>'; return; }
+    slotBox.innerHTML = '<p class="addpk-hint">불러오는 중...</p>';
+
+    function render(taken) {
+      var now = new Date(), isToday = ds === B.todayStr();
+      slotBox.innerHTML = all.map(function (hhmm) {
+        var disabled = !!taken[hhmm];
+        if (isToday) {
+          var p = hhmm.split(':');
+          if (parseInt(p[0], 10) * 60 + parseInt(p[1], 10) <= now.getHours() * 60 + now.getMinutes()) disabled = true;
+        }
+        return '<button type="button" class="addpk-slot' + (disabled ? ' taken' : '') + '"' +
+          (disabled ? ' disabled' : ' data-t="' + hhmm + '"') + '>' +
+          B.fmtSlot(hhmm) + (disabled ? '<span class="x">마감</span>' : '') + '</button>';
+      }).join('');
+      slotBox.querySelectorAll('[data-t]').forEach(function (b) {
+        b.addEventListener('click', function () { addPickTime(b.dataset.t, b); });
+      });
+    }
+
+    db.rpc('taken_slots', { d: ds, cid: CID }).then(function (res) {
+      var taken = {};
+      (res && res.data ? res.data : []).forEach(function (row) { taken[(row && row.t != null) ? row.t : row] = true; });
+      render(taken);
+    });
+  }
+
+  function addPickTime(hhmm, el) {
+    ADD.selTime = hhmm;
+    $('addSlots').querySelectorAll('.addpk-slot').forEach(function (b) { b.classList.remove('sel'); });
+    if (el) el.classList.add('sel');
+    addUpdateSummary();
+  }
+
+  function addUpdateSummary() {
+    var box = $('addSummary');
+    if (ADD.selDate && ADD.selTime) {
+      var B = window.LamiBooking, d = new Date(ADD.selDate + 'T00:00:00');
+      var wd = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+      box.innerHTML = '선택: <b>' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일(' + wd + ') ' + B.fmtSlot(ADD.selTime) + '</b>';
+      box.hidden = false;
+    } else { box.hidden = true; }
+  }
+
   window.openAdd = function () {
-    ['addName', 'addPhone', 'addTime', 'addMemo'].forEach(function (id) { $(id).value = ''; });
-    $('addDate').value = window.LamiBooking.todayStr();
+    ['addName', 'addPhone', 'addMemo'].forEach(function (id) { $(id).value = ''; });
     $('addVisit').selectedIndex = 0;
     $('addSource').selectedIndex = 0;
     $('addStatus').selectedIndex = 0;
     $('addErr').textContent = '';
+    ADD.selDate = ''; ADD.selTime = '';
+    var now = new Date(); ADD.viewY = now.getFullYear(); ADD.viewM = now.getMonth();
+    renderAddCal();
+    addUpdateSummary();
+    $('addSlots').innerHTML = '<p class="addpk-hint">날짜를 먼저 선택해 주세요.</p>';
     $('admAddOverlay').classList.add('open');
   };
   window.closeAdd = function () { $('admAddOverlay').classList.remove('open'); };
@@ -285,8 +390,8 @@
   $('addSaveBtn').addEventListener('click', function () {
     var err = $('addErr'); err.textContent = '';
     var name = $('addName').value.trim();
-    var date = $('addDate').value;
-    var time = $('addTime').value;
+    var date = ADD.selDate;
+    var time = ADD.selTime;
     if (!name) { err.textContent = '성함을 입력하세요.'; return; }
     if (!date) { err.textContent = '날짜를 선택하세요.'; return; }
     if (!time) { err.textContent = '시간을 선택하세요.'; return; }
