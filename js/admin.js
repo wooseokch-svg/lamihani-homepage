@@ -53,11 +53,15 @@
     else showLogin();
   });
 
+  // 아이디만 입력하면 내부적으로 이메일로 변환 (예: lamiadmin -> lamiadmin@lamihani.kr)
+  var ADMIN_DOMAIN = '@lamihani.kr';
+
   $('loginBtn').addEventListener('click', function () {
-    var email = $('email').value.trim();
+    var idInput = $('email').value.trim();
+    var email = idInput.indexOf('@') === -1 ? idInput + ADMIN_DOMAIN : idInput;
     var password = $('password').value;
     $('loginMsg').textContent = '';
-    if (!email || !password) { $('loginMsg').textContent = '이메일과 비밀번호를 입력하세요.'; return; }
+    if (!idInput || !password) { $('loginMsg').textContent = '아이디와 비밀번호를 입력하세요.'; return; }
     $('loginBtn').disabled = true; $('loginBtn').textContent = '로그인 중...';
     db.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
       $('loginBtn').disabled = false; $('loginBtn').textContent = '로그인';
