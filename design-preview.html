@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>라미한의원 — 디자인 시안 (세이지 &amp; 클레이)</title>
+<link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6EF;          /* 크림 */
+    --bg-soft:#F2ECE0;     /* 따뜻한 베이지 패널 */
+    --sage:#7C8C6F;        /* 메인 세이지 */
+    --sage-deep:#5C6B52;   /* 진한 세이지 */
+    --sage-pale:#E7ECE0;   /* 연한 세이지 */
+    --clay:#BE7657;        /* 클레이(테라코타) 포인트 */
+    --clay-soft:#EBD9CC;
+    --text:#403B33;
+    --muted:#8C8378;
+    --line:#E6DDCD;
+    --serif:'Gowun Batang', serif;
+    --sans:'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    --max:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.6;}
+  h1,h2,h3,.serif{font-family:var(--serif);}
+  .container{max-width:var(--max);margin:0 auto;padding:0 28px;}
+  .center{text-align:center;}
+
+  /* 시안 라벨 */
+  .preview-flag{background:var(--sage-deep);color:#fff;text-align:center;font-size:13px;padding:9px;letter-spacing:.02em;}
+  .preview-flag b{font-weight:700;}
+
+  /* 헤더 */
+  header.site{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.9);backdrop-filter:saturate(150%) blur(8px);border-bottom:1px solid var(--line);}
+  .hd{display:flex;align-items:center;gap:22px;height:78px;}
+  .logo{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--sage-deep);letter-spacing:.01em;}
+  .logo .dot{color:var(--clay);}
+  nav.gnb{display:flex;gap:6px;margin-left:auto;}
+  nav.gnb a{font-family:var(--serif);font-size:16px;color:#6f6a60;padding:8px 14px;border-radius:8px;text-decoration:none;transition:.2s;}
+  nav.gnb a:hover{color:var(--sage-deep);background:var(--sage-pale);}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:600;border-radius:999px;padding:11px 24px;cursor:pointer;border:1.5px solid transparent;text-decoration:none;transition:.2s;font-family:var(--sans);}
+  .btn-clay{background:var(--clay);color:#fff;}
+  .btn-clay:hover{background:#a9633f;}
+  .btn-sage{background:var(--sage);color:#fff;}
+  .btn-sage:hover{background:var(--sage-deep);}
+  .btn-line{background:transparent;color:var(--sage-deep);border-color:var(--sage);}
+  .btn-line:hover{background:var(--sage-pale);}
+
+  /* 히어로 */
+  .hero{position:relative;overflow:hidden;padding:96px 0 104px;background:
+      radial-gradient(1100px 380px at 82% -8%, var(--sage-pale) 0%, transparent 60%),
+      radial-gradient(720px 320px at 8% 112%, var(--clay-soft) 0%, transparent 55%),
+      var(--bg);}
+  .hero .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--clay);font-size:14px;font-weight:600;letter-spacing:.06em;margin-bottom:18px;}
+  .hero .eyebrow::before{content:'';width:26px;height:1.5px;background:var(--clay);display:inline-block;}
+  .hero h1{font-size:50px;font-weight:700;line-height:1.42;color:var(--text);letter-spacing:-.01em;}
+  .hero h1 .pt{color:var(--sage-deep);}
+  .hero p{margin-top:22px;font-size:18px;color:#6b665c;line-height:1.85;}
+  .hero .cta{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap;}
+  .leaf{position:absolute;opacity:.5;}
+
+  /* 공통 섹션 */
+  section.block{padding:88px 0;}
+  .eyebrow-c{display:inline-flex;align-items:center;gap:8px;color:var(--clay);font-size:14px;font-weight:600;letter-spacing:.06em;justify-content:center;}
+  .eyebrow-c::before,.eyebrow-c::after{content:'';width:22px;height:1.5px;background:var(--clay-soft);display:inline-block;}
+  h2.title{font-size:36px;font-weight:700;line-height:1.45;margin-top:14px;}
+  h2.title .pt{color:var(--sage-deep);}
+  .lead{color:#6f6a60;font-size:16px;margin-top:14px;line-height:1.8;}
+
+  /* 고민 카드 */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 26px;box-shadow:0 14px 34px rgba(124,140,111,.10);transition:.25s;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 22px 44px rgba(124,140,111,.16);}
+  .card .ic{width:52px;height:52px;border-radius:14px;background:var(--sage-pale);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;}
+  .card h3{font-size:20px;font-weight:700;color:var(--sage-deep);margin-bottom:8px;}
+  .card p{font-size:15px;color:#736d62;}
+  .card ul{list-style:none;margin-top:12px;}
+  .card ul li{font-size:14px;color:#807a6e;padding-left:16px;position:relative;line-height:1.9;}
+  .card ul li::before{content:'';position:absolute;left:2px;top:11px;width:5px;height:5px;border-radius:50%;background:var(--clay);}
+
+  /* 치료법 (제목 좌측 + 카드) */
+  .methods{background:var(--bg-soft);}
+  .m-grid{display:grid;grid-template-columns:0.9fr 1fr 1fr;gap:40px;align-items:start;}
+  .m-head h2{font-size:38px;font-weight:700;line-height:1.4;}
+  .m-head h2 .pt{color:var(--sage-deep);}
+  .m-head p{margin-top:16px;color:#6f6a60;font-size:15px;}
+  .m-item{text-align:center;border-top:1.5px dashed #cfc6b4;padding-top:26px;}
+  .m-item .mic{width:64px;height:64px;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;}
+  .m-item h3{font-family:var(--serif);font-size:20px;color:var(--clay);margin-bottom:8px;}
+  .m-item p{font-size:14px;color:#736d62;line-height:1.7;}
+
+  /* 의료진 */
+  .doctor{display:grid;grid-template-columns:0.8fr 1.2fr;gap:48px;align-items:center;}
+  .doctor .photo{border-radius:24px;height:340px;background:linear-gradient(160deg,var(--sage-pale),var(--clay-soft));display:flex;align-items:center;justify-content:center;color:var(--sage-deep);font-family:var(--serif);font-size:18px;border:1px solid var(--line);}
+  .doctor .info .eyebrow-c{justify-content:flex-start;}
+  .doctor .info h2{text-align:left;}
+  .quote{font-family:var(--serif);font-size:21px;line-height:1.7;color:var(--sage-deep);margin:18px 0;}
+  .doctor .info p{color:#6f6a60;}
+
+  /* CTA 밴드 */
+  .band{background:linear-gradient(135deg,var(--sage) 0%,var(--sage-deep) 100%);color:#fff;border-radius:28px;padding:54px;text-align:center;position:relative;overflow:hidden;}
+  .band h2{font-size:32px;font-weight:700;line-height:1.5;}
+  .band p{opacity:.92;margin-top:12px;}
+  .band .cta{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .band .btn-cream{background:#fff;color:var(--sage-deep);}
+  .band .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.6);}
+
+  /* 스타일 가이드 */
+  .guide{background:#fff;border-top:1px solid var(--line);}
+  .sw{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:30px;}
+  .swatch{border-radius:14px;height:90px;border:1px solid var(--line);display:flex;align-items:flex-end;padding:10px;font-size:12px;color:#fff;font-weight:600;}
+  .swatch small{display:block;opacity:.85;font-weight:400;}
+  .type-row{display:flex;align-items:baseline;gap:18px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .type-row .lbl{font-size:12px;color:var(--muted);width:120px;flex-shrink:0;}
+
+  footer{background:var(--sage-deep);color:#e9ece4;text-align:center;padding:40px 0;font-size:14px;}
+  footer .logo{color:#fff;}
+
+  @media(max-width:900px){
+    .cards{grid-template-columns:1fr;}
+    .m-grid{grid-template-columns:1fr;}
+    .doctor{grid-template-columns:1fr;}
+    .sw{grid-template-columns:repeat(3,1fr);}
+    nav.gnb{display:none;}
+    .hero h1{font-size:34px;}
+    h2.title{font-size:28px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-flag"><b>디자인 시안</b> · 세이지 그린 &amp; 클레이 / 우아한 명조 제목 — 실제 사이트와 별개의 미리보기 페이지입니다</div>
+
+<!-- 헤더 -->
+<header class="site">
+  <div class="container hd">
+    <span class="logo">라미한의원<span class="dot">.</span></span>
+    <nav class="gnb">
+      <a href="#">진료과목</a><a href="#">치료법</a><a href="#">의료진</a><a href="#">진료시간</a><a href="#">오시는길</a>
+    </nav>
+    <a class="btn btn-clay" href="#">예약하기</a>
+  </div>
+</header>
+
+<!-- 히어로 -->
+<section class="hero">
+  <svg class="leaf" style="top:40px;right:60px;" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#7C8C6F" stroke-width="1"><path d="M12 2C7 6 5 11 5 15a7 7 0 0 0 14 0c0-4-2-9-7-13Z"/><path d="M12 6v13"/></svg>
+  <div class="container">
+    <span class="eyebrow">정성을 담은 맞춤 한방 진료</span>
+    <h1>몸이 보내는 신호,<br><span class="pt">나에게 맞는 처방</span>으로</h1>
+    <p>한 사람의 체질과 생활습관을 깊이 들여다보는<br>여성 원장님의 섬세한 1:1 맞춤 진료를 만나보세요.</p>
+    <div class="cta">
+      <a class="btn btn-clay" href="#">1:1 비대면 예진표 작성</a>
+      <a class="btn btn-line" href="#">진료 안내 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- 고민 -->
+<section class="block">
+  <div class="container center">
+    <span class="eyebrow-c">진료과목</span>
+    <h2 class="title"><span class="pt">혹시 이런 고민</span>으로 찾아오셨나요?</h2>
+    <p class="lead">같은 증상이라도 원인은 사람마다 다를 수 있습니다.<br>겉으로 드러난 증상보다 원인을 먼저 살펴봅니다.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="ic">🌿</div>
+        <h3>늘 피곤하고 기운이 없어요</h3>
+        <ul><li>만성피로감</li><li>수면 문제</li><li>떨어진 체력</li></ul>
+      </div>
+      <div class="card">
+        <div class="ic">🍃</div>
+        <h3>체질에 맞는 관리가 필요해요</h3>
+        <ul><li>잦은 잔병치레</li><li>면역력 저하</li><li>맞춤형 보약 필요</li></ul>
+      </div>
+      <div class="card">
+        <div class="ic">🌸</div>
+        <h3>피부가 예전 같지 않아요</h3>
+        <ul><li>반복되는 트러블</li><li>칙칙해진 피부톤</li><li>떨어지는 탄력</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 치료법 -->
+<section class="block methods">
+  <div class="container">
+    <div class="m-grid">
+      <div class="m-head">
+        <span class="eyebrow-c" style="justify-content:flex-start">치료법</span>
+        <h2><span class="pt">몸의 균형을</span><br>되찾아 드립니다.</h2>
+        <p>증상만 쫓지 않고, 생활 습관과 체질까지<br>종합적으로 살펴 처방합니다.</p>
+      </div>
+      <div class="m-item"><div class="mic">💧</div><h3>재생 약침</h3><p>천연 한약 성분을 경혈에 직접 주입해 손상된 조직의 재생과 회복을 돕습니다.</p></div>
+      <div class="m-item"><div class="mic">🐝</div><h3>봉침</h3><p>벌침의 약리 성분을 활용한 항염증 치료로 관절염·디스크에 효과적입니다.</p></div>
+      <div class="m-item"><div class="mic">🪡</div><h3>도침</h3><p>유착된 근막과 조직을 풀어주는 치료로 만성 통증과 운동 제한에 효과적입니다.</p></div>
+      <div class="m-item"><div class="mic">✨</div><h3>매선 치료</h3><p>특수 실을 삽입해 콜라겐 생성을 촉진, 미용 리프팅과 통증 치료에 활용됩니다.</p></div>
+      <div class="m-item"><div class="mic">🌼</div><h3>동안 약침</h3><p>피부 자생력을 높여 탄력과 잔주름을 자연스럽게 채워주는 동안 케어입니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 의료진 -->
+<section class="block">
+  <div class="container doctor">
+    <div class="photo">원장님 사진 영역</div>
+    <div class="info">
+      <span class="eyebrow-c">의료진 소개</span>
+      <h2 class="title">한 분 한 분, 마음까지<br>살피는 진료</h2>
+      <p class="quote">“충분히 듣고, 원인을 함께 찾아가는<br>진료를 원칙으로 합니다.”</p>
+      <p>음양오행과 체질의학을 바탕으로 현대인의 다양한 질환을 자연 치유력으로 회복시키는 데 집중합니다. 재발 없는 건강을 만들어 드리는 것이 저의 진료 철학입니다.</p>
+      <div class="cta" style="margin-top:24px;display:flex;gap:12px;">
+        <a class="btn btn-sage" href="#">진료 예약하기</a>
+        <a class="btn btn-line" href="#">의료진 더 보기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="block" style="padding-top:0">
+  <div class="container">
+    <div class="band">
+      <h2>지금 내 몸 상태,<br>편하게 상담 받아 보세요</h2>
+      <p>진료 예약을 하시면 보다 빠르게 상담·진료를 받으실 수 있습니다.</p>
+      <div class="cta">
+        <a class="btn btn-cream" href="#">네이버 예약</a>
+        <a class="btn btn-ghost" href="#">카카오톡 상담</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 스타일 가이드 -->
+<section class="block guide">
+  <div class="container">
+    <span class="eyebrow-c" style="justify-content:flex-start">스타일 가이드</span>
+    <h2 class="title" style="text-align:left;font-size:28px;">색상 &amp; 타이포그래피</h2>
+    <div class="sw">
+      <div class="swatch" style="background:#7C8C6F">Sage<small>#7C8C6F</small></div>
+      <div class="swatch" style="background:#5C6B52">Sage Deep<small>#5C6B52</small></div>
+      <div class="swatch" style="background:#BE7657">Clay<small>#BE7657</small></div>
+      <div class="swatch" style="background:#E7ECE0;color:#5C6B52">Sage Pale<small>#E7ECE0</small></div>
+      <div class="swatch" style="background:#EBD9CC;color:#9a5a3a">Clay Soft<small>#EBD9CC</small></div>
+      <div class="swatch" style="background:#FAF6EF;color:#8C8378;border:1px solid #e6ddcd">Cream<small>#FAF6EF</small></div>
+    </div>
+    <div style="margin-top:34px;">
+      <div class="type-row"><span class="lbl">제목 (명조)</span><span class="serif" style="font-size:30px;color:var(--sage-deep)">고운바탕 · 라미한의원</span></div>
+      <div class="type-row"><span class="lbl">소제목 (명조)</span><span class="serif" style="font-size:21px;color:var(--clay)">정성을 담은 맞춤 진료</span></div>
+      <div class="type-row"><span class="lbl">본문 (고딕)</span><span style="font-size:16px;color:#6f6a60">Pretendard · 한 사람의 체질과 생활습관을 고려한 맞춤 한방 진료를 제공합니다.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container"><span class="logo">라미한의원<span style="color:#BE7657">.</span></span><p style="margin-top:10px;opacity:.8;">디자인 시안 미리보기 · 세이지 &amp; 클레이</p></div>
+</footer>
+
+</body>
+</html>
