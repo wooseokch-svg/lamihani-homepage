@@ -53,8 +53,9 @@
     else showLogin();
   });
 
-  // 아이디만 입력하면 내부적으로 이메일로 변환 (예: lamiadmin -> lamiadmin@lamihani.kr)
-  var ADMIN_DOMAIN = '@lamihani.kr';
+  // 아이디만 입력하면 내부적으로 이메일로 변환 (예: lamiadmin -> lamiadmin@gmail.co.kr)
+  // ※ Supabase Auth에 등록한 관리자 이메일의 도메인과 일치해야 합니다.
+  var ADMIN_DOMAIN = '@gmail.co.kr';
 
   $('loginBtn').addEventListener('click', function () {
     var idInput = $('email').value.trim();
