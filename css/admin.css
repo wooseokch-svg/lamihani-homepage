@@ -247,6 +247,7 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .ticket-buy{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border:1px dashed #d9d2c8; border-radius:12px; padding:18px 20px; }
 .ticket-name{ font-size:16px; font-weight:800; }
 .ticket-desc{ font-size:13px; color:#777; line-height:1.6; margin-top:5px; }
+.ticket-sub{ color:#aaa; font-size:12px; }
 .ticket-buy-right{ display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
 .bill-status{ font-size:14px; color:#888; }
 @media (max-width:680px){ .plan-cards{ grid-template-columns:1fr; } }

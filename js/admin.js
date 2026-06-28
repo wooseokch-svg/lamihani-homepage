@@ -609,7 +609,7 @@
   // ※ 토스 구독결제 가맹점 승인 후 checkout()만 실제 연동으로 교체하면 됨.
   var PLANS = [
     { id: 'light', name: 'Light', price: 33000, desc: '호스팅', features: ['홈페이지 호스팅', '예약·예진표·공지 관리'] },
-    { id: 'standard', name: 'Standard', price: 55000, desc: '호스팅 + 작업티켓 1장', features: ['Light 전체 기능', '매월 작업티켓 1장'], popular: true },
+    { id: 'standard', name: 'Standard', price: 66000, desc: '호스팅 + 작업티켓 1장', features: ['Light 전체 기능', '매월 작업티켓 1장'], popular: true },
     { id: 'pro', name: 'Pro', price: 99000, desc: '호스팅 + 작업티켓 2장', features: ['Light 전체 기능', '매월 작업티켓 2장'] }
   ];
   var TICKET_PRICE = 55000;
@@ -645,7 +645,7 @@
     box.innerHTML =
       '<div class="ticket-info">' +
         '<div class="ticket-name">작업티켓 1장</div>' +
-        '<div class="ticket-desc">2시간 작업량의 작업 요청권<br>배너 · 팝업 · 기능수정 · 디자인수정</div>' +
+        '<div class="ticket-desc">최대 2시간 작업 분량의 요청권입니다. 배너, 팝업, 기능수정, 디자인수정 등에 사용할 수 있습니다.<br><span class="ticket-sub">(작업시간이 2시간을 초과할 경우 관리자가 별도로 연락을 드립니다.)</span></div>' +
       '</div>' +
       '<div class="ticket-buy-right">' +
         '<div class="plan-price">' + won(TICKET_PRICE) + '</div>' +
