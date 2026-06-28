@@ -339,3 +339,21 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
   .adm-cell{ min-height:50px; }
   .plan-name{ font-size:17px; }
 }
+
+/* noad 임베드 (결제·작업요청 탭에 코어 페이지를 iframe 으로) */
+.noad-embed-bar{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+.noad-embed-hint{ font-size:13px; color:var(--muted); }
+.noad-embed-refresh{
+  font:inherit; font-size:13px; color:#555; background:#f1f0ee; border:1px solid var(--line);
+  border-radius:8px; padding:7px 13px; cursor:pointer;
+}
+.noad-embed-refresh:hover{ background:#e8e6e3; }
+.noad-embed-wrap{ position:relative; width:100%; }
+.noad-embed{
+  width:100%; height:calc(100vh - 175px); min-height:540px; border:0;
+  border-radius:12px; background:#f7f5f2; display:block;
+}
+.noad-embed-loading{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); font-size:14px; background:#faf9f7; border-radius:12px; text-align:center; padding:0 20px;
+}

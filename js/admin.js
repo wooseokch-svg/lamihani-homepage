@@ -43,7 +43,6 @@
     loadBookings();
     loadNotices();
     loadSettings();
-    initBilling();
   }
   function showLogin() {
     $('adminView').hidden = true;
@@ -81,6 +80,9 @@
       ['intakes', 'notices', 'settings', 'billing', 'work'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
+      // 결제·작업요청 탭은 처음 열 때 noad 페이지를 iframe 으로 로드
+      if (b.dataset.tab === 'billing') loadNoadFrame('billing', 'billFrame', 'billLoading');
+      if (b.dataset.tab === 'work') loadNoadFrame('work', 'workFrame', 'workLoading');
     });
   });
 
@@ -604,123 +606,42 @@
     }
   });
 
-  // =================== 결제 (요금제 / 작업티켓) ===================
-  // ※ 토스 구독결제 가맹점 승인 후 checkout()만 실제 연동으로 교체하면 됨.
-  var PLANS = [
-    { id: 'light', name: 'Light', price: 33000, desc: '호스팅', features: ['홈페이지 호스팅', '예약·예진표·공지 관리'] },
-    { id: 'standard', name: 'Standard', price: 66000, desc: '호스팅 + 작업티켓 1장', features: ['Light 전체 기능', '매월 작업티켓 1장'], popular: true },
-    { id: 'pro', name: 'Pro', price: 99000, desc: '호스팅 + 작업티켓 2장', features: ['Light 전체 기능', '매월 작업티켓 2장'] }
-  ];
-  var TICKET_PRICE = 55000;
-  var billCycle = 'monthly';
-
-  // 병원 플랜 id → noad 코어 Plan enum (가격·기능 동일)
-  var PLAN_MAP = { light: 'BASIC', standard: 'STANDARD', pro: 'PRO' };
-
-  function won(n) { return n.toLocaleString('ko-KR') + '원'; }
-
-  // noad 핸드오버: Edge Function 'noad-handover' 가 로그인 사용자 → 서명 토큰 → URL 발급.
-  // opts = { target:'billing'|'work', plan?, interval?, btn? }
-  function openNoad(opts) {
-    var btn = opts.btn;
-    if (btn) { btn.disabled = true; if (!btn.dataset.t) btn.dataset.t = btn.textContent; btn.textContent = '여는 중…'; }
-    function restore() { if (btn) { btn.disabled = false; btn.textContent = btn.dataset.t || '열기'; } }
-    var body = {
-      target: opts.target,
-      clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID,
-      returnUrl: location.href
-    };
-    if (opts.plan) body.plan = opts.plan;
-    if (opts.interval) body.interval = opts.interval;
-    db.functions.invoke('noad-handover', { body: body }).then(function (res) {
+  // =================== noad 임베드 (결제 / 작업요청) ===================
+  // 결제·작업요청은 noad 코어 페이지를 이 관리자 페이지 '안에' iframe 으로 띄운다.
+  // (전체 이동 X → 상단 탭 유지, 탭 전환으로 복귀). 핸드오버 토큰은 탭을 처음 열 때 발급.
+  // 요금제·작업티켓·구독상태·카드관리·작업요청·티켓잔액은 모두 코어가 소유 — 병원 Supabase
+  // work_requests/ticket_ledger 는 미사용(옛 RPC 제출 시 콘솔에 안 보이는 고아 요청 됨).
+  // 코어가 X-Frame-Options 대신 frame-ancestors 로 이 도메인을 허용해야 임베드됨(nginx).
+  function loadNoadFrame(target, frameId, loadingId, force) {
+    var frame = $(frameId), loading = $(loadingId);
+    if (!frame) return;
+    if (frame.dataset.loaded === '1' && !force) return; // 이미 로드됨 → 탭 전환 시 상태 유지
+    frame.dataset.loaded = '1';
+    if (loading) { loading.style.display = 'flex'; loading.textContent = '불러오는 중…'; }
+    db.functions.invoke('noad-handover', {
+      body: {
+        target: target,
+        clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID,
+        returnUrl: location.href
+      }
+    }).then(function (res) {
       if (res.error || !res.data || !res.data.url) {
-        restore();
-        var m = (res.error && (res.error.message || res.error)) || (res.data && res.data.error) || '';
-        alert('결제 페이지 연결에 실패했습니다.\n잠시 후 다시 시도해 주세요.' + (m ? '\n(' + m + ')' : ''));
+        frame.dataset.loaded = '';
+        var m = (res.error && (res.error.message || res.error)) || (res.data && res.data.error) || '잠시 후 다시 시도해 주세요.';
+        if (loading) loading.textContent = '불러오기 실패: ' + m;
         return;
       }
-      window.location.href = res.data.url;
+      if (loading) frame.addEventListener('load', function () { loading.style.display = 'none'; }, { once: true });
+      frame.src = res.data.url;
     }, function () {
-      restore();
-      alert('네트워크 오류로 결제 페이지를 열지 못했습니다.');
+      frame.dataset.loaded = '';
+      if (loading) loading.textContent = '네트워크 오류로 불러오지 못했습니다.';
     });
   }
 
-  function renderPlans() {
-    var box = $('planCards'); if (!box) return;
-    var yearly = (billCycle === 'yearly');
-    box.innerHTML = PLANS.map(function (p) {
-      var yr = Math.round(p.price * 12 * 0.9);
-      var priceMain = yearly ? (won(yr) + ' <span class="per">/년</span>') : (won(p.price) + ' <span class="per">/월</span>');
-      var priceSub = yearly ? ('월 ' + won(Math.round(yr / 12)) + ' 상당 · 10% 할인') : 'VAT 포함';
-      return '<div class="plan' + (p.popular ? ' popular' : '') + '">' +
-        (p.popular ? '<div class="plan-badge">인기</div>' : '') +
-        '<div class="plan-name">' + p.name + '</div>' +
-        '<div class="plan-desc">' + esc(p.desc) + '</div>' +
-        '<div class="plan-price">' + priceMain + '</div>' +
-        '<div class="plan-price-sub">' + priceSub + '</div>' +
-        '<ul class="plan-feats">' + p.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
-        '<button class="btn-primary plan-btn" data-plan="' + p.id + '">결제하기</button>' +
-      '</div>';
-    }).join('');
-    box.querySelectorAll('[data-plan]').forEach(function (b) {
-      b.addEventListener('click', function () { checkout('plan', b.dataset.plan, b); });
-    });
-  }
-
-  function renderTicket() {
-    var box = $('ticketCard'); if (!box) return;
-    box.innerHTML =
-      '<div class="ticket-info">' +
-        '<div class="ticket-name">작업티켓 1장</div>' +
-        '<div class="ticket-desc">최대 2시간 작업 분량의 요청권입니다. 배너, 팝업, 기능수정, 디자인수정 등에 사용할 수 있습니다.<br><span class="ticket-sub">(작업시간이 2시간을 초과할 경우 관리자가 별도로 연락을 드립니다.)</span></div>' +
-      '</div>' +
-      '<div class="ticket-buy-right">' +
-        '<div class="plan-price">' + won(TICKET_PRICE) + '</div>' +
-        '<button class="btn-primary" data-buy="ticket">티켓 구매</button>' +
-      '</div>';
-    box.querySelector('[data-buy]').addEventListener('click', function () { checkout('ticket', 'ticket', this); });
-  }
-
-  function checkout(kind, id, btn) {
-    if (kind === 'ticket') {
-      // 티켓 구매 → noad 결제 페이지(티켓 섹션 포함)
-      openNoad({ target: 'billing', btn: btn });
-    } else {
-      // 요금제 결제 → noad 결제 페이지(해당 플랜 선택 상태)
-      openNoad({
-        target: 'billing',
-        plan: PLAN_MAP[id],
-        interval: (billCycle === 'yearly' ? 'YEARLY' : 'MONTHLY'),
-        btn: btn
-      });
-    }
-  }
-
-  function initBilling() {
-    renderPlans();
-    renderTicket();
-    var bm = $('billMonthly'), by = $('billYearly');
-    if (bm && by && !bm.dataset.bound) {
-      bm.dataset.bound = '1';
-      bm.addEventListener('click', function () { billCycle = 'monthly'; bm.classList.add('active'); by.classList.remove('active'); renderPlans(); });
-      by.addEventListener('click', function () { billCycle = 'yearly'; by.classList.add('active'); bm.classList.remove('active'); renderPlans(); });
-    }
-    var manage = $('billManageBtn');
-    if (manage && !manage.dataset.bound) {
-      manage.dataset.bound = '1';
-      manage.addEventListener('click', function () { openNoad({ target: 'billing', btn: manage }); });
-    }
-    var workOpen = $('workOpenBtn');
-    if (workOpen && !workOpen.dataset.bound) {
-      workOpen.dataset.bound = '1';
-      workOpen.addEventListener('click', function () { openNoad({ target: 'work', btn: workOpen }); });
-    }
-  }
-
-  // =================== 작업요청 ===================
-  // 작업요청·티켓 잔액은 이제 noad 코어가 소유한다.
-  // '작업요청 페이지 열기'(workOpenBtn) → openNoad({target:'work'}) → noad.ai.kr/work-requests
-  //  (initBilling 에서 바인딩). 병원 Supabase 의 work_requests/ticket_ledger 는 더 이상 쓰지 않음
-  //  (옛 RPC 로 제출하면 콘솔에 안 보이는 고아 요청이 되므로 제거).
+  // 임베드 새로고침 (토큰 만료/수동 갱신) — 탭을 다시 로드
+  [['billRefresh', 'billing', 'billFrame', 'billLoading'], ['workRefresh', 'work', 'workFrame', 'workLoading']].forEach(function (m) {
+    var rb = $(m[0]);
+    if (rb) rb.addEventListener('click', function () { loadNoadFrame(m[1], m[2], m[3], true); });
+  });
 })();
