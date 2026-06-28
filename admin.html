@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=9">
+<link rel="stylesheet" href="css/admin.css?v=10">
 </head>
 <body>
 
@@ -39,6 +39,7 @@
     <button data-tab="notices">공지사항</button>
     <button data-tab="settings">병원 운영시간 설정</button>
     <button data-tab="billing">결제</button>
+    <button data-tab="work">작업요청</button>
   </nav>
 
   <main>
@@ -146,6 +147,30 @@
         <div id="billStatus" class="bill-status">결제 연동 준비 중입니다. (토스 구독결제 가맹점 승인 후 활성화)</div>
       </div>
     </section>
+
+    <!-- 작업요청 -->
+    <section id="tab-work" hidden>
+      <div class="panel">
+        <div class="work-head">
+          <h2>작업 요청</h2>
+          <div class="ticket-balance">보유 작업티켓 <b id="ticketBal">–</b>장</div>
+        </div>
+        <p class="work-hint">작업티켓 1장 = 2시간 작업량(인건비 기준). 배너 · 팝업 · 기능수정 · 디자인수정 등을 요청할 수 있습니다. 티켓이 없으면 <b>결제 탭</b>에서 구매하세요.</p>
+        <div class="work-form">
+          <div class="nf-row"><label>작업 유형</label>
+            <select id="workType"><option>배너</option><option>팝업</option><option>기능수정</option><option>디자인수정</option><option>기타</option></select>
+          </div>
+          <div class="nf-row"><label>제목</label><input id="workTitle" type="text" placeholder="예: 메인 상단 배너 교체"></div>
+          <div class="nf-row"><label>요청 내용</label><textarea id="workContent" placeholder="원하는 작업을 구체적으로 적어주세요. 참고 이미지·링크가 있으면 함께 남겨주세요."></textarea></div>
+          <p class="work-err" id="workErr"></p>
+          <button class="btn-primary" id="workSubmitBtn">티켓으로 요청하기</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>내 작업 요청</h2>
+        <div id="workList"><div class="empty">불러오는 중...</div></div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -196,6 +221,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=10"></script>
+<script src="js/admin.js?v=11"></script>
 </body>
 </html>

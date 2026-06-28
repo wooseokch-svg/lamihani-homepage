@@ -26,7 +26,10 @@ CSS/JS 변경 시 HTML의 `?v=N` 캐시버전 올릴 것.
   4. SSL/TLS 모드 **Full (strict)** 권장
   - 상세: `deploy/cloudflare-setup.md` Phase 2
 - ⏭ (도메인 확정 시) 메인 도메인을 `lamihani.com`으로 갈지 `noad.ai.kr` 계열로 갈지 결정
-- ⏭ (나중) 결제: 토스 구독결제(noad.ai.kr 신청중, 승인 ~1달). A케이스(병원이 너에게 구독료) → 중앙 포털 1도메인에만 결제 붙임. 빌링키 발급은 중앙 도메인, 월청구는 서버 API.
+- ✅ 병원 admin **결제 탭** 완료 — 요금제(Light 33,000/Standard 55,000/Pro 99,000), 월/연(10%할인) 토글, 작업티켓(55,000) 구매. `checkout()`은 토스 승인 후 실연동(현재 placeholder).
+- ✅ 병원 admin **작업요청(티켓) 탭** 완료 — 티켓으로 배너/팝업/기능수정/디자인수정 요청 + 진행상황. ⚠ **DB 필요: `supabase/tickets.sql` 실행해야 동작**(ticket_ledger/work_requests/submit_work_request/my_ticket_balance). 티켓 잔액=원장 합. 테스트 티켓은 tickets.sql 하단 주석 참고.
+- ⏭ **noad.ai.kr 통합 super-admin (방향: "한 시스템에 통합")** — 같은 repo/Supabase에 병원(clinic)+테니스클럽(club) 공용 구조. 전체 병원·티켓작업·결제 + 노애드 테니스 결제/클럽관리. 아직 미착수.
+- ⏭ 결제 실연동: 토스 구독결제(noad.ai.kr 신청중, 승인 ~1달). A케이스(병원이 너에게 구독료) → 중앙 포털 1도메인에만 결제. 빌링키 발급=중앙 도메인, 월청구=서버 API.
 
 ## 코드 메모
 - `js/booking.js`: 예약 캘린더 순수함수 + 실제 운영시간 기본값(월~금 10:00-17:30, 토 10:00-14:00, 일 휴무, 점심접수마감/종료접수마감).

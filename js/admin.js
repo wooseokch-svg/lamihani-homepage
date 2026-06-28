@@ -44,6 +44,7 @@
     loadNotices();
     loadSettings();
     initBilling();
+    loadWork();
   }
   function showLogin() {
     $('adminView').hidden = true;
@@ -78,7 +79,7 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['intakes', 'notices', 'settings', 'billing'].forEach(function (t) {
+      ['intakes', 'notices', 'settings', 'billing', 'work'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
     });
@@ -678,5 +679,63 @@
       bm.addEventListener('click', function () { billCycle = 'monthly'; bm.classList.add('active'); by.classList.remove('active'); renderPlans(); });
       by.addEventListener('click', function () { billCycle = 'yearly'; by.classList.add('active'); bm.classList.remove('active'); renderPlans(); });
     }
+  }
+
+  // =================== 작업요청 (티켓) ===================
+  function loadWork() {
+    var bal = $('ticketBal'), list = $('workList');
+    if (!bal || !list) return;
+
+    db.rpc('my_ticket_balance').then(function (res) {
+      bal.textContent = (res.error || res.data == null) ? '–' : res.data;
+    });
+
+    db.from('work_requests').select('*').eq('clinic_id', CID).order('created_at', { ascending: false }).then(function (res) {
+      if (res.error) {
+        list.innerHTML = '<div class="empty">작업요청 기능을 쓰려면 DB 설정(supabase/tickets.sql)을 먼저 실행하세요.</div>';
+        return;
+      }
+      var rows = res.data || [];
+      if (!rows.length) { list.innerHTML = '<div class="empty">아직 작업 요청이 없습니다.</div>'; return; }
+      list.innerHTML = rows.map(function (r) {
+        return '<div class="rec">' +
+          '<div class="rec-top">' +
+            '<span class="work-type">' + esc(r.type) + '</span>' +
+            '<span class="rec-name">' + esc(r.title) + '</span>' +
+            '<span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
+            '<span class="rec-spacer"></span>' +
+            '<span class="rec-meta">' + fmt(r.created_at) + '</span>' +
+          '</div>' +
+          (r.content ? '<div class="rec-body">' + esc(r.content) + '</div>' : '') +
+          (r.admin_note ? '<div class="work-note-admin"><b>답변:</b> ' + esc(r.admin_note) + '</div>' : '') +
+        '</div>';
+      }).join('');
+    });
+  }
+
+  if ($('workSubmitBtn')) {
+    $('workSubmitBtn').addEventListener('click', function () {
+      var err = $('workErr'); err.textContent = '';
+      var title = $('workTitle').value.trim();
+      if (!title) { err.textContent = '제목을 입력하세요.'; return; }
+      var btn = $('workSubmitBtn'); btn.disabled = true; btn.textContent = '요청 중...';
+      db.rpc('submit_work_request', {
+        p_type: $('workType').value,
+        p_title: title,
+        p_content: $('workContent').value.trim() || null
+      }).then(function (res) {
+        btn.disabled = false; btn.textContent = '티켓으로 요청하기';
+        if (res.error) {
+          var m = res.error.message || '';
+          err.textContent = (m.indexOf('티켓') !== -1)
+            ? '보유한 작업티켓이 없습니다. 결제 탭에서 구매해 주세요.'
+            : '요청 오류: ' + m;
+          return;
+        }
+        $('workTitle').value = ''; $('workContent').value = ''; $('workType').selectedIndex = 0;
+        loadWork();
+        alert('작업 요청이 접수되었습니다. 작업티켓 1장이 사용되었습니다.');
+      });
+    });
   }
 })();

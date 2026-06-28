@@ -250,3 +250,19 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .ticket-buy-right{ display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
 .bill-status{ font-size:14px; color:#888; }
 @media (max-width:680px){ .plan-cards{ grid-template-columns:1fr; } }
+
+/* ===== 작업요청 (티켓) ===== */
+.work-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:8px; }
+.work-head h2{ margin:0; }
+.ticket-balance{ font-size:13px; color:#555; background:#fff3ea; border:1px solid #ffd8bc; border-radius:20px; padding:6px 14px; }
+.ticket-balance b{ color:var(--orange); font-size:15px; }
+.work-hint{ font-size:13px; color:#888; line-height:1.7; margin-bottom:16px; }
+.work-form .nf-row select{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:14px; font-family:inherit; background:#fafaf8; outline:none; }
+.work-form .nf-row select:focus{ border-color:var(--orange); background:#fff; }
+.work-err{ color:#d33; font-size:13px; min-height:18px; margin:2px 0 8px; }
+.work-type{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef1f5; color:#5a6b80; }
+.tag.s-요청{ background:#fff3ea; color:#c25f1a; }
+.tag.s-진행중{ background:#eaf2ff; color:#2864c7; }
+.tag.s-완료{ background:#e9f7e9; color:#2e7d32; }
+.tag.s-취소{ background:#f1f1f1; color:#999; }
+.work-note-admin{ margin-top:8px; font-size:13px; background:#f4f8fc; border-left:3px solid #2864c7; padding:9px 12px; border-radius:6px; color:#3a4a5e; line-height:1.6; }
