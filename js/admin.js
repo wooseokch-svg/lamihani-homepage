@@ -614,7 +614,6 @@
   ];
   var TICKET_PRICE = 55000;
   var billCycle = 'monthly';
-  var billingReady = false;
 
   function won(n) { return n.toLocaleString('ko-KR') + '원'; }
 
@@ -655,19 +654,22 @@
   }
 
   function checkout(kind, id) {
-    var label;
+    var yearly = (billCycle === 'yearly'), label;
     if (kind === 'ticket') {
       label = '작업티켓 1장 (' + won(TICKET_PRICE) + ')';
     } else {
       var p = PLANS.filter(function (x) { return x.id === id; })[0];
-      var yearly = (billCycle === 'yearly');
       label = p.name + ' 요금제 · ' + (yearly ? ('연 결제 ' + won(Math.round(p.price * 12 * 0.9))) : ('월 결제 ' + won(p.price)));
     }
-    if (!billingReady) {
-      alert('선택: ' + label + '\n\n토스 구독결제 연동은 가맹점 승인 후 활성화됩니다.\n승인이 완료되면 이 버튼에서 바로 결제됩니다.');
+    // noad.ai.kr 중앙 빌링 페이지(테니스 백엔드 통합 결제)로 이동. 미설정 시 안내만.
+    var base = (window.LAMI_CONFIG && window.LAMI_CONFIG.NOAD_BILLING_URL) || '';
+    if (!base) {
+      alert('선택: ' + label + '\n\nnoad.ai.kr 통합 구독결제를 준비 중입니다.\n곧 이 버튼에서 바로 결제됩니다.');
       return;
     }
-    // TODO: 토스 빌링키 발급 / 결제 호출 (승인 후 연동)
+    var q = 'tenantType=clinic&clinicId=' + encodeURIComponent(CID) +
+      (kind === 'ticket' ? '&item=ticket' : '&plan=' + encodeURIComponent(id) + '&interval=' + (yearly ? 'yearly' : 'monthly'));
+    window.location.href = base + (base.indexOf('?') === -1 ? '?' : '&') + q;
   }
 
   function initBilling() {

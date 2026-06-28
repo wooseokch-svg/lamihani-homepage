@@ -31,7 +31,10 @@
     SUPABASE_URL: SUPABASE_URL,
     SUPABASE_ANON_KEY: SUPABASE_ANON_KEY,
     CLINIC_ID: clinic.id,
-    NAVER_RESERVE_URL: clinic.naver
+    NAVER_RESERVE_URL: clinic.naver,
+    // noad.ai.kr 중앙 구독결제 페이지(테니스 백엔드의 통합 빌링). 비어있으면 결제 '준비중' 안내.
+    // 테니스 측에 /billing 페이지가 준비되면 'https://noad.ai.kr/billing' 등으로 채우면 바로 활성화.
+    NOAD_BILLING_URL: ''
   };
 
   window.LAMI_READY = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
