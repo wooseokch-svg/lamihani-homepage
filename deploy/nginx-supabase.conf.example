@@ -1,0 +1,29 @@
+# =====================================================================
+#  Nginx 리버스 프록시 — api.노드도메인  ->  Supabase Kong 게이트웨이(:8000)
+#  설치 위치 예: /etc/nginx/sites-available/supabase
+#  활성화:  sudo ln -s /etc/nginx/sites-available/supabase /etc/nginx/sites-enabled/
+#          sudo nginx -t && sudo systemctl reload nginx
+#  SSL:    sudo certbot --nginx -d api.noad.ai.kr   (자동으로 443/인증서 추가)
+#  ※ api.noad.ai.kr 부분을 본인 도메인으로 바꾸세요.
+# =====================================================================
+server {
+    listen 80;
+    server_name api.noad.ai.kr;
+
+    # 업로드 용량(파일 스토리지 쓸 경우)
+    client_max_body_size 50m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Realtime(WebSocket) 지원
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600s;
+    }
+}
