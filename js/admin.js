@@ -643,4 +643,16 @@
     });
   }
 
+  // 임베드 iframe 자동 높이 — noad 페이지(EmbedAutoResize)가 보낸 콘텐츠 높이로 맞춤.
+  // → iframe 내부 스크롤/잘림 없이 병원 페이지가 네이티브 탭처럼 자연 스크롤.
+  window.addEventListener('message', function (e) {
+    if (e.origin !== 'https://noad.ai.kr') return;
+    var d = e.data;
+    if (!d || d.type !== 'noad-embed-height' || !d.height) return;
+    ['billFrame', 'workFrame'].forEach(function (id) {
+      var f = $(id);
+      if (f && f.contentWindow === e.source) f.style.height = Math.max(400, Math.ceil(d.height)) + 'px';
+    });
+  });
+
 })();

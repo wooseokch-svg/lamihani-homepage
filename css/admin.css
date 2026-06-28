@@ -343,8 +343,8 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 /* noad 임베드 (결제·작업요청 탭에 코어 페이지를 iframe 으로) */
 .noad-embed-wrap{ position:relative; width:100%; }
 .noad-embed{
-  width:100%; height:calc(100vh - 120px); min-height:560px; border:0;
-  background:#f4f1ec; display:block;   /* 병원 body 와 동일 배경 → 임베드 seam 없음 */
+  width:100%; height:600px; border:0;   /* 초기값 — JS(message)가 콘텐츠 높이로 자동 조정 */
+  background:#f4f1ec; display:block;
 }
 .noad-embed-loading{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
