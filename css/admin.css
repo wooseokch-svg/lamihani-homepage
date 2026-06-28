@@ -7,6 +7,7 @@
 body{
   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;
   background:#f4f1ec; color:var(--txt); -webkit-font-smoothing:antialiased;
+  word-break:keep-all; overflow-wrap:break-word;
 }
 a{ color:inherit; }
 button{ font-family:inherit; cursor:pointer; }
@@ -267,3 +268,74 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .tag.s-완료{ background:#e9f7e9; color:#2e7d32; }
 .tag.s-취소{ background:#f1f1f1; color:#999; }
 .work-note-admin{ margin-top:8px; font-size:13px; background:#f4f8fc; border-left:3px solid #2864c7; padding:9px 12px; border-radius:6px; color:#3a4a5e; line-height:1.6; }
+
+/* =====================================================================
+   반응형 (태블릿 / 모바일)
+   ===================================================================== */
+@media (max-width:900px){
+  main{ padding:20px 14px 50px; }
+  .plan-cards{ grid-template-columns:1fr 1fr; }
+}
+
+@media (max-width:640px){
+  /* 헤더: 한 줄 유지하되 압축 */
+  .adm-header{ padding:0 12px; gap:8px; height:54px; }
+  .adm-header .brand{ font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  .adm-header .who{ display:none; }                 /* 로그인 이메일은 모바일에서 숨김 */
+  .adm-header .naver-link{ font-size:11px; padding:6px 9px; white-space:nowrap; }
+  .adm-header .logout{ font-size:11px; padding:6px 10px; white-space:nowrap; }
+
+  /* 탭: 가로 스크롤 */
+  .adm-tabs{ top:54px; padding:0 8px; gap:0; overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
+  .adm-tabs::-webkit-scrollbar{ display:none; }
+  .adm-tabs{ scrollbar-width:none; }
+  .adm-tabs button{ flex:0 0 auto; padding:13px 12px; font-size:13px; white-space:nowrap; }
+
+  main{ padding:16px 12px 48px; }
+  .panel{ padding:16px 14px; border-radius:12px; margin-bottom:14px; }
+  .panel h2{ font-size:14px; }
+
+  /* 예약 캘린더 */
+  .adm-cal-head{ gap:12px; }
+  .adm-cal-title{ font-size:15px; }
+  .adm-cal-grid{ gap:2px; }
+  .adm-cell{ min-height:56px; padding:2px; border-radius:6px; }
+  .adm-day{ font-size:11px; }
+  .adm-chip{ padding:2px 3px; font-size:10px; border-radius:4px; }
+  .adm-cal-legend{ flex-wrap:wrap; gap:8px 14px; font-size:12px; }
+  .adm-cal-hint{ margin-left:0; flex-basis:100%; }
+
+  /* 패널 헤더(직접 추가 버튼) */
+  .panel-head{ flex-wrap:wrap; gap:10px; }
+  .panel-head .btn-primary{ width:100%; }
+
+  /* 요금제 */
+  .plan-cards{ grid-template-columns:1fr; }
+  .bill-head{ gap:10px; }
+  .bill-toggle{ width:100%; }
+  .bill-toggle .bt{ flex:1; }
+  .ticket-buy{ flex-direction:column; align-items:stretch; }
+  .ticket-buy-right{ align-items:stretch; }
+  .ticket-buy-right .btn-primary{ width:100%; }
+
+  /* 직접 추가 / 상세 모달 */
+  .adm-detail-overlay{ padding:12px; }
+  .adm-detail{ padding:20px 16px; border-radius:14px; }
+  .add-row2{ grid-template-columns:1fr; gap:0; }
+
+  /* 운영시간 설정 시간 입력 줄바꿈 */
+  .ff{ gap:5px; }
+  .ff > label{ width:100%; }
+  .set-foot{ gap:10px; }
+  .set-foot .btn-primary{ width:100%; }
+
+  /* 로그인 카드 */
+  .login-card{ padding:28px 20px; }
+}
+
+@media (max-width:380px){
+  .adm-header .brand{ font-size:13px; }
+  .adm-header .naver-link{ display:none; }   /* 아주 좁은 화면에선 네이버 바로가기 숨김 */
+  .adm-cell{ min-height:50px; }
+  .plan-name{ font-size:17px; }
+}
