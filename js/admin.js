@@ -43,6 +43,7 @@
     loadBookings();
     loadNotices();
     loadSettings();
+    initBilling();
   }
   function showLogin() {
     $('adminView').hidden = true;
@@ -77,7 +78,7 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['intakes', 'notices', 'settings'].forEach(function (t) {
+      ['intakes', 'notices', 'settings', 'billing'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
     });
@@ -602,4 +603,80 @@
       saveHolidays().then(function () { $('holidayInput').value = ''; renderHolidays(); });
     }
   });
+
+  // =================== 결제 (요금제 / 작업티켓) ===================
+  // ※ 토스 구독결제 가맹점 승인 후 checkout()만 실제 연동으로 교체하면 됨.
+  var PLANS = [
+    { id: 'light', name: 'Light', price: 33000, desc: '호스팅', features: ['홈페이지 호스팅', '예약·예진표·공지 관리'] },
+    { id: 'standard', name: 'Standard', price: 55000, desc: '호스팅 + 작업티켓 1장', features: ['Light 전체 기능', '매월 작업티켓 1장'], popular: true },
+    { id: 'pro', name: 'Pro', price: 99000, desc: '호스팅 + 작업티켓 2장', features: ['Light 전체 기능', '매월 작업티켓 2장'] }
+  ];
+  var TICKET_PRICE = 55000;
+  var billCycle = 'monthly';
+  var billingReady = false;
+
+  function won(n) { return n.toLocaleString('ko-KR') + '원'; }
+
+  function renderPlans() {
+    var box = $('planCards'); if (!box) return;
+    var yearly = (billCycle === 'yearly');
+    box.innerHTML = PLANS.map(function (p) {
+      var yr = Math.round(p.price * 12 * 0.9);
+      var priceMain = yearly ? (won(yr) + ' <span class="per">/년</span>') : (won(p.price) + ' <span class="per">/월</span>');
+      var priceSub = yearly ? ('월 ' + won(Math.round(yr / 12)) + ' 상당 · 10% 할인') : 'VAT 별도';
+      return '<div class="plan' + (p.popular ? ' popular' : '') + '">' +
+        (p.popular ? '<div class="plan-badge">인기</div>' : '') +
+        '<div class="plan-name">' + p.name + '</div>' +
+        '<div class="plan-desc">' + esc(p.desc) + '</div>' +
+        '<div class="plan-price">' + priceMain + '</div>' +
+        '<div class="plan-price-sub">' + priceSub + '</div>' +
+        '<ul class="plan-feats">' + p.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+        '<button class="btn-primary plan-btn" data-plan="' + p.id + '">결제하기</button>' +
+      '</div>';
+    }).join('');
+    box.querySelectorAll('[data-plan]').forEach(function (b) {
+      b.addEventListener('click', function () { checkout('plan', b.dataset.plan); });
+    });
+  }
+
+  function renderTicket() {
+    var box = $('ticketCard'); if (!box) return;
+    box.innerHTML =
+      '<div class="ticket-info">' +
+        '<div class="ticket-name">작업티켓 1장</div>' +
+        '<div class="ticket-desc">2시간 작업량(인건비 기준)의 작업 요청권<br>배너 · 팝업 · 기능수정 · 디자인수정</div>' +
+      '</div>' +
+      '<div class="ticket-buy-right">' +
+        '<div class="plan-price">' + won(TICKET_PRICE) + '</div>' +
+        '<button class="btn-primary" data-buy="ticket">티켓 구매</button>' +
+      '</div>';
+    box.querySelector('[data-buy]').addEventListener('click', function () { checkout('ticket', 'ticket'); });
+  }
+
+  function checkout(kind, id) {
+    var label;
+    if (kind === 'ticket') {
+      label = '작업티켓 1장 (' + won(TICKET_PRICE) + ')';
+    } else {
+      var p = PLANS.filter(function (x) { return x.id === id; })[0];
+      var yearly = (billCycle === 'yearly');
+      label = p.name + ' 요금제 · ' + (yearly ? ('연 결제 ' + won(Math.round(p.price * 12 * 0.9))) : ('월 결제 ' + won(p.price)));
+    }
+    if (!billingReady) {
+      alert('선택: ' + label + '\n\n토스 구독결제 연동은 가맹점 승인 후 활성화됩니다.\n승인이 완료되면 이 버튼에서 바로 결제됩니다.');
+      return;
+    }
+    // TODO: 토스 빌링키 발급 / 결제 호출 (승인 후 연동)
+  }
+
+  function initBilling() {
+    renderPlans();
+    renderTicket();
+    var bm = $('billMonthly'), by = $('billYearly');
+    if (bm && by && !bm.dataset.bound) {
+      bm.dataset.bound = '1';
+      bm.addEventListener('click', function () { billCycle = 'monthly'; bm.classList.add('active'); by.classList.remove('active'); renderPlans(); });
+      by.addEventListener('click', function () { billCycle = 'yearly'; by.classList.add('active'); bm.classList.remove('active'); renderPlans(); });
+    }
+  }
 })();
