@@ -635,7 +635,8 @@
       }
       if (loading) frame.addEventListener('load', function () { loading.style.display = 'none'; }, { once: true });
       frame.dataset.loadedAt = String(Date.now());
-      frame.src = res.data.url;
+      // embed=1 → noad 페이지가 병원 네이티브 탭과 동일 배경(#f4f1ec)·폭(920)·여백으로 렌더
+      frame.src = res.data.url + '&embed=1';
     }, function () {
       frame.dataset.loaded = '';
       if (loading) loading.textContent = '네트워크 오류로 불러오지 못했습니다.';

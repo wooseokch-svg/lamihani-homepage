@@ -343,10 +343,10 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 /* noad 임베드 (결제·작업요청 탭에 코어 페이지를 iframe 으로) */
 .noad-embed-wrap{ position:relative; width:100%; }
 .noad-embed{
-  width:100%; height:calc(100vh - 132px); min-height:560px; border:0;
-  border-radius:12px; background:#f7f5f2; display:block;
+  width:100%; height:calc(100vh - 120px); min-height:560px; border:0;
+  background:#f4f1ec; display:block;   /* 병원 body 와 동일 배경 → 임베드 seam 없음 */
 }
 .noad-embed-loading{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  color:var(--muted); font-size:14px; background:#faf9f7; border-radius:12px; text-align:center; padding:0 20px;
+  color:var(--muted); font-size:14px; background:#f4f1ec; text-align:center; padding:0 20px;
 }
