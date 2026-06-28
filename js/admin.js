@@ -44,7 +44,6 @@
     loadNotices();
     loadSettings();
     initBilling();
-    loadWork();
   }
   function showLogin() {
     $('adminView').hidden = true;
@@ -615,7 +614,37 @@
   var TICKET_PRICE = 55000;
   var billCycle = 'monthly';
 
+  // 병원 플랜 id → noad 코어 Plan enum (가격·기능 동일)
+  var PLAN_MAP = { light: 'BASIC', standard: 'STANDARD', pro: 'PRO' };
+
   function won(n) { return n.toLocaleString('ko-KR') + '원'; }
+
+  // noad 핸드오버: Edge Function 'noad-handover' 가 로그인 사용자 → 서명 토큰 → URL 발급.
+  // opts = { target:'billing'|'work', plan?, interval?, btn? }
+  function openNoad(opts) {
+    var btn = opts.btn;
+    if (btn) { btn.disabled = true; if (!btn.dataset.t) btn.dataset.t = btn.textContent; btn.textContent = '여는 중…'; }
+    function restore() { if (btn) { btn.disabled = false; btn.textContent = btn.dataset.t || '열기'; } }
+    var body = {
+      target: opts.target,
+      clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID,
+      returnUrl: location.href
+    };
+    if (opts.plan) body.plan = opts.plan;
+    if (opts.interval) body.interval = opts.interval;
+    db.functions.invoke('noad-handover', { body: body }).then(function (res) {
+      if (res.error || !res.data || !res.data.url) {
+        restore();
+        var m = (res.error && (res.error.message || res.error)) || (res.data && res.data.error) || '';
+        alert('결제 페이지 연결에 실패했습니다.\n잠시 후 다시 시도해 주세요.' + (m ? '\n(' + m + ')' : ''));
+        return;
+      }
+      window.location.href = res.data.url;
+    }, function () {
+      restore();
+      alert('네트워크 오류로 결제 페이지를 열지 못했습니다.');
+    });
+  }
 
   function renderPlans() {
     var box = $('planCards'); if (!box) return;
@@ -635,7 +664,7 @@
       '</div>';
     }).join('');
     box.querySelectorAll('[data-plan]').forEach(function (b) {
-      b.addEventListener('click', function () { checkout('plan', b.dataset.plan); });
+      b.addEventListener('click', function () { checkout('plan', b.dataset.plan, b); });
     });
   }
 
@@ -650,26 +679,22 @@
         '<div class="plan-price">' + won(TICKET_PRICE) + '</div>' +
         '<button class="btn-primary" data-buy="ticket">티켓 구매</button>' +
       '</div>';
-    box.querySelector('[data-buy]').addEventListener('click', function () { checkout('ticket', 'ticket'); });
+    box.querySelector('[data-buy]').addEventListener('click', function () { checkout('ticket', 'ticket', this); });
   }
 
-  function checkout(kind, id) {
-    var yearly = (billCycle === 'yearly'), label;
+  function checkout(kind, id, btn) {
     if (kind === 'ticket') {
-      label = '작업티켓 1장 (' + won(TICKET_PRICE) + ')';
+      // 티켓 구매 → noad 결제 페이지(티켓 섹션 포함)
+      openNoad({ target: 'billing', btn: btn });
     } else {
-      var p = PLANS.filter(function (x) { return x.id === id; })[0];
-      label = p.name + ' 요금제 · ' + (yearly ? ('연 결제 ' + won(Math.round(p.price * 12 * 0.9))) : ('월 결제 ' + won(p.price)));
+      // 요금제 결제 → noad 결제 페이지(해당 플랜 선택 상태)
+      openNoad({
+        target: 'billing',
+        plan: PLAN_MAP[id],
+        interval: (billCycle === 'yearly' ? 'YEARLY' : 'MONTHLY'),
+        btn: btn
+      });
     }
-    // noad.ai.kr 중앙 빌링 페이지(테니스 백엔드 통합 결제)로 이동. 미설정 시 안내만.
-    var base = (window.LAMI_CONFIG && window.LAMI_CONFIG.NOAD_BILLING_URL) || '';
-    if (!base) {
-      alert('선택: ' + label + '\n\nnoad.ai.kr 통합 구독결제를 준비 중입니다.\n곧 이 버튼에서 바로 결제됩니다.');
-      return;
-    }
-    var q = 'tenantType=clinic&clinicId=' + encodeURIComponent(CID) +
-      (kind === 'ticket' ? '&item=ticket' : '&plan=' + encodeURIComponent(id) + '&interval=' + (yearly ? 'yearly' : 'monthly'));
-    window.location.href = base + (base.indexOf('?') === -1 ? '?' : '&') + q;
   }
 
   function initBilling() {
@@ -681,63 +706,21 @@
       bm.addEventListener('click', function () { billCycle = 'monthly'; bm.classList.add('active'); by.classList.remove('active'); renderPlans(); });
       by.addEventListener('click', function () { billCycle = 'yearly'; by.classList.add('active'); bm.classList.remove('active'); renderPlans(); });
     }
+    var manage = $('billManageBtn');
+    if (manage && !manage.dataset.bound) {
+      manage.dataset.bound = '1';
+      manage.addEventListener('click', function () { openNoad({ target: 'billing', btn: manage }); });
+    }
+    var workOpen = $('workOpenBtn');
+    if (workOpen && !workOpen.dataset.bound) {
+      workOpen.dataset.bound = '1';
+      workOpen.addEventListener('click', function () { openNoad({ target: 'work', btn: workOpen }); });
+    }
   }
 
-  // =================== 작업요청 (티켓) ===================
-  function loadWork() {
-    var bal = $('ticketBal'), list = $('workList');
-    if (!bal || !list) return;
-
-    db.rpc('my_ticket_balance').then(function (res) {
-      bal.textContent = (res.error || res.data == null) ? '–' : res.data;
-    });
-
-    db.from('work_requests').select('*').eq('clinic_id', CID).order('created_at', { ascending: false }).then(function (res) {
-      if (res.error) {
-        list.innerHTML = '<div class="empty">작업요청 기능을 쓰려면 DB 설정(supabase/tickets.sql)을 먼저 실행하세요.</div>';
-        return;
-      }
-      var rows = res.data || [];
-      if (!rows.length) { list.innerHTML = '<div class="empty">아직 작업 요청이 없습니다.</div>'; return; }
-      list.innerHTML = rows.map(function (r) {
-        return '<div class="rec">' +
-          '<div class="rec-top">' +
-            '<span class="work-type">' + esc(r.type) + '</span>' +
-            '<span class="rec-name">' + esc(r.title) + '</span>' +
-            '<span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
-            '<span class="rec-spacer"></span>' +
-            '<span class="rec-meta">' + fmt(r.created_at) + '</span>' +
-          '</div>' +
-          (r.content ? '<div class="rec-body">' + esc(r.content) + '</div>' : '') +
-          (r.admin_note ? '<div class="work-note-admin"><b>답변:</b> ' + esc(r.admin_note) + '</div>' : '') +
-        '</div>';
-      }).join('');
-    });
-  }
-
-  if ($('workSubmitBtn')) {
-    $('workSubmitBtn').addEventListener('click', function () {
-      var err = $('workErr'); err.textContent = '';
-      var title = $('workTitle').value.trim();
-      if (!title) { err.textContent = '제목을 입력하세요.'; return; }
-      var btn = $('workSubmitBtn'); btn.disabled = true; btn.textContent = '요청 중...';
-      db.rpc('submit_work_request', {
-        p_type: $('workType').value,
-        p_title: title,
-        p_content: $('workContent').value.trim() || null
-      }).then(function (res) {
-        btn.disabled = false; btn.textContent = '티켓으로 요청하기';
-        if (res.error) {
-          var m = res.error.message || '';
-          err.textContent = (m.indexOf('티켓') !== -1)
-            ? '보유한 작업티켓이 없습니다. 결제 탭에서 구매해 주세요.'
-            : '요청 오류: ' + m;
-          return;
-        }
-        $('workTitle').value = ''; $('workContent').value = ''; $('workType').selectedIndex = 0;
-        loadWork();
-        alert('작업 요청이 접수되었습니다. 작업티켓 1장이 사용되었습니다.');
-      });
-    });
-  }
+  // =================== 작업요청 ===================
+  // 작업요청·티켓 잔액은 이제 noad 코어가 소유한다.
+  // '작업요청 페이지 열기'(workOpenBtn) → openNoad({target:'work'}) → noad.ai.kr/work-requests
+  //  (initBilling 에서 바인딩). 병원 Supabase 의 work_requests/ticket_ledger 는 더 이상 쓰지 않음
+  //  (옛 RPC 로 제출하면 콘솔에 안 보이는 고아 요청이 되므로 제거).
 })();
