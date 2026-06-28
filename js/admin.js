@@ -615,7 +615,9 @@
   function loadNoadFrame(target, frameId, loadingId, force) {
     var frame = $(frameId), loading = $(loadingId);
     if (!frame) return;
-    if (frame.dataset.loaded === '1' && !force) return; // 이미 로드됨 → 탭 전환 시 상태 유지
+    // 이미 로드됐고 토큰이 신선하면(8분 내) 유지. 오래됐으면 탭 재진입 시 자동 재발급(만료 회피).
+    var fresh = frame.dataset.loadedAt && (Date.now() - Number(frame.dataset.loadedAt) < 8 * 60 * 1000);
+    if (frame.dataset.loaded === '1' && fresh && !force) return;
     frame.dataset.loaded = '1';
     if (loading) { loading.style.display = 'flex'; loading.textContent = '불러오는 중…'; }
     db.functions.invoke('noad-handover', {
@@ -632,6 +634,7 @@
         return;
       }
       if (loading) frame.addEventListener('load', function () { loading.style.display = 'none'; }, { once: true });
+      frame.dataset.loadedAt = String(Date.now());
       frame.src = res.data.url;
     }, function () {
       frame.dataset.loaded = '';
@@ -639,9 +642,4 @@
     });
   }
 
-  // 임베드 새로고침 (토큰 만료/수동 갱신) — 탭을 다시 로드
-  [['billRefresh', 'billing', 'billFrame', 'billLoading'], ['workRefresh', 'work', 'workFrame', 'workLoading']].forEach(function (m) {
-    var rb = $(m[0]);
-    if (rb) rb.addEventListener('click', function () { loadNoadFrame(m[1], m[2], m[3], true); });
-  });
 })();

@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=14">
+<link rel="stylesheet" href="css/admin.css?v=15">
 </head>
 <body>
 
@@ -125,10 +125,6 @@
 
     <!-- 결제 (noad 코어 페이지를 이 안에 임베드) -->
     <section id="tab-billing" hidden>
-      <div class="noad-embed-bar">
-        <span class="noad-embed-hint">요금제 · 작업티켓 · 카드 관리</span>
-        <button class="noad-embed-refresh" id="billRefresh" type="button">↻ 새로고침</button>
-      </div>
       <div class="noad-embed-wrap">
         <div class="noad-embed-loading" id="billLoading">불러오는 중…</div>
         <iframe id="billFrame" class="noad-embed" title="NoAD 결제" allow="payment"></iframe>
@@ -137,10 +133,6 @@
 
     <!-- 작업요청 (noad 코어 페이지를 이 안에 임베드) -->
     <section id="tab-work" hidden>
-      <div class="noad-embed-bar">
-        <span class="noad-embed-hint">작업요청 접수 · 진행상황 · 티켓 잔액</span>
-        <button class="noad-embed-refresh" id="workRefresh" type="button">↻ 새로고침</button>
-      </div>
       <div class="noad-embed-wrap">
         <div class="noad-embed-loading" id="workLoading">불러오는 중…</div>
         <iframe id="workFrame" class="noad-embed" title="NoAD 작업요청" allow="payment"></iframe>
@@ -196,6 +188,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=16"></script>
+<script src="js/admin.js?v=17"></script>
 </body>
 </html>
