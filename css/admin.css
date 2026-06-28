@@ -147,14 +147,14 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .adm-cal-title{ font-size:16px; font-weight:700; }
 .adm-cal-nav{ width:32px; height:32px; border:1px solid var(--line); border-radius:8px; background:#fff; font-size:17px; color:#888; }
 .adm-cal-nav:hover{ border-color:var(--orange); color:var(--orange); }
-.adm-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.adm-cal-grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
 .adm-dow{ text-align:center; font-size:12px; color:#aaa; padding:4px 0; }
 .adm-dow.sun{ color:#e06464; } .adm-dow.sat{ color:#5b86d6; }
-.adm-cell{ min-height:74px; border:1px solid #f0ece6; border-radius:8px; padding:4px; display:flex; flex-direction:column; gap:3px; }
+.adm-cell{ min-height:74px; min-width:0; border:1px solid #f0ece6; border-radius:8px; padding:4px; display:flex; flex-direction:column; gap:3px; }
 .adm-cell.empty{ border:0; }
 .adm-day{ font-size:12px; color:#999; padding-left:2px; }
-.adm-chips{ display:flex; flex-direction:column; gap:2px; overflow:hidden; }
-.adm-chip{ border:0; border-radius:5px; padding:3px 5px; font-size:11px; text-align:left; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:inherit; }
+.adm-chips{ display:flex; flex-direction:column; gap:2px; overflow:hidden; min-width:0; }
+.adm-chip{ max-width:100%; border:0; border-radius:5px; padding:3px 5px; font-size:11px; text-align:left; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:inherit; }
 .adm-chip.s-신규{ background:#fff0e5; color:#c25f1a; }
 .adm-chip.s-예약확정{ background:#e9f7e9; color:#2e7d32; }
 .adm-chip:hover{ filter:brightness(.95); }
