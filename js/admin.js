@@ -624,7 +624,7 @@
     box.innerHTML = PLANS.map(function (p) {
       var yr = Math.round(p.price * 12 * 0.9);
       var priceMain = yearly ? (won(yr) + ' <span class="per">/년</span>') : (won(p.price) + ' <span class="per">/월</span>');
-      var priceSub = yearly ? ('월 ' + won(Math.round(yr / 12)) + ' 상당 · 10% 할인') : 'VAT 별도';
+      var priceSub = yearly ? ('월 ' + won(Math.round(yr / 12)) + ' 상당 · 10% 할인') : 'VAT 포함';
       return '<div class="plan' + (p.popular ? ' popular' : '') + '">' +
         (p.popular ? '<div class="plan-badge">인기</div>' : '') +
         '<div class="plan-name">' + p.name + '</div>' +
@@ -645,7 +645,7 @@
     box.innerHTML =
       '<div class="ticket-info">' +
         '<div class="ticket-name">작업티켓 1장</div>' +
-        '<div class="ticket-desc">2시간 작업량(인건비 기준)의 작업 요청권<br>배너 · 팝업 · 기능수정 · 디자인수정</div>' +
+        '<div class="ticket-desc">2시간 작업량의 작업 요청권<br>배너 · 팝업 · 기능수정 · 디자인수정</div>' +
       '</div>' +
       '<div class="ticket-buy-right">' +
         '<div class="plan-price">' + won(TICKET_PRICE) + '</div>' +
