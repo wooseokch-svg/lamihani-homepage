@@ -40,6 +40,7 @@
     <button data-tab="settings">병원 운영시간 설정</button>
     <button data-tab="billing">결제</button>
     <button data-tab="work">작업요청</button>
+    <button data-tab="msg">메시지</button>
   </nav>
 
   <main>
@@ -138,6 +139,14 @@
         <iframe id="workFrame" class="noad-embed" title="NoAD 작업요청" allow="payment"></iframe>
       </div>
     </section>
+
+    <!-- 메시지 (noad 코어 페이지를 이 안에 임베드) -->
+    <section id="tab-msg" hidden>
+      <div class="noad-embed-wrap">
+        <div class="noad-embed-loading" id="msgLoading">불러오는 중…</div>
+        <iframe id="msgFrame" class="noad-embed" title="NoAD 메시지"></iframe>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -188,6 +197,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=20"></script>
+<script src="js/admin.js?v=21"></script>
 </body>
 </html>

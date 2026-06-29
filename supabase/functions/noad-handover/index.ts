@@ -88,7 +88,12 @@ Deno.serve(async (req) => {
     const clinicId: string = row.clinic_id;
 
     const reqBody = await req.json().catch(() => ({} as Record<string, unknown>));
-    const target = reqBody.target === 'work' ? 'work-requests' : 'billing';
+    const target =
+      reqBody.target === 'work'
+        ? 'work-requests'
+        : reqBody.target === 'messaging'
+          ? 'clinic-messaging'
+          : 'billing';
     const clinicName =
       typeof reqBody.clinicName === 'string' && reqBody.clinicName.trim()
         ? reqBody.clinicName.trim()

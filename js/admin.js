@@ -112,12 +112,13 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['intakes', 'notices', 'settings', 'billing', 'work'].forEach(function (t) {
+      ['intakes', 'notices', 'settings', 'billing', 'work', 'msg'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
-      // 결제·작업요청 탭은 처음 열 때 noad 페이지를 iframe 으로 로드
+      // 결제·작업요청·메시지 탭은 처음 열 때 noad 페이지를 iframe 으로 로드
       if (b.dataset.tab === 'billing') loadNoadFrame('billing', 'billFrame', 'billLoading');
       if (b.dataset.tab === 'work') loadNoadFrame('work', 'workFrame', 'workLoading');
+      if (b.dataset.tab === 'msg') loadNoadFrame('messaging', 'msgFrame', 'msgLoading');
     });
   });
 
@@ -684,7 +685,7 @@
     if (e.origin !== 'https://noad.ai.kr') return;
     var d = e.data;
     if (!d || d.type !== 'noad-embed-height' || !d.height) return;
-    ['billFrame', 'workFrame'].forEach(function (id) {
+    ['billFrame', 'workFrame', 'msgFrame'].forEach(function (id) {
       var f = $(id);
       if (f && f.contentWindow === e.source) f.style.height = Math.max(400, Math.ceil(d.height)) + 'px';
     });
