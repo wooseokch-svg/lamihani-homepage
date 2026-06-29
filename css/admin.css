@@ -350,3 +350,17 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   color:var(--muted); font-size:14px; background:#f4f1ec; text-align:center; padding:0 20px;
 }
+
+/* 연성차단 — 미납 시 admin 전체 오버레이 */
+.clinic-block{
+  position:fixed; inset:0; z-index:9999; padding:24px;
+  background:rgba(40,35,30,.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+}
+.clinic-block-card{
+  background:#fff; border-radius:18px; max-width:380px; width:100%; padding:32px 26px;
+  text-align:center; box-shadow:0 16px 48px rgba(0,0,0,.25);
+}
+.clinic-block-title{ font-size:19px; font-weight:800; color:var(--txt); }
+.clinic-block-desc{ font-size:14px; color:var(--muted); margin:12px 0 22px; line-height:1.6; }
+.clinic-block .btn-primary{ width:100%; }

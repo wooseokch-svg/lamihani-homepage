@@ -43,6 +43,41 @@
     loadBookings();
     loadNotices();
     loadSettings();
+    checkClinicBlock(); // 미납 시 admin 전체 차단 + 결제 유도
+  }
+
+  // =================== 연성차단 (미납) ===================
+  // noad 코어 구독상태 조회 → blockAdmin 이면 admin 전체 오버레이 + 결제 유도.
+  // (토스 승인 전엔 코어가 항상 blockAdmin=false 반환하므로 무동작 — 잠금 방지)
+  function checkClinicBlock() {
+    var cid = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || CID;
+    fetch('https://noad.ai.kr/api/clinic/status?clinicId=' + encodeURIComponent(cid))
+      .then(function (r) { return r.json(); })
+      .then(function (s) { if (s && s.blockAdmin) showBlockOverlay(s.daysOverdue || 0); })
+      .catch(function () { /* 조회 실패 → 차단 안 함(안전) */ });
+  }
+  function showBlockOverlay(days) {
+    if (document.getElementById('clinicBlock')) return;
+    var ov = document.createElement('div');
+    ov.id = 'clinicBlock';
+    ov.className = 'clinic-block';
+    ov.innerHTML =
+      '<div class="clinic-block-card">' +
+        '<div class="clinic-block-title">구독이 만료되었습니다</div>' +
+        '<p class="clinic-block-desc">서비스를 계속 이용하시려면 결제가 필요합니다.' +
+        (days ? '<br>(' + days + '일 미납)' : '') + '</p>' +
+        '<button class="btn-primary" id="clinicBlockPay" type="button">결제하기</button>' +
+      '</div>';
+    document.body.appendChild(ov);
+    document.getElementById('clinicBlockPay').addEventListener('click', function () {
+      var btn = this; btn.disabled = true; btn.textContent = '여는 중…';
+      db.functions.invoke('noad-handover', {
+        body: { target: 'billing', clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID, returnUrl: location.href }
+      }).then(function (res) {
+        if (res.data && res.data.url) { window.location.href = res.data.url; }
+        else { btn.disabled = false; btn.textContent = '결제하기'; alert('결제 페이지 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.'); }
+      }, function () { btn.disabled = false; btn.textContent = '결제하기'; alert('네트워크 오류로 결제 페이지를 열지 못했습니다.'); });
+    });
   }
   function showLogin() {
     $('adminView').hidden = true;
