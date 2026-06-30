@@ -41,6 +41,7 @@
     <button data-tab="billing">결제</button>
     <button data-tab="work">작업요청</button>
     <button data-tab="msg">메시지</button>
+    <button data-tab="staff">직원 계정</button>
   </nav>
 
   <main>
@@ -165,6 +166,28 @@
         <iframe id="msgFrame" class="noad-embed" title="NoAD 메시지"></iframe>
       </div>
     </section>
+
+    <!-- 직원 계정 -->
+    <section id="tab-staff" hidden>
+      <div class="panel">
+        <h2>직원 계정 추가</h2>
+        <div class="nf-row">
+          <label>이메일</label>
+          <input id="staffEmail" type="email" placeholder="staff@example.com" autocomplete="off">
+        </div>
+        <div class="nf-row">
+          <label>비밀번호</label>
+          <input id="staffPw" type="text" placeholder="8자 이상" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="staffAddBtn">계정 추가</button>
+        <span class="set-msg" id="staffMsg"></span>
+        <p class="set-note" style="margin-top:10px">추가하면 그 직원이 위 이메일·비밀번호로 바로 로그인할 수 있습니다. 비밀번호는 직원에게 직접 전달해 주세요.</p>
+      </div>
+      <div class="panel">
+        <h2>관리자 목록</h2>
+        <div id="staffList"><div class="empty">불러오는 중...</div></div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -215,6 +238,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=23"></script>
+<script src="js/admin.js?v=24"></script>
 </body>
 </html>

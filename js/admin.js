@@ -112,13 +112,14 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['intakes', 'notices', 'settings', 'billing', 'work', 'msg'].forEach(function (t) {
+      ['intakes', 'notices', 'settings', 'billing', 'work', 'msg', 'staff'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
       // 결제·작업요청·메시지 탭은 처음 열 때 noad 페이지를 iframe 으로 로드
       if (b.dataset.tab === 'billing') loadNoadFrame('billing', 'billFrame', 'billLoading');
       if (b.dataset.tab === 'work') loadNoadFrame('work', 'workFrame', 'workLoading');
       if (b.dataset.tab === 'msg') loadNoadFrame('messaging', 'msgFrame', 'msgLoading');
+      if (b.dataset.tab === 'staff') loadStaff();
     });
   });
 
@@ -131,6 +132,62 @@
       $('listPast').hidden = (b.dataset.sub !== 'past');
     });
   });
+
+  // =================== 직원 계정 (clinic-admins Edge Function) ===================
+  function staffApi(action, payload) {
+    return db.functions.invoke('clinic-admins', { body: Object.assign({ action: action }, payload || {}) })
+      .then(function (res) {
+        if (res.error) throw new Error((res.error && res.error.message) || '요청 실패');
+        var d = res.data || {};
+        if (d.error) throw new Error(d.error);
+        return d;
+      });
+  }
+  function loadStaff() {
+    if (!$('staffList')) return;
+    $('staffList').innerHTML = '<div class="empty">불러오는 중...</div>';
+    staffApi('list').then(function (d) {
+      var admins = d.admins || [];
+      if (!admins.length) { $('staffList').innerHTML = '<div class="empty">등록된 관리자가 없습니다.</div>'; return; }
+      $('staffList').innerHTML = admins.map(function (a) {
+        var last = a.last_sign_in_at ? new Date(a.last_sign_in_at).toLocaleString('ko-KR') : '로그인 기록 없음';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid #eee">' +
+          '<div><b>' + esc(a.email || '') + '</b><div style="font-size:12px;color:#888;margin-top:2px">최근 로그인: ' + esc(last) + '</div></div>' +
+          '<button class="btn-ghost staff-del" data-id="' + esc(a.id) + '" data-email="' + esc(a.email || '') + '">삭제</button>' +
+          '</div>';
+      }).join('');
+    }).catch(function (e) {
+      $('staffList').innerHTML = '<div class="empty">불러오기 실패: ' + esc(e.message) + '</div>';
+    });
+  }
+  if ($('staffAddBtn')) {
+    $('staffAddBtn').addEventListener('click', function () {
+      var email = $('staffEmail').value.trim();
+      var pw = $('staffPw').value;
+      var msg = $('staffMsg');
+      msg.style.color = ''; msg.textContent = '';
+      if (!email || pw.length < 8) { msg.style.color = '#c0392b'; msg.textContent = '이메일과 8자 이상 비밀번호를 입력하세요.'; return; }
+      $('staffAddBtn').disabled = true; $('staffAddBtn').textContent = '추가 중...';
+      staffApi('create', { email: email, password: pw }).then(function () {
+        msg.style.color = '#2e7d32'; msg.textContent = '추가됐습니다 ✓';
+        $('staffEmail').value = ''; $('staffPw').value = '';
+        loadStaff();
+      }).catch(function (e) {
+        msg.style.color = '#c0392b'; msg.textContent = '실패: ' + e.message;
+      }).then(function () {
+        $('staffAddBtn').disabled = false; $('staffAddBtn').textContent = '계정 추가';
+      });
+    });
+    $('staffList').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.staff-del') : null;
+      if (!btn) return;
+      var id = btn.getAttribute('data-id'), email = btn.getAttribute('data-email');
+      if (!confirm(email + ' 계정을 삭제할까요? 되돌릴 수 없습니다.')) return;
+      btn.disabled = true;
+      staffApi('delete', { user_id: id }).then(function () { loadStaff(); })
+        .catch(function (err) { alert('삭제 실패: ' + err.message); btn.disabled = false; });
+    });
+  }
 
   // =================== 예진표 예약 (통합) ===================
   var STATUSES = ['신규', '예약확정', '취소'];
