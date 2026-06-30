@@ -133,9 +133,9 @@
     });
   });
 
-  // =================== 직원 계정 (clinic-admins Edge Function) ===================
+  // =================== 직원 계정 (clinic-admin Edge Function) ===================
   function staffApi(action, payload) {
-    return db.functions.invoke('clinic-admins', { body: Object.assign({ action: action }, payload || {}) })
+    return db.functions.invoke('clinic-admin', { body: Object.assign({ action: action }, payload || {}) })
       .then(function (res) {
         if (res.error) throw new Error((res.error && res.error.message) || '요청 실패');
         var d = res.data || {};
