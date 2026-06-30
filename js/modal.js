@@ -45,7 +45,7 @@ function openModal(mode) {
   if (window.lamiDB) {
     window.lamiDB.from('clinic_settings').select('*').eq('clinic_id', LAMI_CID).single().then(function (res) {
       YJ.settings = (res && res.data)
-        ? { hours: res.data.hours, slot_minutes: res.data.slot_minutes, holidays: res.data.holidays || [] }
+        ? { hours: res.data.hours, slot_minutes: res.data.slot_minutes, holidays: res.data.holidays || [], auto_confirm: !!res.data.auto_confirm }
         : window.LamiBooking.DEFAULT_SETTINGS;
       renderYjCal();
     });
@@ -261,6 +261,7 @@ function submitForm() {
   data.kind = (YJ.mode === 'full') ? '예진표' : '예약';
   data.source = '홈페이지';
   data.clinic_id = LAMI_CID;
+  data.status = (YJ.settings && YJ.settings.auto_confirm) ? '예약확정' : '신규';
   if (YJ.mode !== 'full') { data.concerns = []; data.details = {}; data.meds = null; data.pregnancy = null; data.message = null; }
 
   if (!window.lamiDB) { showSuccess(); return; }

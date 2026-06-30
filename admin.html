@@ -47,6 +47,32 @@
     <!-- 예진표 예약 -->
     <section id="tab-intakes">
       <div class="panel">
+        <h2>예약 설정</h2>
+        <div class="set-foot">
+          <label>예약 간격
+            <select id="slotMinutes">
+              <option value="10">10분</option>
+              <option value="15">15분</option>
+              <option value="20">20분</option>
+              <option value="25">25분</option>
+              <option value="30" selected>30분</option>
+              <option value="35">35분</option>
+              <option value="40">40분</option>
+              <option value="50">50분</option>
+              <option value="60">60분</option>
+              <option value="70">70분</option>
+              <option value="80">80분</option>
+              <option value="90">90분</option>
+              <option value="100">100분</option>
+            </select>
+          </label>
+          <label class="nf-inline" style="margin:0;gap:6px"><input type="checkbox" id="autoConfirm"> 예약 자동 확정</label>
+          <button class="btn-primary" id="intakeSettingsSaveBtn">저장</button>
+          <span class="set-msg" id="intakeSettingsMsg"></span>
+        </div>
+        <p class="set-note" style="margin-top:8px">예약 자동 확정을 켜면 환자가 예약하는 즉시 <b>예약확정</b> 상태가 됩니다. (끄면 <b>신규</b>로 접수 후 직접 확정)</p>
+      </div>
+      <div class="panel">
         <div class="panel-head">
           <h2>예약 캘린더</h2>
           <button class="btn-primary" onclick="openAdd()">＋ 예약 직접 추가</button>
@@ -100,14 +126,6 @@
         <h2>영업시간 · 휴원 요일</h2>
         <div id="hoursEditor"></div>
         <div class="set-foot">
-          <label>예약 간격
-            <select id="slotMinutes">
-              <option value="15">15분</option>
-              <option value="20">20분</option>
-              <option value="30" selected>30분</option>
-              <option value="60">60분</option>
-            </select>
-          </label>
           <button class="btn-primary" id="settingsSaveBtn">설정 저장</button>
           <span class="set-msg" id="settingsMsg"></span>
         </div>
@@ -197,6 +215,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=21"></script>
+<script src="js/admin.js?v=22"></script>
 </body>
 </html>

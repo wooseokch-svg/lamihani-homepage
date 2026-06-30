@@ -540,11 +540,13 @@
   function loadSettings() {
     db.from('clinic_settings').select('*').eq('clinic_id', CID).single().then(function (res) {
       curSettings = (res && res.data) ? {
-        hours: res.data.hours || {}, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || []
+        hours: res.data.hours || {}, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || [],
+        auto_confirm: !!(res.data && res.data.auto_confirm)
       } : JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
       renderHours();
       renderHolidays();
       $('slotMinutes').value = String(curSettings.slot_minutes);
+      if ($('autoConfirm')) $('autoConfirm').checked = !!curSettings.auto_confirm;
     });
   }
 
@@ -598,14 +600,31 @@
     });
     var payload = {
       clinic_id: CID, hours: hours,
-      slot_minutes: parseInt($('slotMinutes').value, 10),
       holidays: curSettings.holidays || [],
       updated_at: new Date().toISOString()
     };
     var msg = $('settingsMsg'); msg.textContent = '저장 중...';
     db.from('clinic_settings').upsert(payload, { onConflict: 'clinic_id' }).then(function (res) {
       if (res.error) { msg.textContent = '오류: ' + res.error.message; msg.style.color = '#d33'; return; }
-      curSettings.hours = hours; curSettings.slot_minutes = payload.slot_minutes;
+      curSettings.hours = hours;
+      msg.textContent = '저장되었습니다 ✓'; msg.style.color = '#2e7d32';
+      setTimeout(function () { msg.textContent = ''; }, 2500);
+    });
+  });
+
+  // 예약 설정(예진표 예약 탭) — 예약 간격 + 자동 확정 저장. (upsert 미포함 컬럼 hours/holidays 는 보존됨)
+  if ($('intakeSettingsSaveBtn')) $('intakeSettingsSaveBtn').addEventListener('click', function () {
+    if (!curSettings) curSettings = {};
+    var payload = {
+      clinic_id: CID,
+      slot_minutes: parseInt($('slotMinutes').value, 10),
+      auto_confirm: $('autoConfirm').checked,
+      updated_at: new Date().toISOString()
+    };
+    var msg = $('intakeSettingsMsg'); msg.textContent = '저장 중...';
+    db.from('clinic_settings').upsert(payload, { onConflict: 'clinic_id' }).then(function (res) {
+      if (res.error) { msg.textContent = '오류: ' + res.error.message; msg.style.color = '#d33'; return; }
+      curSettings.slot_minutes = payload.slot_minutes; curSettings.auto_confirm = payload.auto_confirm;
       msg.textContent = '저장되었습니다 ✓'; msg.style.color = '#2e7d32';
       setTimeout(function () { msg.textContent = ''; }, 2500);
     });
