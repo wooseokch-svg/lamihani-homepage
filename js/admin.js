@@ -690,8 +690,11 @@
       }
       if (loading) frame.addEventListener('load', function () { loading.style.display = 'none'; }, { once: true });
       frame.dataset.loadedAt = String(Date.now());
+      // 구버전 엣지함수가 messaging 을 billing 으로 보내는 경우 경로 보정(토큰은 경로 무관). 신버전이면 no-op.
+      var u = res.data.url;
+      if (target === 'messaging') u = u.replace(/(:\/\/[^/]+\/)[^?]*\?/, '$1clinic-messaging?');
       // embed=1 → noad 페이지가 병원 네이티브 탭과 동일 배경(#f4f1ec)·폭(920)·여백으로 렌더
-      frame.src = res.data.url + '&embed=1';
+      frame.src = u + '&embed=1';
     }, function () {
       frame.dataset.loaded = '';
       if (loading) loading.textContent = '네트워크 오류로 불러오지 못했습니다.';
