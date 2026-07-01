@@ -816,6 +816,45 @@
 
 <a class="to-top" id="toTop" aria-label="맨 위로">↑</a>
 
+<style>
+#quickBanner{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:1500;display:flex;flex-direction:column;gap:9px}
+#quickBanner .qb-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:84px;padding:13px 6px;border-radius:14px;text-decoration:none;font-size:12.5px;font-weight:700;line-height:1.25;text-align:center;box-shadow:0 4px 14px rgba(90,60,30,.16);transition:transform .12s}
+#quickBanner .qb-item:hover{transform:translateY(-2px)}
+#quickBanner .qb-item svg{display:block}
+#quickBanner .qb-primary{background:#b06a3a;color:#fff}
+#quickBanner .qb-intake{background:#fff;color:#7a5638;border:1px solid #e4d8c8}
+#quickBanner .qb-naver{background:#03C75A;color:#fff}
+#quickBanner .qb-kakao{background:#FEE500;color:#3c1e1e}
+#quickBanner .qb-nlogo{font-size:21px;font-weight:800;line-height:1}
+@media(max-width:640px){
+#quickBanner{right:0;left:0;top:auto;bottom:0;transform:none;flex-direction:row;gap:0;box-shadow:0 -2px 12px rgba(90,60,30,.16)}
+#quickBanner .qb-item{flex:1;width:auto;border-radius:0;padding:9px 4px 8px;font-size:11px;box-shadow:none;gap:3px;font-weight:600}
+#quickBanner .qb-item svg{width:21px;height:21px}
+#quickBanner .qb-intake{border:none;border-top:1px solid #f0e8dc}
+#quickBanner .qb-nlogo{font-size:18px}
+body{padding-bottom:64px}
+#toTop{bottom:76px}
+}
+</style>
+<nav id="quickBanner" aria-label="빠른 메뉴">
+  <a href="#" onclick="openModal('reserve');return false;" class="qb-item qb-primary" aria-label="예약하기">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 2.5v4M16 2.5v4"/></svg>
+    <span>예약하기</span>
+  </a>
+  <a href="#" onclick="openModal();return false;" class="qb-item qb-intake" aria-label="1:1 비대면 예진표">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <span>1:1 비대면<br>예진표</span>
+  </a>
+  <a href="https://map.naver.com/p/entry/place/1137949987" target="_blank" rel="noopener" class="qb-item qb-naver" aria-label="네이버예약">
+    <b class="qb-nlogo">N</b>
+    <span>네이버예약</span>
+  </a>
+  <a href="http://pf.kakao.com/_lZMIX" target="_blank" rel="noopener" class="qb-item qb-kakao" aria-label="카카오상담">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden="true"><path d="M12 4C6.9 4 3 7.2 3 11.1c0 2.5 1.7 4.7 4.2 6-.2.7-.6 2.2-.7 2.6-.1.4.2.4.4.3.2-.1 2.5-1.7 3.5-2.4.5.1 1.1.1 1.6.1 5.1 0 9-3.2 9-7.1S17.1 4 12 4z"/></svg>
+    <span>카카오상담</span>
+  </a>
+</nav>
+
 <script src="js/config.js?v=8"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
