@@ -59,6 +59,9 @@ h1, h2, h3, h4, .eyebrow{ font-family: 'Gowun Batang', serif; }
 .btn-naver:hover{ background: #fff; color: #00de43; border-color: #57d900; }
 .btn-kakao{ background: #fee500; color: #0a0a0a; font-size: 16px; padding: 12px 24px; }
 .btn-kakao:hover{ background: #fff; color: #f5ab00; border-color: #f5c000; }
+.btn-naver, .btn-kakao{ display: inline-flex; align-items: center; gap: 7px; }
+.btn-naver .btn-nlogo{ font-size: 18px; font-weight: 800; line-height: 1; }
+.btn-kakao .btn-kico{ flex-shrink: 0; }
 .btn-row{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
 /* ===== Header ===== */
