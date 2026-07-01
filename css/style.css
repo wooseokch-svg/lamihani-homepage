@@ -147,6 +147,17 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
   font-size: 16px; font-weight: 700; line-height: 1.22; letter-spacing: -.4px;
   box-shadow: 0 6px 18px rgba(0,0,0,.20);
 }
+/* 히어로 등장: 더 아래에서 + 요소별 시간차(캐스케이드) */
+.hero-content .reveal{ transform: translateY(72px); }
+.hero-content .reveal.in{ transform: none; }
+.hero-content h1.reveal{ transition-delay: 0s; }
+.hero-content p.reveal{ transition-delay: .15s; }
+.hero-badges .hbadge.reveal:nth-child(1){ transition-delay: .30s; }
+.hero-badges .hbadge.reveal:nth-child(2){ transition-delay: .38s; }
+.hero-badges .hbadge.reveal:nth-child(3){ transition-delay: .46s; }
+.hero-badges .hbadge.reveal:nth-child(4){ transition-delay: .54s; }
+.hero-badges .hbadge.reveal:nth-child(5){ transition-delay: .62s; }
+.hero-content .hero-cta.reveal{ transition-delay: .78s; }
 
 /* ===== Concern cards ===== */
 .concern-grid{ display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
