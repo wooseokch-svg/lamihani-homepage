@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>히어로 원형 배지 – 디자인 검토</title>
+<link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="css/style.css?v=7">
+<style>
+/* ===== 검토용 스위처 ===== */
+.pv-switch{ position:fixed; top:16px; left:16px; z-index:2000; display:flex; gap:8px; flex-wrap:wrap;
+  background:#fff; padding:8px; border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,.15); }
+.pv-switch button{ border:1px solid #e1e1e1; background:#fff; border-radius:8px;
+  padding:7px 12px; font-size:13px; cursor:pointer; font-weight:700; color:#555; }
+.pv-switch button.on{ background:#f47a45; color:#fff; border-color:#f47a45; }
+.pv-note{ position:fixed; bottom:16px; left:16px; z-index:2000; background:#212121; color:#fff;
+  font-size:13px; padding:10px 14px; border-radius:10px; max-width:340px; line-height:1.6; }
+
+/* ===== 히어로 원형 배지 ===== */
+.hero-badges{
+  margin-top:30px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+}
+.hbadge{
+  width:var(--sz,96px); height:var(--sz,96px); border-radius:50%;
+  background:#fff; color:var(--orange);
+  border:var(--bw,2.5px) solid var(--orange);
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-size:16px; font-weight:700; line-height:1.22; letter-spacing:-.4px;
+  box-shadow:0 6px 18px rgba(0,0,0,.20);
+  transition:transform .15s;
+}
+.hbadge:hover{ transform:translateY(-4px); }
+
+/* 스타일 A : 요청안 (흰 원 + 주황 테두리 2.5px) */
+body.sa .hero-badges{ --sz:96px; --bw:2.5px; }
+/* 스타일 B : 큼직 + 얇은 테두리 */
+body.sb .hero-badges{ --sz:108px; --bw:2px; }
+/* 스타일 C : 컴팩트 */
+body.sc .hero-badges{ --sz:84px; --bw:2.5px; }
+.hbadge:hover{ transform:translateY(-4px); }
+
+@media (max-width:992px){
+  .hero-badges{ gap:12px; }
+  .hbadge{ width:82px !important; height:82px !important; font-size:14px; }
+}
+@media (max-width:560px){
+  .hbadge{ width:66px !important; height:66px !important; font-size:12px; border-width:2px !important; }
+}
+</style>
+</head>
+<body class="sa">
+
+<div class="pv-switch">
+  <button class="on" onclick="setS('sa',this)">A · 요청안(96px)</button>
+  <button onclick="setS('sb',this)">B · 큼직(108px)</button>
+  <button onclick="setS('sc',this)">C · 컴팩트(84px)</button>
+</div>
+<div class="pv-note">히어로 문구와 '1:1 비대면 예진표' 버튼 사이에 배지 5개를 넣은 시안입니다.<br>상단 버튼으로 크기를 비교하세요. (모바일 폭이면 자동 축소·줄바꿈)</div>
+
+<!-- ===== 실제 히어로 재현 ===== -->
+<section class="hero" id="home" style="background-image:url('images/568c59535f305.jpg');">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1><span class="point">몸이 보내는 신호,</span><br><span class="white">나에게 맞는 처방으로</span></h1>
+    <p>라미한의원은 한 사람의 체질과<br>생활습관을 고려한 맞춤 한방 진료를 제공합니다.</p>
+
+    <!-- ▼▼ 새로 추가되는 원형 배지 ▼▼ -->
+    <div class="hero-badges">
+      <span class="hbadge">수험생<br>한약</span>
+      <span class="hbadge">한방<br>미용</span>
+      <span class="hbadge">다이어트</span>
+      <span class="hbadge">침치료</span>
+      <span class="hbadge">교통사고</span>
+    </div>
+    <!-- ▲▲ ------------------- ▲▲ -->
+
+    <div class="hero-cta">
+      <a class="btn btn-fill" href="#" role="button">1:1 비대면 예진표</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function setS(s, btn){
+  document.body.className = s;
+  document.querySelectorAll('.pv-switch button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>
