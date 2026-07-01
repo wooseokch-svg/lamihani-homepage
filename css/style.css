@@ -171,7 +171,7 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 .clinic-grid{ display: grid; grid-template-columns: repeat(3,1fr); gap: 40px 20px; }
 .clinic-item{ text-align: center; }
 .clinic-item img{ width: 140px; height: 140px; margin: 0 auto 18px; }
-.clinic-item h3{ font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.clinic-item h3{ font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
 .clinic-item p{ color: #ffe6d0; font-size: 16px; line-height: 1.5; }
 .auto-insurance{ margin-top: 60px; }
 .auto-insurance h3{ font-size: 26px; font-weight: 800; line-height: 2; }
