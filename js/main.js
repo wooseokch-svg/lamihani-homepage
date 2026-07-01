@@ -45,9 +45,11 @@
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
+        // 볼 때마다 반복: 뷰포트에 들어오면 실행, 벗어나면 리셋
         if (entry.isIntersecting) {
           entry.target.classList.add('in');
-          io.unobserve(entry.target);
+        } else {
+          entry.target.classList.remove('in');
         }
       });
     }, { threshold: 0.12 });
