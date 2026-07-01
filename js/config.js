@@ -15,8 +15,8 @@
   // ── 도메인 → 병원 매핑 (새 병원은 여기 한 줄 추가) ──
   // name = noad 결제/작업요청 페이지에 표시될 병원명 (핸드오버 토큰에 담겨 넘어감).
   var CLINICS = {
-    'lamihani.com':     { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
-    'www.lamihani.com': { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' }
+    'lamihani21.co.kr':     { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
+    'www.lamihani21.co.kr': { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' }
     // '병원B.com':      { id: 'clinicB', name: '○○한의원', naver: 'https://map.naver.com/...' },
   };
 
