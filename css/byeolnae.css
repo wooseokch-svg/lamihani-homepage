@@ -205,14 +205,15 @@ ul{list-style:none}
 /* ---------- 예약 / 약관 모달 ---------- */
 .reserve-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:18px}
 .reserve-overlay.open{display:flex}
-.reserve-box{background:#fff;border-radius:18px;width:100%;max-width:420px;max-height:90vh;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.reserve-box{background:#fff;border-radius:18px;width:100%;max-width:420px;height:600px;max-height:90vh;overflow:hidden;position:relative;display:flex;flex-direction:column}
 .reserve-close{position:absolute;top:12px;right:14px;font-size:20px;background:none;border:none;color:#fff;cursor:pointer;z-index:2}
 .reserve-head{background:var(--green);color:#fff;font-size:17px;font-weight:600;padding:20px 22px;border-radius:18px 18px 0 0;flex-shrink:0}
 .reserve-head b{font-weight:800}
 /* 본문: 상단(진료·달력) 고정 + 하단(개인정보 동의~) 스크롤 */
-.reserve-body{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
-.rf-top{flex-shrink:0;padding:20px 22px 8px}
-.rf-scroll{flex:1;min-height:0;overflow-y:auto;padding:12px 22px 24px;border-top:1px solid var(--line)}
+/* 타이틀(헤더)만 고정, 그 아래 전체 스크롤 */
+.reserve-body{flex:1;min-height:0;overflow-y:auto}
+.rf-top{padding:20px 22px 4px}
+.rf-scroll{padding:8px 22px 24px}
 .rf-label{display:block;font-size:13px;font-weight:700;color:#444;margin:14px 0 6px}
 .rf-label:first-child{margin-top:0}
 .rf-label small{color:#aaa;font-weight:500}
