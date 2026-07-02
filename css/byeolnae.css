@@ -89,6 +89,10 @@ ul{list-style:none}
 
 /* ---------- 병원소개 / gallery ---------- */
 .reasons{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:20px}
+/* 병원소개 여백 조정 */
+#intro{padding-top:110px}
+#intro .sec-title{margin-bottom:70px}
+#intro .reasons{margin-top:0}
 .reason-col{border-top:2px solid #2b2b2b;padding-top:20px}
 .reason-col h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:14px}
 .reason-col p{font-size:18px;color:#1d1d1d;line-height:1.7}
