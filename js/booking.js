@@ -5,7 +5,7 @@
 (function () {
   // 설정이 없을 때 사용할 기본 영업시간 (실제 운영시간)
   //   acceptLunch = 점심 전 접수마감, acceptClose = 종료 전 접수마감
-  var WD_WEEK = { closed: false, open: '10:00', close: '17:30', lunchStart: '13:00', lunchEnd: '14:00', acceptLunch: '12:20', acceptClose: '16:50' };
+  var WD_WEEK = { closed: false, open: '10:00', close: '18:00', lunchStart: '', lunchEnd: '', acceptLunch: '', acceptClose: '17:20' };
   var DEFAULT_SETTINGS = {
     hours: {
       '0': { closed: true },
