@@ -44,25 +44,25 @@ ul{list-style:none}
 .overlay-bg.show{opacity:1;visibility:visible}
 
 /* ---------- Section base ---------- */
-.section{padding:64px 0}
+.section{padding:92px 0}
 .section-gray{background:var(--gray-bg)}
 .section-green{background:var(--green)}
 .container{max-width:var(--maxw);margin:0 auto;padding:0 18px}
 .center{text-align:center}
-.eyebrow{display:inline-block;font-size:14px;font-weight:700;color:var(--green);letter-spacing:.04em;margin-bottom:12px}
+.eyebrow{display:inline-block;font-size:16px;font-weight:700;color:var(--green);letter-spacing:.04em;margin-bottom:14px}
 .eyebrow.white{color:#d9f5e2}
-.sec-title{font-size:26px;font-weight:800;line-height:1.35;color:var(--text);margin-bottom:16px}
+.sec-title{font-size:32px;font-weight:800;line-height:1.3;color:var(--text);margin-bottom:18px}
 .sec-title.white{color:#fff}
-.sec-lead{font-size:15.5px;color:var(--text-sub);line-height:1.75;max-width:640px;margin:0 auto}
+.sec-lead{font-size:18px;color:var(--text-sub);line-height:1.8;max-width:660px;margin:0 auto}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;height:550px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
 .hero-inner{position:relative;max-width:var(--maxw);height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .hero-text{flex:1 1 auto;color:#fff}
-.hero-text h1{font-size:80px;font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
-.hero-text p{margin-top:22px;font-size:26px;font-weight:500;color:#fff;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.18)}
-.hero-photo{flex:0 0 auto;align-self:flex-end;height:100%;display:flex;align-items:flex-end}
-.hero-photo img{height:98%;width:auto;object-fit:contain;object-position:bottom}
+.hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+.hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.18)}
+.hero-photo{flex:0 0 auto;max-width:46%;align-self:flex-end;height:100%;display:flex;align-items:flex-end;justify-content:flex-end}
+.hero-photo img{height:100%;width:auto;max-width:100%;object-fit:contain;object-position:bottom right}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
 .btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s;box-shadow:0 6px 18px rgba(0,0,0,.15)}
 .btn-hero:hover{background:var(--teal)}
@@ -75,8 +75,6 @@ ul{list-style:none}
 @media (max-width:760px){
   .hero{height:auto;min-height:460px}
   .hero-inner{gap:8px}
-  .hero-text h1{font-size:42px}
-  .hero-text p{font-size:17px;margin-top:14px}
   .hero-cta{margin-top:20px;gap:8px}
   .btn-hero{font-size:13px;padding:11px 18px}
   .hero-photo{align-self:center;height:auto;max-width:44%}
@@ -91,44 +89,44 @@ ul{list-style:none}
 /* ---------- 병원소개 / gallery ---------- */
 .reasons{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:20px}
 .reason-col{border-top:2px solid #2b2b2b;padding-top:20px}
-.reason-col h3{font-size:19px;font-weight:800;color:var(--green);margin-bottom:12px}
-.reason-col p{font-size:15px;color:var(--text-sub);line-height:1.85}
+.reason-col h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:14px}
+.reason-col p{font-size:17px;color:var(--text-sub);line-height:1.9}
 .intro-img{margin-top:36px}
 .intro-img img{width:100%;border-radius:16px;display:block}
 .info-sub{font-size:13px;color:#999;margin:-4px 0 12px}
 
 /* ---------- 의료진 ---------- */
-.doctors{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px;max-width:840px;margin-left:auto;margin-right:auto}
+.doctors{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:48px;max-width:900px;margin-left:auto;margin-right:auto}
 .doctor{text-align:center}
-.doctor-photo{width:200px;height:200px;margin:0 auto 18px;border-radius:50%;overflow:hidden;background:#eef2f0}
+.doctor-photo{width:280px;height:280px;margin:0 auto 22px;border-radius:50%;overflow:hidden;background:#eef2f0}
 .doctor-photo img{width:100%;height:100%;object-fit:cover}
-.doctor h3{font-size:23px;font-weight:800;margin-bottom:8px}
-.doctor-clinic{font-size:15px;color:var(--text-sub)}
+.doctor h3{font-size:28px;font-weight:800;margin-bottom:10px}
+.doctor-clinic{font-size:18px;color:var(--text-sub)}
 
 /* ---------- 진료장비 ---------- */
 .equip-feature{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;margin-top:30px}
 .equip-img img{width:100%;border-radius:16px;display:block}
-.equip-text h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:14px}
-.equip-text p{font-size:15px;color:var(--text-sub);line-height:1.8;margin-bottom:16px}
-.equip-list li{position:relative;padding-left:24px;font-size:15px;color:#333;margin-bottom:10px}
+.equip-text h3{font-size:26px;font-weight:800;color:var(--green);margin-bottom:16px}
+.equip-text p{font-size:17px;color:var(--text-sub);line-height:1.85;margin-bottom:18px}
+.equip-list li{position:relative;padding-left:24px;font-size:16.5px;color:#333;margin-bottom:11px}
 .equip-list li::before{content:"•";position:absolute;left:4px;color:#aaa;font-weight:700}
 
 /* ---------- 진료과목 (green section) ---------- */
 .depart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:30px}
 .depart-card{background:#fff;border-radius:16px;padding:24px 14px;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.08)}
 .depart-card .ico{width:56px;height:56px;margin:0 auto 12px;object-fit:contain}
-.depart-card h3{font-size:16.5px;font-weight:800;color:var(--green);margin-bottom:7px}
-.depart-card p{font-size:13px;color:var(--text-sub);line-height:1.55}
+.depart-card h3{font-size:19px;font-weight:800;color:var(--green);margin-bottom:8px}
+.depart-card p{font-size:15px;color:var(--text-sub);line-height:1.6}
 .depart-note{margin:26px auto 0;max-width:560px;background:var(--note);border:1px solid var(--note-line);color:#5c6b1f;font-size:13px;font-weight:600;padding:12px 16px;border-radius:10px;text-align:center}
 
 /* ---------- 진료시간 ---------- */
 .hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px;text-align:left}
 .info-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 24px}
-.info-card h3{font-size:17px;font-weight:800;color:var(--green);margin-bottom:14px}
-.info-card ul li{font-size:15px;color:#333;padding:7px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px}
+.info-card h3{font-size:20px;font-weight:800;color:var(--green);margin-bottom:14px}
+.info-card ul li{font-size:16.5px;color:#333;padding:8px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px}
 .info-card ul li:last-child{border-bottom:none}
 .info-card ul li b{color:var(--green);font-weight:700}
-.info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:var(--text-sub);font-size:14px}
+.info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:var(--text-sub);font-size:15.5px}
 .info-card.notes ul li::before{content:"·";position:absolute;left:2px;color:var(--green);font-weight:800}
 .hcap{font-weight:600;color:#999;font-size:13px}
 .hours-days li b.off{color:#c0392b}
@@ -139,7 +137,7 @@ ul{list-style:none}
 .location-wrap{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:30px;align-items:start}
 .loc-block{margin-bottom:18px}
 .loc-block span{display:inline-block;font-size:13px;font-weight:800;color:var(--green);margin-bottom:5px}
-.loc-block p{font-size:15px;color:#333;line-height:1.7}
+.loc-block p{font-size:17px;color:#333;line-height:1.75}
 .loc-block a{color:#333;font-weight:700}
 .location-map{display:flex;align-items:center;justify-content:center;text-align:center;border-radius:16px;border:1px solid var(--line);min-height:220px;background:#f1f8f2;color:var(--green);font-weight:700;font-size:15px;line-height:1.6}
 
@@ -180,8 +178,7 @@ ul{list-style:none}
 @media(min-width:880px){
   .gnb{display:flex;margin-left:auto;margin-right:24px}
   .nav-toggle{display:none}
-  .hero h1{font-size:40px}
-  .sec-title{font-size:32px}
+  .sec-title{font-size:42px}
   .depart-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media(max-width:879px){
