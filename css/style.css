@@ -210,8 +210,9 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 .method-item p{ font-size: 15px; color: var(--text); line-height: 1.7; }
 
 /* ===== Doctor ===== */
-.doctor-wrap{ display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; align-items: end; }
-.doctor-photo img{ width: 90%; display: block; margin: 0 auto; border-radius: 20px; }
+.doctor-wrap{ display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; align-items: stretch; }
+.doctor-photo{ border-radius: 20px; overflow: hidden; aspect-ratio: 4/5; }
+.doctor-photo img{ width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
 .doctor-info{ padding-top: 30px; }
 .doctor-info p{ font-size: 18px; color: var(--text); margin-bottom: 18px; }
 .doctor-career{ margin-top: 28px; padding: 28px 30px; border: 1px solid var(--line); border-radius: 20px; }
