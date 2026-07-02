@@ -863,6 +863,50 @@ body{padding-bottom:64px}
   </a>
 </nav>
 
+<!-- ===== 프로모션 팝업 (수상 안내) ===== -->
+<style>
+#promoPop{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
+#promoPop.show{display:flex}
+#promoPop .promo-dim{position:absolute;inset:0;background:rgba(0,0,0,.62)}
+#promoPop .promo-card{position:relative;width:100%;max-width:380px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#promoPop .promo-img{display:block;line-height:0}
+#promoPop .promo-img img{display:block;width:100%;height:auto}
+#promoPop .promo-bar{display:flex;background:#fff}
+#promoPop .promo-btn{flex:1;border:0;background:#fff;padding:15px 8px;font-size:14px;font-weight:600;color:#666;cursor:pointer;font-family:inherit}
+#promoPop .promo-btn+.promo-btn{border-left:1px solid #eee}
+#promoPop .promo-close{color:#111;font-weight:700}
+</style>
+<div id="promoPop" aria-hidden="true">
+  <div class="promo-dim" id="promoDim"></div>
+  <div class="promo-card" role="dialog" aria-label="라미한의원 수상 안내">
+    <a class="promo-img" href="https://www.besttimes.co.kr/11975?utm_source=ig&amp;utm_medium=social&amp;utm_content=link_in_bio&amp;fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_twfRmfNzbI_sNcnDCbLQm4uQwq627dTXgHh_grE8IdgxiYu9Z9JuSb9Hx4_aem_YWdncwkGTidlyr-7INg-pPuUjC1m&amp;brid=YWdncwHGBnawEF0ENkBldhd13YPT" target="_blank" rel="noopener noreferrer">
+      <img src="images/award-2026.webp" alt="2026 강남구 우수 한의원으로 선정 - 라미한의원">
+    </a>
+    <div class="promo-bar">
+      <button type="button" class="promo-btn" id="promoHideToday">오늘 하루 보지 않음</button>
+      <button type="button" class="promo-btn promo-close" id="promoClose">닫기</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var pop = document.getElementById('promoPop');
+  if (!pop) return;
+  var KEY = 'lami_promo_award2026';
+  function todayStr(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  try { if (localStorage.getItem(KEY) === todayStr()) return; } catch(e){}
+  function close(){ pop.classList.remove('show'); pop.setAttribute('aria-hidden','true'); }
+  document.getElementById('promoClose').addEventListener('click', close);
+  document.getElementById('promoDim').addEventListener('click', close);
+  document.getElementById('promoHideToday').addEventListener('click', function(){
+    try { localStorage.setItem(KEY, todayStr()); } catch(e){}
+    close();
+  });
+  pop.classList.add('show');
+  pop.setAttribute('aria-hidden','false');
+})();
+</script>
+
 <script src="js/config.js?v=8"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
