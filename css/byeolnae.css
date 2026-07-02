@@ -58,11 +58,11 @@ ul{list-style:none}
 /* ---------- Hero ---------- */
 .hero{position:relative;width:100%;aspect-ratio:24/7;min-height:460px;max-height:620px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
 .hero-inner{position:relative;z-index:2;max-width:var(--maxw);width:100%;height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center}
-.hero-text{max-width:52%;min-width:0;color:#fff}
+.hero-text{position:relative;z-index:2;max-width:56%;min-width:0;color:#fff}
 .hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
 .hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:left}
-/* 여성 이미지: hero 우측 끝에 고정, 살짝 작게 */
-.hero-photo{position:absolute;right:0;bottom:0;height:90%;z-index:1;pointer-events:none}
+/* 여성 이미지: 컨테이너 우측(예약하기 끝) 기준 정렬, 텍스트 아래 레이어(bg>여성>텍스트) */
+.hero-photo{position:absolute;right:18px;bottom:0;height:100%;z-index:1;pointer-events:none}
 .hero-photo img{height:100%;width:auto;object-fit:contain;object-position:bottom right}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
 .btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s;box-shadow:0 6px 18px rgba(0,0,0,.15)}
