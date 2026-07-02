@@ -889,19 +889,26 @@ body{padding-bottom:64px}
 </div>
 <script>
 (function(){
-  var pop = document.getElementById('promoPop');
-  if (!pop) return;
-  var KEY = 'lami_promo_award2026';
-  function todayStr(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-  try { if (localStorage.getItem(KEY) === todayStr()) return; } catch(e){}
-  function close(){ pop.classList.remove('show'); pop.setAttribute('aria-hidden','true'); }
-  document.getElementById('promoClose').addEventListener('click', close);
-  document.getElementById('promoHideToday').addEventListener('click', function(){
-    try { localStorage.setItem(KEY, todayStr()); } catch(e){}
-    close();
-  });
-  pop.classList.add('show');
-  pop.setAttribute('aria-hidden','false');
+  function initPromo(){
+    var pop = document.getElementById('promoPop');
+    if (!pop) return;
+    // 라미한의원 사이트에서만 노출 (config.js 로드 후 판별)
+    var cid = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
+    if (cid !== 'lamihani') return;
+    var KEY = 'lami_promo_award2026';
+    function todayStr(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+    try { if (localStorage.getItem(KEY) === todayStr()) return; } catch(e){}
+    function close(){ pop.classList.remove('show'); pop.setAttribute('aria-hidden','true'); }
+    document.getElementById('promoClose').addEventListener('click', close);
+    document.getElementById('promoHideToday').addEventListener('click', function(){
+      try { localStorage.setItem(KEY, todayStr()); } catch(e){}
+      close();
+    });
+    pop.classList.add('show');
+    pop.setAttribute('aria-hidden','false');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPromo);
+  else initPromo();
 })();
 </script>
 
