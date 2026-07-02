@@ -353,3 +353,27 @@
 
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeReserve(); closePolicy(); } });
 })();
+
+/* ===== 공지사항 (별내 공개 페이지, byeolnae_dental 기준, URL 자동 링크) ===== */
+(function () {
+  var box = document.getElementById('noticeList');
+  if (!box || !window.lamiDB) return;
+  function e(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function lk(h){ return h.replace(/(https?:\/\/[^\s<]+)/g, function(u){ return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+u+'</a>'; }); }
+  function fd(s){ var d=new Date(s); return isNaN(d)?'':d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
+  window.lamiDB.from('notices').select('id,title,content,pinned,created_at').eq('clinic_id','byeolnae_dental')
+    .order('pinned',{ascending:false}).order('created_at',{ascending:false}).limit(20).then(function(res){
+      if (res.error || !res.data || !res.data.length) return;
+      box.innerHTML = res.data.map(function(n){
+        return '<div class="notice-item">' +
+          '<button class="notice-head" type="button">' +
+            (n.pinned ? '<span class="notice-pin">공지</span>' : '') +
+            '<span class="notice-title">' + e(n.title) + '</span>' +
+            '<span class="notice-date">' + fd(n.created_at) + '</span>' +
+          '</button>' +
+          '<div class="notice-body">' + lk(e(n.content)).replace(/\n/g,'<br>') + '</div>' +
+        '</div>';
+      }).join('');
+      box.querySelectorAll('.notice-head').forEach(function(h){ h.addEventListener('click', function(){ h.parentElement.classList.toggle('open'); }); });
+    });
+})();

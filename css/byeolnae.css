@@ -139,13 +139,21 @@ ul{list-style:none}
 .loc-block span{display:inline-block;font-size:13px;font-weight:800;color:var(--green);margin-bottom:5px}
 .loc-block p{font-size:17px;color:#333;line-height:1.75}
 .loc-block a{color:#333;font-weight:700}
-.location-map{display:flex;align-items:center;justify-content:center;text-align:center;border-radius:16px;border:1px solid var(--line);min-height:220px;background:#f1f8f2;color:var(--green);font-weight:700;font-size:15px;line-height:1.6}
+.location-map{border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.location-map iframe{width:100%;height:280px;border:0;display:block}
+.map-naver-btn{display:block;text-align:center;padding:13px;background:var(--green);color:#fff;font-weight:700;font-size:14px;text-decoration:none}
+.map-naver-btn:hover{opacity:.92}
 
 /* ---------- 공지 ---------- */
 .notice-list{margin-top:26px;border-top:2px solid #eee}
-.notice-item{padding:16px 4px;border-bottom:1px solid #eee}
-.notice-item .t{font-size:15px;font-weight:700}
-.notice-item .d{font-size:12.5px;color:#aaa;margin-top:4px}
+.notice-item{border-bottom:1px solid #eee}
+.notice-head{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:15px 4px;cursor:pointer;text-align:left;font-family:inherit}
+.notice-pin{font-size:11px;font-weight:800;color:#fff;background:var(--green);border-radius:10px;padding:2px 8px;flex-shrink:0}
+.notice-title{flex:1;font-size:15px;font-weight:700;color:#222}
+.notice-date{font-size:12.5px;color:#aaa;flex-shrink:0}
+.notice-body{max-height:0;overflow:hidden;transition:max-height .3s;font-size:14px;color:#555;line-height:1.75;padding:0 4px}
+.notice-item.open .notice-body{max-height:800px;padding:0 4px 16px}
+.notice-body a{color:var(--green);text-decoration:underline;word-break:break-all}
 .notice-empty{padding:30px;text-align:center;color:#aaa;font-size:14px}
 
 /* ---------- Footer ---------- */
@@ -183,7 +191,7 @@ ul{list-style:none}
 }
 @media(max-width:879px){
   .location-wrap{grid-template-columns:1fr}
-  .location-map{min-height:180px}
+  .location-map iframe{height:220px}
 }
 @media(max-width:760px){
   .reasons,.equip-feature{grid-template-columns:1fr;gap:22px}

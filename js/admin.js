@@ -47,6 +47,12 @@
     return (s == null ? '' : String(s))
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+  // esc 처리된 문자열의 URL을 새 창 링크로 변환
+  function linkify(html) {
+    return html.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+    });
+  }
   function fmt(s) {
     if (!s) return '';
     var d = new Date(s);
@@ -215,16 +221,22 @@
   function loadStaff() {
     if (!$('staffList')) return;
     $('staffList').innerHTML = '<div class="empty">불러오는 중...</div>';
-    staffApi('list').then(function (d) {
-      var admins = d.admins || [];
-      if (!admins.length) { $('staffList').innerHTML = '<div class="empty">등록된 관리자가 없습니다.</div>'; return; }
-      $('staffList').innerHTML = admins.map(function (a) {
-        var last = a.last_sign_in_at ? new Date(a.last_sign_in_at).toLocaleString('ko-KR') : '로그인 기록 없음';
-        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid #eee">' +
-          '<div><b>' + esc(a.email || '') + '</b><div style="font-size:12px;color:#888;margin-top:2px">최근 로그인: ' + esc(last) + '</div></div>' +
-          '<button class="btn-ghost staff-del" data-id="' + esc(a.id) + '" data-email="' + esc(a.email || '') + '">삭제</button>' +
-          '</div>';
-      }).join('');
+    // 엣지함수 list 는 호출자(본인)를 제외하므로, 세션의 본인 계정을 맨 앞에 '나'로 표시.
+    db.auth.getUser().then(function (u) {
+      var me = (u && u.data && u.data.user) ? u.data.user : null;
+      return staffApi('list').then(function (d) {
+        var admins = (d.admins || []).filter(function (a) { return !me || a.id !== me.id; });
+        if (me) admins.unshift({ id: me.id, email: me.email, last_sign_in_at: me.last_sign_in_at, _self: true });
+        if (!admins.length) { $('staffList').innerHTML = '<div class="empty">등록된 관리자가 없습니다.</div>'; return; }
+        $('staffList').innerHTML = admins.map(function (a) {
+          var last = a.last_sign_in_at ? new Date(a.last_sign_in_at).toLocaleString('ko-KR') : '로그인 기록 없음';
+          var meBadge = a._self ? ' <span style="font-size:11px;color:#157076;font-weight:700;background:#e2f3f1;padding:2px 7px;border-radius:10px;margin-left:4px">나</span>' : '';
+          return '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid #eee">' +
+            '<div><b>' + esc(a.email || '') + '</b>' + meBadge + '<div style="font-size:12px;color:#888;margin-top:2px">최근 로그인: ' + esc(last) + '</div></div>' +
+            (a._self ? '' : '<button class="btn-ghost staff-del" data-id="' + esc(a.id) + '" data-email="' + esc(a.email || '') + '">삭제</button>') +
+            '</div>';
+        }).join('');
+      });
     }).catch(function (e) {
       $('staffList').innerHTML = '<div class="empty">불러오기 실패: ' + esc(e.message) + '</div>';
     });
@@ -676,7 +688,7 @@
             '<span class="rec-spacer"></span>' +
             '<span class="rec-meta">' + fmt(n.created_at) + '</span>' +
           '</div>' +
-          '<div class="rec-body">' + esc(n.content) + '</div>' +
+          '<div class="rec-body">' + linkify(esc(n.content)).replace(/\n/g, '<br>') + '</div>' +
           '<div class="rec-actions">' +
             '<button class="btn-ghost" data-edit="' + n.id + '">수정</button>' +
             '<button class="btn-danger" data-del="' + n.id + '">삭제</button>' +
