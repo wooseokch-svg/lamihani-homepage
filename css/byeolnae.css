@@ -59,8 +59,8 @@ ul{list-style:none}
 .hero{position:relative;height:550px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
 .hero-inner{position:relative;max-width:var(--maxw);height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .hero-text{flex:1 1 auto;color:#fff}
-.hero-text h1{font-size:52px;font-weight:800;line-height:1.18;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
-.hero-text p{margin-top:18px;font-size:20px;font-weight:500;color:#fff;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.18)}
+.hero-text h1{font-size:80px;font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+.hero-text p{margin-top:22px;font-size:26px;font-weight:500;color:#fff;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.18)}
 .hero-photo{flex:0 0 auto;align-self:flex-end;height:100%;display:flex;align-items:flex-end}
 .hero-photo img{height:98%;width:auto;object-fit:contain;object-position:bottom}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
@@ -75,8 +75,8 @@ ul{list-style:none}
 @media (max-width:760px){
   .hero{height:auto;min-height:460px}
   .hero-inner{gap:8px}
-  .hero-text h1{font-size:30px}
-  .hero-text p{font-size:15px;margin-top:12px}
+  .hero-text h1{font-size:42px}
+  .hero-text p{font-size:17px;margin-top:14px}
   .hero-cta{margin-top:20px;gap:8px}
   .btn-hero{font-size:13px;padding:11px 18px}
   .hero-photo{align-self:center;height:auto;max-width:44%}
