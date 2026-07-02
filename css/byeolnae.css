@@ -51,9 +51,9 @@ ul{list-style:none}
 .center{text-align:center}
 .eyebrow{display:inline-block;font-size:16px;font-weight:700;color:var(--green);letter-spacing:.04em;margin-bottom:14px}
 .eyebrow.white{color:#d9f5e2}
-.sec-title{font-size:32px;font-weight:800;line-height:1.3;color:var(--text);margin-bottom:18px}
+.sec-title{font-size:clamp(28px,4vw,36px);font-weight:800;line-height:1.3;color:var(--text);margin-bottom:18px}
 .sec-title.white{color:#fff}
-.sec-lead{font-size:18px;color:var(--text-sub);line-height:1.8;max-width:660px;margin:0 auto}
+.sec-lead{font-size:18px;color:#1d1d1d;line-height:1.8;max-width:660px;margin:0 auto}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;height:600px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
@@ -90,7 +90,7 @@ ul{list-style:none}
 .reasons{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:20px}
 .reason-col{border-top:2px solid #2b2b2b;padding-top:20px}
 .reason-col h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:14px}
-.reason-col p{font-size:17px;color:var(--text-sub);line-height:1.9}
+.reason-col p{font-size:18px;color:#1d1d1d;line-height:1.9}
 .intro-img{margin-top:36px}
 .intro-img img{width:100%;border-radius:16px;display:block}
 .info-sub{font-size:13px;color:#999;margin:-4px 0 12px}
@@ -107,8 +107,8 @@ ul{list-style:none}
 .equip-feature{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;margin-top:30px}
 .equip-img img{width:100%;border-radius:16px;display:block}
 .equip-text h3{font-size:26px;font-weight:800;color:var(--green);margin-bottom:16px}
-.equip-text p{font-size:17px;color:var(--text-sub);line-height:1.85;margin-bottom:18px}
-.equip-list li{position:relative;padding-left:24px;font-size:16.5px;color:#333;margin-bottom:11px}
+.equip-text p{font-size:18px;color:#1d1d1d;line-height:1.85;margin-bottom:18px}
+.equip-list li{position:relative;padding-left:24px;font-size:18px;color:#1d1d1d;margin-bottom:11px}
 .equip-list li::before{content:"•";position:absolute;left:4px;color:#aaa;font-weight:700}
 
 /* ---------- 진료과목 (green section) ---------- */
@@ -116,7 +116,7 @@ ul{list-style:none}
 .depart-card{background:#fff;border-radius:16px;padding:24px 14px;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.08)}
 .depart-card .ico{width:56px;height:56px;margin:0 auto 12px;object-fit:contain}
 .depart-card h3{font-size:19px;font-weight:800;color:var(--green);margin-bottom:8px}
-.depart-card p{font-size:15px;color:var(--text-sub);line-height:1.6}
+.depart-card p{font-size:16px;color:#1d1d1d;line-height:1.6}
 .depart-note{margin:26px auto 0;max-width:560px;background:var(--note);border:1px solid var(--note-line);color:#5c6b1f;font-size:13px;font-weight:600;padding:12px 16px;border-radius:10px;text-align:center}
 
 /* ---------- 진료시간 ---------- */
@@ -126,7 +126,7 @@ ul{list-style:none}
 .info-card ul li{font-size:16.5px;color:#333;padding:8px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px}
 .info-card ul li:last-child{border-bottom:none}
 .info-card ul li b{color:var(--green);font-weight:700}
-.info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:var(--text-sub);font-size:15.5px}
+.info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:#1d1d1d;font-size:18px}
 .info-card.notes ul li::before{content:"·";position:absolute;left:2px;color:var(--green);font-weight:800}
 .hcap{font-weight:600;color:#999;font-size:13px}
 .hours-days li b.off{color:#c0392b}
@@ -137,7 +137,7 @@ ul{list-style:none}
 .location-wrap{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:30px;align-items:start}
 .loc-block{margin-bottom:18px}
 .loc-block span{display:inline-block;font-size:13px;font-weight:800;color:var(--green);margin-bottom:5px}
-.loc-block p{font-size:17px;color:#333;line-height:1.75}
+.loc-block p{font-size:18px;color:#1d1d1d;line-height:1.75}
 .loc-block a{color:#333;font-weight:700}
 .location-map{border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
 .location-map iframe{width:100%;height:280px;border:0;display:block}
@@ -186,7 +186,6 @@ ul{list-style:none}
 @media(min-width:880px){
   .gnb{display:flex;margin-left:auto;margin-right:24px}
   .nav-toggle{display:none}
-  .sec-title{font-size:42px}
   .depart-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media(max-width:879px){
