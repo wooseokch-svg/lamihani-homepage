@@ -56,13 +56,13 @@ ul{list-style:none}
 .sec-lead{font-size:18px;color:var(--text-sub);line-height:1.8;max-width:660px;margin:0 auto}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;height:550px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
+.hero{position:relative;height:600px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
 .hero-inner{position:relative;max-width:var(--maxw);height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.hero-text{flex:1 1 auto;color:#fff}
+.hero-text{flex:1 1 auto;min-width:0;color:#fff}
 .hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
-.hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,.18)}
-.hero-photo{flex:0 0 auto;max-width:46%;align-self:flex-end;height:100%;display:flex;align-items:flex-end;justify-content:flex-end}
-.hero-photo img{height:100%;width:auto;max-width:100%;object-fit:contain;object-position:bottom right}
+.hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:right}
+.hero-photo{flex:0 0 48%;max-width:48%;height:100%}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
 .btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s;box-shadow:0 6px 18px rgba(0,0,0,.15)}
 .btn-hero:hover{background:var(--teal)}
