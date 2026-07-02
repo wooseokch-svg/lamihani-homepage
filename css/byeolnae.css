@@ -57,12 +57,13 @@ ul{list-style:none}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;width:100%;aspect-ratio:24/7;min-height:460px;max-height:620px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
-.hero-inner{position:relative;max-width:var(--maxw);width:100%;height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.hero-text{flex:0 1 auto;min-width:0;color:#fff}
+.hero-inner{position:relative;z-index:2;max-width:var(--maxw);width:100%;height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center}
+.hero-text{max-width:52%;min-width:0;color:#fff}
 .hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
 .hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:left}
-.hero-photo{flex:0 0 auto;height:100%;align-self:flex-end;display:flex;align-items:flex-end;justify-content:flex-end}
-.hero-photo img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom right}
+/* 여성 이미지: hero 우측 끝에 고정, 살짝 작게 */
+.hero-photo{position:absolute;right:0;bottom:0;height:90%;z-index:1;pointer-events:none}
+.hero-photo img{height:100%;width:auto;object-fit:contain;object-position:bottom right}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
 .btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s;box-shadow:0 6px 18px rgba(0,0,0,.15)}
 .btn-hero:hover{background:var(--teal)}
@@ -75,15 +76,15 @@ ul{list-style:none}
 @media (max-width:760px){
   .hero{aspect-ratio:auto;height:auto;min-height:420px}
   .hero-inner{gap:8px;padding:0 20px}
+  .hero-text{max-width:60%}
   .hero-cta{margin-top:20px;gap:8px}
   .btn-hero{font-size:13px;padding:11px 18px}
-  .hero-photo{align-self:center;height:auto;max-width:44%}
-  .hero-photo img{height:auto;width:100%}
+  .hero-photo{height:78%}
 }
 @media (max-width:460px){
   .hero-photo{display:none}
   .hero{min-height:360px}
-  .hero-inner{justify-content:flex-start}
+  .hero-text{max-width:100%}
 }
 
 /* ---------- 병원소개 / gallery ---------- */
