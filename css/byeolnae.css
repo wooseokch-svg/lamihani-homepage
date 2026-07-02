@@ -60,7 +60,7 @@ ul{list-style:none}
 .hero-inner{position:relative;width:100%;height:100%;margin:0 auto;padding:0 clamp(24px,5vw,90px);display:flex;align-items:center;justify-content:space-between;gap:24px}
 .hero-text{flex:0 1 auto;min-width:0;color:#fff}
 .hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
-.hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:right}
+.hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:left}
 .hero-photo{flex:0 0 auto;height:100%;align-self:flex-end;display:flex;align-items:flex-end;justify-content:flex-end}
 .hero-photo img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom right}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
