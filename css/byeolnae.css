@@ -56,13 +56,13 @@ ul{list-style:none}
 .sec-lead{font-size:18px;color:#1d1d1d;line-height:1.65;max-width:660px;margin:0 auto}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;height:600px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
-.hero-inner{position:relative;max-width:var(--maxw);height:100%;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.hero-text{flex:1 1 auto;min-width:0;color:#fff}
+.hero{position:relative;width:100%;aspect-ratio:24/7;min-height:460px;max-height:620px;overflow:hidden;background:#8fd400 url('../images/byeolnae/hero-bg.jpg') center/cover no-repeat}
+.hero-inner{position:relative;width:100%;height:100%;margin:0 auto;padding:0 clamp(24px,5vw,90px);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.hero-text{flex:0 1 auto;min-width:0;color:#fff}
 .hero-text h1{font-size:clamp(42px,6.8vw,80px);font-weight:800;line-height:1.14;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18)}
 .hero-text p{margin-top:22px;font-size:clamp(17px,2.2vw,26px);font-weight:500;color:#fff;line-height:1.55;text-shadow:0 1px 8px rgba(0,0,0,.18);text-align:right}
-.hero-photo{flex:0 0 48%;max-width:48%;height:100%}
-.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
+.hero-photo{flex:0 0 auto;height:100%;align-self:flex-end;display:flex;align-items:flex-end;justify-content:flex-end}
+.hero-photo img{height:100%;width:auto;max-width:none;object-fit:contain;object-position:bottom right}
 .hero-cta{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
 .btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s;box-shadow:0 6px 18px rgba(0,0,0,.15)}
 .btn-hero:hover{background:var(--teal)}
@@ -73,8 +73,8 @@ ul{list-style:none}
 .hero-text{animation:heroInLeft .9s ease both}
 .hero-photo{animation:heroInRight .9s ease both .1s}
 @media (max-width:760px){
-  .hero{height:auto;min-height:460px}
-  .hero-inner{gap:8px}
+  .hero{aspect-ratio:auto;height:auto;min-height:420px}
+  .hero-inner{gap:8px;padding:0 20px}
   .hero-cta{margin-top:20px;gap:8px}
   .btn-hero{font-size:13px;padding:11px 18px}
   .hero-photo{align-self:center;height:auto;max-width:44%}
