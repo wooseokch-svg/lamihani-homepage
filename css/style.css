@@ -163,7 +163,7 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 .concern-grid{ display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 28px; }
 .concern-card{
   position: relative; border-radius: 20px; overflow: hidden;
-  background-size: cover; background-position: center; min-height: 280px;
+  background-size: cover; background-position: center; min-height: 230px;
   display: flex; align-items: flex-end;
 }
 .concern-card::before{ content:""; position: absolute; inset: 0; background: rgba(250,248,245,.62); }
