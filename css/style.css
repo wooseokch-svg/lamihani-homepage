@@ -332,3 +332,4 @@ h2{ font-size: 50px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; c
 }
 .notice-item.open .notice-body{ display: block; }
 .notice-item.open .notice-title{ color: var(--orange); }
+.notice-body a{ color: var(--orange); text-decoration: underline; word-break: break-all; }

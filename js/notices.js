@@ -11,6 +11,12 @@
     return (s == null ? '' : String(s))
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+  // 본문 속 URL을 새 창으로 열리는 링크로 변환 (esc 처리된 문자열에 적용)
+  function linkify(html) {
+    return html.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>';
+    });
+  }
   function fmtDate(s) {
     if (!s) return '';
     var d = new Date(s);
@@ -38,7 +44,7 @@
               '<span class="notice-title">' + esc(n.title) + '</span>' +
               '<span class="notice-date">' + fmtDate(n.created_at) + '</span>' +
             '</button>' +
-            '<div class="notice-body">' + esc(n.content).replace(/\n/g, '<br>') + '</div>' +
+            '<div class="notice-body">' + linkify(esc(n.content)).replace(/\n/g, '<br>') + '</div>' +
           '</div>';
       }).join('');
       listEl.innerHTML = html;
