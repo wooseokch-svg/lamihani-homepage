@@ -72,7 +72,7 @@
   }
 
   // 해당 날짜의 전체 슬롯('HH:MM' 배열)
-  //  - 점심시간 제외
+  //  - 휴게(점심 lunchStart/End + 추가 breaks[] 예: 저녁휴게) 제외
   //  - 접수마감(acceptLunch: 점심 전 / acceptClose: 종료 전) 반영
   function allSlots(dateStr, settings) {
     var d = new Date(dateStr + 'T00:00:00');
@@ -80,24 +80,25 @@
     if (!cfg || cfg.closed || !cfg.open || !cfg.close) return [];
     var step = settings.slot_minutes || 30;
     var open = toMin(cfg.open), close = toMin(cfg.close);
-    var hasLunch = cfg.lunchStart && cfg.lunchEnd;
-    var out = [];
+    var lastSlot = cfg.acceptClose ? Math.min(toMin(cfg.acceptClose), close - step) : (close - step);
 
-    function addRange(startMin, endMin) {           // endMin 포함(<=)
-      for (var t = startMin; t <= endMin; t += step) out.push(toHHMM(t));
+    // 휴게 구간 목록 = 점심 + 추가 breaks[] (저녁휴게 등 다중 휴게 지원)
+    var breaks = [];
+    if (cfg.lunchStart && cfg.lunchEnd) breaks.push([toMin(cfg.lunchStart), toMin(cfg.lunchEnd)]);
+    if (cfg.breaks && cfg.breaks.length) {
+      cfg.breaks.forEach(function (b) { if (b && b.start && b.end) breaks.push([toMin(b.start), toMin(b.end)]); });
     }
+    // 점심 전 접수마감(acceptLunch): 점심 시작 전 슬롯을 acceptLunch 까지만 허용
+    var lunchStart = cfg.lunchStart ? toMin(cfg.lunchStart) : null;
+    var amCap = (cfg.acceptLunch && lunchStart != null) ? toMin(cfg.acceptLunch) : null;
 
-    if (hasLunch) {
-      var ls = toMin(cfg.lunchStart), le = toMin(cfg.lunchEnd);
-      // 오전: open ~ (점심 접수마감 또는 점심 시작 전)
-      var amEnd = cfg.acceptLunch ? Math.min(toMin(cfg.acceptLunch), ls - step) : (ls - step);
-      addRange(open, amEnd);
-      // 오후: 점심 종료 ~ (종료 접수마감 또는 종료 전)
-      var pmEnd = cfg.acceptClose ? Math.min(toMin(cfg.acceptClose), close - step) : (close - step);
-      addRange(le, pmEnd);
-    } else {
-      var dayEnd = cfg.acceptClose ? Math.min(toMin(cfg.acceptClose), close - step) : (close - step);
-      addRange(open, dayEnd);
+    var out = [];
+    for (var t = open; t <= lastSlot; t += step) {
+      var end = t + step;
+      var inBreak = breaks.some(function (br) { return t < br[1] && end > br[0]; });  // 슬롯[t,end)가 휴게와 겹침
+      if (inBreak) continue;
+      if (amCap != null && t < lunchStart && t > amCap) continue;                     // 오전 접수마감 초과
+      out.push(toHHMM(t));
     }
     return out;
   }

@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=18">
+<link rel="stylesheet" href="css/admin.css?v=19">
 </head>
 <body>
 
@@ -30,6 +30,7 @@
     <span class="brand">라미한의원 관리자</span>
     <span class="who" id="who"></span>
     <span class="spacer"></span>
+    <select class="clinic-select" id="clinicSelect" hidden style="margin-right:10px;padding:6px 12px;border-radius:8px;border:1px solid #cfcfcf;font-size:14px;font-weight:600;background:#fff"></select>
     <a class="naver-link" id="naverLink" href="#" target="_blank" rel="noopener">네이버 예약 관리</a>
     <button class="logout" id="logoutBtn">로그아웃</button>
   </header>
@@ -206,6 +207,7 @@
     <h3 class="adm-detail-title">예약 직접 추가</h3>
     <p class="add-hint">네이버·전화·방문 예약을 캘린더에 직접 등록합니다.</p>
     <div class="add-form">
+      <div class="nf-row" id="addUnitRow" hidden><label>진료</label><div id="addUnitSel" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
       <div class="nf-row"><label>성함 *</label><input id="addName" type="text" placeholder="홍길동"></div>
       <div class="nf-row"><label>연락처</label><input id="addPhone" type="tel" placeholder="010-0000-0000"></div>
       <div class="nf-row">
@@ -234,10 +236,10 @@
   </div>
 </div>
 
-<script src="js/config.js?v=9"></script>
+<script src="js/config.js?v=11"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
-<script src="js/booking.js?v=6"></script>
-<script src="js/admin.js?v=25"></script>
+<script src="js/booking.js?v=7"></script>
+<script src="js/admin.js?v=29"></script>
 </body>
 </html>

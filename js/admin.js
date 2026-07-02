@@ -7,7 +7,28 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var db = window.lamiDB;
-  var CID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
+  var defaultCID = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || 'lamihani';
+  var CID = defaultCID;  // 현재 병원의 primary(공지·결제·로그인 기준). loadClinics()가 설정
+  function clinicLabel(id) { return (window.CLINIC_NAMES && window.CLINIC_NAMES[id]) || id; }
+
+  // 병원 그룹/유닛 — 별내는 예약·운영시간만 2유닛(성인/소아), 나머지는 공통(primary 하나)
+  var curGroup = null;
+  var unitIds = [defaultCID];  // 예약/시간 유닛 clinic_id 들 (별내=2, 그 외=1)
+  var hoursUnit = defaultCID;  // 운영시간 편집 중인 유닛
+  var bookingFilter = 'all';   // 예진표예약 탭 유닛 필터 (all / 성인 / 소아)
+  function unitLabel(cid) {
+    var grp = curGroup && window.CLINIC_GROUPS && window.CLINIC_GROUPS[curGroup];
+    if (grp) { for (var i = 0; i < grp.units.length; i++) if (grp.units[i].id === cid) return grp.units[i].label; }
+    return clinicLabel(cid);
+  }
+  function setGroup(g) {
+    curGroup = g;
+    var grp = window.CLINIC_GROUPS && window.CLINIC_GROUPS[g];
+    if (grp) { CID = grp.primary; unitIds = grp.units.map(function (u) { return u.id; }); }
+    else { CID = g; unitIds = [g]; }
+    hoursUnit = unitIds[0];
+    bookingFilter = unitIds[0];
+  }
 
   // ---- 설정 전 안내 ----
   if (!db) {
@@ -40,17 +61,65 @@
     $('loginView').hidden = true;
     $('adminView').hidden = false;
     $('who').textContent = session.user.email;
+    loadClinics();
+  }
+
+  // 선택된 병원(CID)으로 화면 전체 갱신
+  function loadAllForClinic() {
+    var name = (curGroup && window.CLINIC_GROUPS && window.CLINIC_GROUPS[curGroup] && window.CLINIC_GROUPS[curGroup].name) || clinicLabel(CID);
+    document.title = name + ' 관리자';
+    var brand = document.querySelector('.adm-header .brand'); if (brand) brand.textContent = name + ' 관리자';
+    var grp0 = window.CLINIC_GROUPS && window.CLINIC_GROUPS[curGroup];
+    var nl = $('naverLink'); if (nl) { var nv = grp0 ? grp0.naver : (window.LAMI_CONFIG && window.LAMI_CONFIG.NAVER_RESERVE_URL); if (nv) { nl.href = nv; nl.hidden = false; } else { nl.hidden = true; } }
+    hoursUnit = unitIds[0];
+    renderHoursUnitTabs();
+    renderBookingUnitFilter();
     loadBookings();
     loadNotices();
     loadSettings();
     checkClinicBlock(); // 미납 시 admin 전체 차단 + 결제 유도
   }
 
+  // 마스터(여러 병원) → 병원 선택 드롭다운. 단일 병원/미설정 → 드롭다운 숨김(도메인 병원).
+  function loadClinics() {
+    db.rpc('auth_clinics').then(function (res) {
+      var units = (res && !res.error && Array.isArray(res.data))
+        ? res.data.map(function (r) { return (r && typeof r === 'object') ? (r.auth_clinics || r.clinic_id) : r; }).filter(Boolean)
+        : [];
+      var groups = [];
+      units.forEach(function (u) { var g = (window.clinicGroupOf && window.clinicGroupOf(u)) || u; if (groups.indexOf(g) === -1) groups.push(g); });
+      var defGroup = (window.clinicGroupOf && window.clinicGroupOf(defaultCID)) || defaultCID;
+      var sel = $('clinicSelect');
+      if (groups.length > 1 && sel) {
+        sel.innerHTML = groups.map(function (g) {
+          var nm = (window.CLINIC_GROUPS && window.CLINIC_GROUPS[g] && window.CLINIC_GROUPS[g].name) || clinicLabel(g);
+          return '<option value="' + g + '">' + nm + '</option>';
+        }).join('');
+        var pick = (groups.indexOf(defGroup) !== -1) ? defGroup : groups[0];
+        sel.value = pick; sel.hidden = false;
+        setGroup(pick);
+        sel.onchange = function () {
+          setGroup(sel.value);
+          ['billFrame', 'workFrame', 'msgFrame'].forEach(function (id) { var f = $(id); if (f) { f.dataset.loaded = ''; } });
+          loadAllForClinic();
+        };
+      } else {
+        setGroup(groups.length ? groups[0] : defGroup);
+        if (sel) sel.hidden = true;
+      }
+      loadAllForClinic();
+    }, function () {
+      if ($('clinicSelect')) $('clinicSelect').hidden = true;
+      setGroup((window.clinicGroupOf && window.clinicGroupOf(defaultCID)) || defaultCID);
+      loadAllForClinic();
+    });
+  }
+
   // =================== 연성차단 (미납) ===================
   // noad 코어 구독상태 조회 → blockAdmin 이면 admin 전체 오버레이 + 결제 유도.
   // (토스 승인 전엔 코어가 항상 blockAdmin=false 반환하므로 무동작 — 잠금 방지)
   function checkClinicBlock() {
-    var cid = (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_ID) || CID;
+    var cid = CID;
     fetch('https://noad.ai.kr/api/clinic/status?clinicId=' + encodeURIComponent(cid))
       .then(function (r) { return r.json(); })
       .then(function (s) { if (s && s.blockAdmin) showBlockOverlay(s.daysOverdue || 0); })
@@ -72,7 +141,7 @@
     document.getElementById('clinicBlockPay').addEventListener('click', function () {
       var btn = this; btn.disabled = true; btn.textContent = '여는 중…';
       db.functions.invoke('noad-handover', {
-        body: { target: 'billing', clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID, returnUrl: location.href }
+        body: { target: 'billing', clinicName: clinicLabel(CID), returnUrl: location.href }
       }).then(function (res) {
         if (res.data && res.data.url) { window.location.href = res.data.url; }
         else { btn.disabled = false; btn.textContent = '결제하기'; alert('결제 페이지 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.'); }
@@ -135,7 +204,7 @@
 
   // =================== 직원 계정 (clinic-admin Edge Function) ===================
   function staffApi(action, payload) {
-    return db.functions.invoke('clinic-admin', { body: Object.assign({ action: action }, payload || {}) })
+    return db.functions.invoke('clinic-admin', { body: Object.assign({ action: action, clinicIds: unitIds }, payload || {}) })
       .then(function (res) {
         if (res.error) throw new Error((res.error && res.error.message) || '요청 실패');
         var d = res.data || {};
@@ -232,8 +301,30 @@
   function setStatus(id, st) { db.from('reservations').update({ status: st }).eq('id', id).then(loadBookings); }
   function delBooking(id) { if (confirm('이 예약을 삭제할까요?')) db.from('reservations').delete().eq('id', id).then(loadBookings); }
 
+  // 예진표예약 탭 유닛 필터 바 (별내=전체/성인/소아). 단일 병원은 표시 안 함.
+  function renderBookingUnitFilter() {
+    var tab = $('tab-intakes'); if (!tab) return;
+    var bar = $('bookingUnitBar');
+    if (unitIds.length <= 1) { if (bar && bar.parentNode) bar.parentNode.removeChild(bar); return; }
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'bookingUnitBar';
+      bar.style.cssText = 'display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap';
+      tab.insertBefore(bar, tab.firstChild);
+    }
+    var opts = unitIds.map(function (u) { return { id: u, label: unitLabel(u) }; });
+    bar.innerHTML = opts.map(function (o) {
+      var on = (bookingFilter === o.id);
+      return '<button type="button" data-bu="' + o.id + '" style="padding:8px 16px;border-radius:8px;border:1px solid ' + (on ? '#0e8a58' : '#d5d5d5') + ';background:' + (on ? '#e8f6ee' : '#fff') + ';color:' + (on ? '#0e8a58' : '#666') + ';font-weight:700;font-size:14px;cursor:pointer">' + esc(o.label) + '</button>';
+    }).join('');
+    bar.querySelectorAll('[data-bu]').forEach(function (b) {
+      b.addEventListener('click', function () { bookingFilter = b.dataset.bu; renderBookingUnitFilter(); loadBookings(); });
+    });
+  }
+
   function loadBookings() {
-    db.from('reservations').select('*').eq('clinic_id', CID).order('created_at', { ascending: false }).then(function (res) {
+    var qUnits = (unitIds.indexOf(bookingFilter) !== -1) ? [bookingFilter] : unitIds;
+    db.from('reservations').select('*').in('clinic_id', qUnits).order('created_at', { ascending: false }).then(function (res) {
       if (res.error) { $('listUpcoming').innerHTML = '<div class="empty">불러오기 오류: ' + esc(res.error.message) + '</div>'; return; }
       bookings = res.data || [];
       $('cntInt').textContent = bookings.filter(function (r) { return r.status === '신규'; }).length;
@@ -263,6 +354,7 @@
     return '<div class="rec">' +
       '<div class="rec-top">' +
         '<span class="rec-name">' + esc(r.name || '(이름 없음)') + '</span>' +
+        (unitIds.length > 1 ? '<span style="font-size:11px;font-weight:700;color:#0e8a58;background:#e8f6ee;border-radius:5px;padding:2px 7px;margin-left:2px">' + esc(unitLabel(r.clinic_id)) + '</span>' : '') +
         '<span class="kind-tag' + (isYj ? ' yj' : '') + '">' + esc(r.kind || '예약') + '</span>' +
         '<span class="tag s-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
         '<span class="rec-spacer"></span>' +
@@ -367,9 +459,11 @@
 
   // ----- 예약 직접 추가 (네이버/전화/방문) -----
   var ADD = { viewY: 0, viewM: 0, selDate: '', selTime: '' };
+  var addUnit = defaultCID;      // 직접추가 대상 유닛 (예약 필터 따라감)
+  var addSettingsCache = null;
 
   function addSettings() {
-    return curSettings || JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
+    return addSettingsCache || curSettings || JSON.parse(JSON.stringify(window.LamiBooking.DEFAULT_SETTINGS));
   }
 
   window.addMonthShift = function (delta) {
@@ -441,7 +535,7 @@
       });
     }
 
-    db.rpc('taken_slots', { d: ds, cid: CID }).then(function (res) {
+    db.rpc('taken_slots', { d: ds, cid: addUnit }).then(function (res) {
       var taken = {};
       (res && res.data ? res.data : []).forEach(function (row) { taken[(row && row.t != null) ? row.t : row] = true; });
       render(taken);
@@ -465,18 +559,44 @@
     } else { box.hidden = true; }
   }
 
+  // 직접추가 캘린더 — 선택 유닛(addUnit)의 clinic_settings 로드 후 렌더
+  function loadAddCalSettings() {
+    addSettingsCache = null;
+    ADD.selDate = ''; ADD.selTime = '';
+    $('addSlots').innerHTML = '<p class="addpk-hint">날짜를 먼저 선택해 주세요.</p>';
+    if (window.lamiDB) {
+      db.from('clinic_settings').select('*').eq('clinic_id', addUnit).single().then(function (res) {
+        if (res && res.data && res.data.hours) addSettingsCache = { hours: res.data.hours, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || [] };
+        renderAddCal(); addUpdateSummary();
+      }, function () { renderAddCal(); });
+    } else { renderAddCal(); }
+  }
+  // 직접추가 성인/소아 선택 버튼 (별내만). 단일 병원은 숨김.
+  function renderAddUnitSel() {
+    var box = $('addUnitSel'), row = $('addUnitRow'); if (!box || !row) return;
+    if (unitIds.length <= 1) { row.hidden = true; return; }
+    row.hidden = false;
+    box.innerHTML = unitIds.map(function (u) {
+      var on = (u === addUnit);
+      return '<button type="button" data-au="' + u + '" style="padding:7px 15px;border-radius:8px;border:1px solid ' + (on ? '#0e8a58' : '#d5d5d5') + ';background:' + (on ? '#e8f6ee' : '#fff') + ';color:' + (on ? '#0e8a58' : '#666') + ';font-weight:700;font-size:13px;cursor:pointer">' + esc(unitLabel(u)) + '</button>';
+    }).join('');
+    box.querySelectorAll('[data-au]').forEach(function (b) {
+      b.addEventListener('click', function () { addUnit = b.dataset.au; renderAddUnitSel(); loadAddCalSettings(); });
+    });
+  }
   window.openAdd = function () {
+    addUnit = (unitIds.indexOf(bookingFilter) !== -1) ? bookingFilter : unitIds[0];
+    var grp = window.CLINIC_GROUPS && window.CLINIC_GROUPS[curGroup];
+    $('addSource').innerHTML = (grp && grp.naver ? ['네이버'] : []).concat(['전화', '방문', '기타']).map(function (s) { return '<option>' + s + '</option>'; }).join('');
+    renderAddUnitSel();
     ['addName', 'addPhone', 'addMemo'].forEach(function (id) { $(id).value = ''; });
     $('addVisit').selectedIndex = 0;
     $('addSource').selectedIndex = 0;
     $('addStatus').selectedIndex = 0;
     $('addErr').textContent = '';
-    ADD.selDate = ''; ADD.selTime = '';
     var now = new Date(); ADD.viewY = now.getFullYear(); ADD.viewM = now.getMonth();
-    renderAddCal();
-    addUpdateSummary();
-    $('addSlots').innerHTML = '<p class="addpk-hint">날짜를 먼저 선택해 주세요.</p>';
     $('admAddOverlay').classList.add('open');
+    loadAddCalSettings();
   };
   window.closeAdd = function () { $('admAddOverlay').classList.remove('open'); };
   $('admAddOverlay').addEventListener('click', function (e) {
@@ -492,7 +612,7 @@
     if (!date) { err.textContent = '날짜를 선택하세요.'; return; }
     if (!time) { err.textContent = '시간을 선택하세요.'; return; }
     var row = {
-      clinic_id: CID,
+      clinic_id: addUnit,
       name: name,
       phone: $('addPhone').value.trim() || null,
       visit_type: $('addVisit').value,
@@ -594,8 +714,28 @@
   ];
   var curSettings = null;
 
+  // 운영시간 유닛 선택 탭 (별내=성인/소아 2개). 단일 병원은 표시 안 함.
+  function renderHoursUnitTabs() {
+    var he = $('hoursEditor'); if (!he) return;
+    var bar = $('hoursUnitBar');
+    if (unitIds.length <= 1) { if (bar && bar.parentNode) bar.parentNode.removeChild(bar); return; }
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'hoursUnitBar';
+      bar.style.cssText = 'display:flex;gap:8px;margin-bottom:16px';
+      he.parentNode.insertBefore(bar, he);
+    }
+    bar.innerHTML = unitIds.map(function (u) {
+      var on = (u === hoursUnit);
+      return '<button type="button" data-u="' + u + '" style="padding:8px 16px;border-radius:8px;border:1px solid ' + (on ? '#0e8a58' : '#d5d5d5') + ';background:' + (on ? '#e8f6ee' : '#fff') + ';color:' + (on ? '#0e8a58' : '#666') + ';font-weight:700;font-size:14px;cursor:pointer">' + esc(unitLabel(u)) + '</button>';
+    }).join('');
+    bar.querySelectorAll('[data-u]').forEach(function (b) {
+      b.addEventListener('click', function () { hoursUnit = b.dataset.u; renderHoursUnitTabs(); loadSettings(); });
+    });
+  }
+
   function loadSettings() {
-    db.from('clinic_settings').select('*').eq('clinic_id', CID).single().then(function (res) {
+    db.from('clinic_settings').select('*').eq('clinic_id', hoursUnit).single().then(function (res) {
       curSettings = (res && res.data) ? {
         hours: res.data.hours || {}, slot_minutes: res.data.slot_minutes || 30, holidays: res.data.holidays || [],
         auto_confirm: !!(res.data && res.data.auto_confirm)
@@ -656,7 +796,7 @@
       hours[wd] = o;
     });
     var payload = {
-      clinic_id: CID, hours: hours,
+      clinic_id: hoursUnit, hours: hours,
       holidays: curSettings.holidays || [],
       updated_at: new Date().toISOString()
     };
@@ -673,7 +813,7 @@
   if ($('intakeSettingsSaveBtn')) $('intakeSettingsSaveBtn').addEventListener('click', function () {
     if (!curSettings) curSettings = {};
     var payload = {
-      clinic_id: CID,
+      clinic_id: hoursUnit,
       slot_minutes: parseInt($('slotMinutes').value, 10),
       auto_confirm: $('autoConfirm').checked,
       updated_at: new Date().toISOString()
@@ -689,7 +829,7 @@
 
   function saveHolidays() {
     return db.from('clinic_settings').upsert({
-      clinic_id: CID, hours: curSettings.hours, slot_minutes: curSettings.slot_minutes,
+      clinic_id: hoursUnit, hours: curSettings.hours, slot_minutes: curSettings.slot_minutes,
       holidays: curSettings.holidays, updated_at: new Date().toISOString()
     }, { onConflict: 'clinic_id' });
   }
@@ -735,7 +875,7 @@
     db.functions.invoke('noad-handover', {
       body: {
         target: target,
-        clinicName: (window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME) || CID,
+        clinicName: clinicLabel(CID),
         returnUrl: location.href
       }
     }).then(function (res) {

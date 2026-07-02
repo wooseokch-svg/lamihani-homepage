@@ -1,0 +1,236 @@
+/* ===== 별내S치과 — imweb 디자인 재현 (green theme) ===== */
+:root{
+  --green:#038a2c;          /* 브랜드 메인 그린 (버튼/제목/포인트) */
+  --green-dark:#02701f;
+  --teal:#01a081;           /* hover / 강조 */
+  --lime:#8fd400;
+  --accent:#ff2552;
+  --note:#f4f7d6;           /* 유의 노트 배경 (옅은 연두) */
+  --note-line:#dfe89a;
+  --text:#212121;
+  --text-sub:#5f5f5f;
+  --line:#e6e8ea;
+  --gray-bg:#f8f8f8;
+  --gray-bg2:#fbfbfb;
+  --white:#fff;
+  --maxw:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard',-apple-system,sans-serif;color:var(--text);line-height:1.6;background:#fff;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+ul{list-style:none}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--line)}
+.header-inner{max-width:var(--maxw);margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.logo img{height:38px;width:auto}
+.gnb{display:none;gap:28px}
+.gnb a{font-size:15px;font-weight:600;color:#333;transition:color .15s}
+.gnb a:hover{color:var(--green)}
+.btn-reserve{background:var(--green);color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:9999px;transition:background .15s;white-space:nowrap}
+.btn-reserve:hover{background:var(--teal)}
+.nav-toggle{display:flex;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer}
+.nav-toggle span{display:block;height:2px;width:22px;background:#222;border-radius:2px;transition:.2s}
+
+/* mobile slide menu */
+.mobile-menu{position:fixed;top:0;right:-300px;width:280px;height:100%;background:#fff;z-index:1000;padding:70px 26px 26px;box-shadow:-6px 0 24px rgba(0,0,0,.1);transition:right .28s}
+.mobile-menu.open{right:0}
+.mobile-menu nav{display:flex;flex-direction:column;gap:4px;margin-bottom:24px}
+.mobile-menu nav a{font-size:16px;font-weight:600;padding:13px 6px;border-bottom:1px solid #f2f2f2}
+.mobile-close{position:absolute;top:18px;right:20px;font-size:30px;background:none;border:none;color:#555;cursor:pointer;line-height:1}
+.overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;opacity:0;visibility:hidden;transition:.28s}
+.overlay-bg.show{opacity:1;visibility:visible}
+
+/* ---------- Section base ---------- */
+.section{padding:64px 0}
+.section-gray{background:var(--gray-bg)}
+.section-green{background:var(--green)}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 18px}
+.center{text-align:center}
+.eyebrow{display:inline-block;font-size:14px;font-weight:700;color:var(--green);letter-spacing:.04em;margin-bottom:12px}
+.eyebrow.white{color:#d9f5e2}
+.sec-title{font-size:26px;font-weight:800;line-height:1.35;color:var(--text);margin-bottom:16px}
+.sec-title.white{color:#fff}
+.sec-lead{font-size:15.5px;color:var(--text-sub);line-height:1.75;max-width:640px;margin:0 auto}
+
+/* ---------- Hero ---------- */
+.hero{background:#fff}
+.hero-banner img{width:100%;display:block}
+.hero-cta{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;padding:22px 18px 4px}
+.btn-hero{background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:14px 30px;border-radius:9999px;transition:background .15s}
+.btn-hero:hover{background:var(--teal)}
+.btn-hero.junior{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+
+/* ---------- 병원소개 / gallery ---------- */
+.reasons{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:20px}
+.reason-col{border-top:2px solid #2b2b2b;padding-top:20px}
+.reason-col h3{font-size:19px;font-weight:800;color:var(--green);margin-bottom:12px}
+.reason-col p{font-size:15px;color:var(--text-sub);line-height:1.85}
+.intro-img{margin-top:36px}
+.intro-img img{width:100%;border-radius:16px;display:block}
+.info-sub{font-size:13px;color:#999;margin:-4px 0 12px}
+
+/* ---------- 의료진 ---------- */
+.doctors{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px;max-width:840px;margin-left:auto;margin-right:auto}
+.doctor{text-align:center}
+.doctor-photo{width:200px;height:200px;margin:0 auto 18px;border-radius:50%;overflow:hidden;background:#eef2f0}
+.doctor-photo img{width:100%;height:100%;object-fit:cover}
+.doctor h3{font-size:23px;font-weight:800;margin-bottom:8px}
+.doctor-clinic{font-size:15px;color:var(--text-sub)}
+
+/* ---------- 진료장비 ---------- */
+.equip-feature{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;margin-top:30px}
+.equip-img img{width:100%;border-radius:16px;display:block}
+.equip-text h3{font-size:22px;font-weight:800;color:var(--green);margin-bottom:14px}
+.equip-text p{font-size:15px;color:var(--text-sub);line-height:1.8;margin-bottom:16px}
+.equip-list li{position:relative;padding-left:24px;font-size:15px;color:#333;margin-bottom:10px}
+.equip-list li::before{content:"•";position:absolute;left:4px;color:#aaa;font-weight:700}
+
+/* ---------- 진료과목 (green section) ---------- */
+.depart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:30px}
+.depart-card{background:#fff;border-radius:16px;padding:24px 14px;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.depart-card .ico{width:56px;height:56px;margin:0 auto 12px;object-fit:contain}
+.depart-card h3{font-size:16.5px;font-weight:800;color:var(--green);margin-bottom:7px}
+.depart-card p{font-size:13px;color:var(--text-sub);line-height:1.55}
+.depart-note{margin:26px auto 0;max-width:560px;background:var(--note);border:1px solid var(--note-line);color:#5c6b1f;font-size:13px;font-weight:600;padding:12px 16px;border-radius:10px;text-align:center}
+
+/* ---------- 진료시간 ---------- */
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px;text-align:left}
+.info-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 24px}
+.info-card h3{font-size:17px;font-weight:800;color:var(--green);margin-bottom:14px}
+.info-card ul li{font-size:15px;color:#333;padding:7px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px}
+.info-card ul li:last-child{border-bottom:none}
+.info-card ul li b{color:var(--green);font-weight:700}
+.info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:var(--text-sub);font-size:14px}
+.info-card.notes ul li::before{content:"·";position:absolute;left:2px;color:var(--green);font-weight:800}
+.hcap{font-weight:600;color:#999;font-size:13px}
+.hours-days li b.off{color:#c0392b}
+.hours-days li em{font-style:normal;font-size:11px;color:#fff;background:var(--green);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.hours-loading{color:#aaa;font-size:14px;justify-content:center}
+
+/* ---------- 위치 ---------- */
+.location-wrap{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:30px;align-items:start}
+.loc-block{margin-bottom:18px}
+.loc-block span{display:inline-block;font-size:13px;font-weight:800;color:var(--green);margin-bottom:5px}
+.loc-block p{font-size:15px;color:#333;line-height:1.7}
+.loc-block a{color:#333;font-weight:700}
+.location-map{display:flex;align-items:center;justify-content:center;text-align:center;border-radius:16px;border:1px solid var(--line);min-height:220px;background:#f1f8f2;color:var(--green);font-weight:700;font-size:15px;line-height:1.6}
+
+/* ---------- 공지 ---------- */
+.notice-list{margin-top:26px;border-top:2px solid #eee}
+.notice-item{padding:16px 4px;border-bottom:1px solid #eee}
+.notice-item .t{font-size:15px;font-weight:700}
+.notice-item .d{font-size:12.5px;color:#aaa;margin-top:4px}
+.notice-empty{padding:30px;text-align:center;color:#aaa;font-size:14px}
+
+/* ---------- Footer ---------- */
+.site-footer{background:#1c1c1c;color:#cfcfcf;padding:38px 18px 30px;text-align:center}
+.footer-nav{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:18px}
+.footer-nav a{font-size:13.5px;color:#bdbdbd}
+.footer-nav a:hover{color:#fff}
+.footer-brand{font-size:19px;font-weight:800;color:#fff;margin-bottom:12px}
+.footer-policy{display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:13px}
+.footer-policy a{color:#ddd}
+.footer-policy a strong{color:#fff}
+.footer-copy{font-size:12px;color:#8a8a8a}
+#policyBody h3{font-size:15px;font-weight:700;color:#222;margin:18px 0 6px}
+#policyBody h3:first-child{margin-top:0}
+#policyBody p{margin:0 0 8px}
+#policyBody ul{margin:0 0 10px;padding-left:20px;list-style:disc}
+#policyBody li{margin:3px 0}
+#policyBody .policy-bujik{margin-top:22px;padding-top:14px;border-top:1px solid #eee;color:#8a8a8a;font-size:13px}
+#policyBody .policy-bujik h3{color:#8a8a8a;font-size:13px;margin:0 0 4px}
+
+/* ---------- to-top ---------- */
+.to-top{position:fixed;right:18px;bottom:18px;width:46px;height:46px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;visibility:hidden;transition:.25s;z-index:800;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.to-top.show{opacity:1;visibility:visible}
+
+/* ---------- reveal anim ---------- */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ---------- Responsive ---------- */
+@media(min-width:880px){
+  .gnb{display:flex}
+  .nav-toggle{display:none}
+  .hero h1{font-size:40px}
+  .sec-title{font-size:32px}
+  .depart-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:879px){
+  .location-wrap{grid-template-columns:1fr}
+  .location-map{min-height:180px}
+}
+@media(max-width:760px){
+  .reasons,.equip-feature{grid-template-columns:1fr;gap:22px}
+}
+@media(max-width:560px){
+  .section{padding:48px 0}
+  .doctors{grid-template-columns:1fr}
+  .hours-grid{grid-template-columns:1fr}
+}
+
+/* ---------- 예약 / 약관 모달 ---------- */
+.reserve-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:18px}
+.reserve-overlay.open{display:flex}
+.reserve-box{background:#fff;border-radius:18px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;position:relative}
+.reserve-close{position:absolute;top:12px;right:14px;font-size:20px;background:none;border:none;color:#fff;cursor:pointer;z-index:2}
+.reserve-head{background:var(--green);color:#fff;font-size:17px;font-weight:600;padding:20px 22px;border-radius:18px 18px 0 0}
+.reserve-head b{font-weight:800}
+.reserve-body{padding:20px 22px 24px}
+.rf-label{display:block;font-size:13px;font-weight:700;color:#444;margin:14px 0 6px}
+.rf-label:first-child{margin-top:0}
+.rf-label small{color:#aaa;font-weight:500}
+.rf-choice{display:flex;flex-direction:column;gap:8px}
+.rf-choice label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:11px 13px;cursor:pointer}
+.rf-choice small{color:#999;font-weight:500}
+.reserve-body input,.reserve-body textarea{width:100%;border:1px solid #d8d8d8;border-radius:10px;padding:11px 13px;font-size:15px;font-family:inherit;color:#212121}
+.reserve-body input:focus,.reserve-body textarea:focus{outline:none;border-color:var(--green)}
+.rf-submit{width:100%;background:var(--green);color:#fff;font-weight:700;font-size:15px;border:none;border-radius:10px;padding:14px;margin-top:20px;cursor:pointer}
+.rf-submit:hover{background:var(--teal)}
+.rf-note{font-size:12px;color:#999;text-align:center;margin-top:10px}
+.reserve-done{display:none;padding:40px 24px;text-align:center}
+.rd-check{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--green);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center}
+.reserve-done h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.reserve-done p{font-size:14px;color:#666;margin-bottom:20px}
+
+/* ---------- 예약 캘린더 ---------- */
+.rf-hint{font-size:13px;color:#999;text-align:center;padding:16px 0}
+.rc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rc-nav{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:16px;cursor:pointer;color:#333}
+.rc-nav:disabled{opacity:.3;cursor:default}
+.rc-title{font-size:15px;font-weight:700}
+.rc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.rc-dow{text-align:center;font-size:12px;color:#888;padding:4px 0}
+.rc-dow.sun{color:#e2574c}
+.rc-dow.sat{color:#3f7fd0}
+.rc-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:8px;color:#333}
+.rc-cell.empty{visibility:hidden}
+.rc-cell.past,.rc-cell.off{color:#cfcfcf}
+.rc-cell.holiday{color:#e2574c;opacity:.55}
+.rc-cell.ok{cursor:pointer;background:#f1f8f2;color:var(--green-dark);font-weight:700}
+.rc-cell.ok:hover{background:#dcefdf}
+.rc-cell.sel{background:var(--green);color:#fff}
+.rf-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.rf-slot{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 4px;font-size:13px;cursor:pointer;color:#333}
+.rf-slot:hover{border-color:var(--green)}
+.rf-slot.sel{background:var(--green);color:#fff;border-color:var(--green)}
+.rf-slot.taken{color:#c8c8c8;background:#f7f7f7;cursor:default}
+.rf-slot .x{display:block;font-size:10px;color:#bbb}
+.rf-summary{margin-top:12px;background:#f1f8f2;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--green-dark)}
+.rf-summary b{font-weight:800}
+.rf-agree{display:flex;align-items:flex-start;gap:8px;margin-top:16px;font-size:13px;color:#555}
+.rf-agree input{width:auto;margin-top:3px}
+.rf-privacy{background:#f5f8f5;border:1px solid #e6ece6;border-radius:12px;padding:14px 16px;margin-bottom:18px}
+.rf-privacy-title{font-size:14px;font-weight:700;color:#333;margin-bottom:6px}
+.rf-privacy-desc{font-size:12.5px;color:#777;margin-bottom:10px}
+.rf-privacy-desc b{color:var(--green);font-weight:700}
+.rf-privacy .rf-agree{margin-top:0}
+.rf-clinic-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rf-clinic-card{border:1.5px solid var(--line);border-radius:12px;padding:14px 10px;background:#fff;cursor:pointer;text-align:center;transition:border-color .15s,background .15s;font-family:inherit}
+.rf-clinic-card b{display:block;font-size:15px;font-weight:700;color:#333;margin-bottom:4px}
+.rf-clinic-card small{font-size:11.5px;color:#999;line-height:1.45}
+.rf-clinic-card.sel{border-color:var(--green);background:#f1f8f2}
+.rf-clinic-card.sel b{color:var(--green)}

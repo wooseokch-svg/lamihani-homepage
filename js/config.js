@@ -16,7 +16,8 @@
   // name = noad 결제/작업요청 페이지에 표시될 병원명 (핸드오버 토큰에 담겨 넘어감).
   var CLINICS = {
     'lamihani21.co.kr':     { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
-    'www.lamihani21.co.kr': { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' }
+    'www.lamihani21.co.kr': { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
+    'sdental.noad.ai.kr':   { id: 'byeolnae_dental', name: '별내S치과', naver: 'https://naver.me/xNn9FvAE' }
     // '병원B.com':      { id: 'clinicB', name: '○○한의원', naver: 'https://map.naver.com/...' },
   };
 
@@ -39,4 +40,25 @@
   };
 
   window.LAMI_READY = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+  // 관리자 '병원 선택' 드롭다운 라벨 (clinic_id → 표시명). 마스터 계정이 여러 병원 관리.
+  window.CLINIC_NAMES = {
+    lamihani: '라미한의원',
+    byeolnae_dental: '별내S치과',
+    byeolnae_junior: '별내S주니어치과'
+  };
+
+  // 병원 그룹 — 관리자 드롭다운은 '그룹(병원)' 단위. 별내는 예약·운영시간만 2유닛,
+  // 공지·로그인·결제는 공통(primary 하나). 유닛 clinic_id 로 예약/시간만 나뉜다.
+  window.CLINIC_GROUPS = {
+    lamihani: { name: '라미한의원', primary: 'lamihani', naver: 'https://map.naver.com/p/entry/place/1137949987',
+      units: [{ id: 'lamihani', label: '라미한의원' }] },
+    byeolnae: { name: '별내S치과', primary: 'byeolnae_dental', naver: null,
+      units: [{ id: 'byeolnae_dental', label: '성인·본원' }, { id: 'byeolnae_junior', label: '소아·주니어' }] }
+  };
+  window.clinicGroupOf = function (cid) {
+    var G = window.CLINIC_GROUPS;
+    for (var g in G) { for (var i = 0; i < G[g].units.length; i++) { if (G[g].units[i].id === cid) return g; } }
+    return null;
+  };
 })();

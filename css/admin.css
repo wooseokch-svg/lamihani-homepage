@@ -1,6 +1,6 @@
 /* 라미한의원 관리자 페이지 스타일 */
 :root{
-  --orange:#ff7727; --orange-d:#e87c3e; --line:#e8e4de; --txt:#3e3e3e; --muted:#999;
+  --orange:#157076; --orange-d:#0f585c; --line:#e6ebea; --txt:#2b3a3a; --muted:#8a9797;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
 [hidden]{ display:none !important; }
@@ -26,7 +26,7 @@ button{ font-family:inherit; cursor:pointer; }
 }
 .login-card input:focus{ border-color:var(--orange); background:#fff; }
 .login-card button{
-  width:100%; background:linear-gradient(135deg,#ff9d63,#e87c3e); color:#fff; border:0;
+  width:100%; background:linear-gradient(135deg,#2BA89E,#17686D); color:#fff; border:0;
   border-radius:10px; padding:13px; font-size:15px; font-weight:700; margin-top:4px;
 }
 .login-msg{ font-size:12px; color:#d33; min-height:18px; margin-top:10px; }
@@ -75,7 +75,7 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .nf-row input:focus, .nf-row textarea:focus{ border-color:var(--orange); background:#fff; }
 .nf-row textarea{ resize:vertical; min-height:90px; line-height:1.6; }
 .nf-inline{ display:flex; align-items:center; gap:8px; font-size:13px; color:#555; }
-.btn-primary{ background:linear-gradient(135deg,#ff9d63,#e87c3e); color:#fff; border:0; border-radius:9px; padding:11px 22px; font-size:14px; font-weight:700; }
+.btn-primary{ background:linear-gradient(135deg,#2BA89E,#17686D); color:#fff; border:0; border-radius:9px; padding:11px 22px; font-size:14px; font-weight:700; }
 .btn-ghost{ background:#f0ece6; color:#555; border:0; border-radius:8px; padding:8px 14px; font-size:13px; }
 .btn-danger{ background:#fff0f0; color:#d33; border:1px solid #f4c7c7; border-radius:8px; padding:7px 12px; font-size:13px; }
 
@@ -90,7 +90,7 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .rec-actions{ margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .status-sel{ border:1px solid var(--line); border-radius:7px; padding:6px 10px; font-size:13px; font-family:inherit; background:#fafaf8; }
 .tag{ font-size:12px; padding:2px 9px; border-radius:20px; background:#eef; color:#447; }
-.tag.s-신규{ background:#fff3ea; color:#c25f1a; }
+.tag.s-신규{ background:#e2f3f1; color:#157076; }
 .tag.s-확정{ background:#e9f7e9; color:#2e7d32; }
 .tag.s-취소{ background:#f1f1f1; color:#999; }
 .tag.s-완료{ background:#eaf2ff; color:#2864c7; }
@@ -123,8 +123,8 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .set-note{ font-size:13px; color:#888; line-height:1.6; margin-bottom:14px; }
 .set-holiday-add{ display:flex; gap:8px; margin-bottom:14px; }
 .set-holiday-add input{ border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-family:inherit; font-size:14px; }
-.holiday-chip{ display:inline-flex; align-items:center; gap:8px; background:#fff3ea; color:#c25f1a; border:1px solid #ffd8bc; border-radius:20px; padding:6px 8px 6px 14px; font-size:13px; margin:0 8px 8px 0; }
-.holiday-chip button{ background:#ffd8bc; border:0; border-radius:50%; width:18px; height:18px; color:#c25f1a; font-size:11px; line-height:1; cursor:pointer; }
+.holiday-chip{ display:inline-flex; align-items:center; gap:8px; background:#e2f3f1; color:#157076; border:1px solid #ffd8bc; border-radius:20px; padding:6px 8px 6px 14px; font-size:13px; margin:0 8px 8px 0; }
+.holiday-chip button{ background:#ffd8bc; border:0; border-radius:50%; width:18px; height:18px; color:#157076; font-size:11px; line-height:1; cursor:pointer; }
 
 @media (max-width:600px){
   .hours-head, .hours-row{ grid-template-columns: 64px 40px 1fr; }
@@ -134,11 +134,11 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 /* ===== 통합 예약 (kind 태그/상태 버튼) ===== */
 .tag.s-예약확정{ background:#e9f7e9; color:#2e7d32; }
 .kind-tag{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef1f5; color:#5a6b80; }
-.kind-tag.yj{ background:#fff0e5; color:#c25f1a; }
+.kind-tag.yj{ background:#e2f3f1; color:#157076; }
 .st-btn{ border:1px solid var(--line); background:#fff; color:#888; border-radius:7px; padding:6px 12px; font-size:13px; font-weight:600; }
 .st-btn:hover{ border-color:var(--orange); color:var(--orange); }
 .st-btn.active{ color:#fff; border-color:transparent; }
-.st-btn.active.s-신규{ background:#ff9d63; }
+.st-btn.active.s-신규{ background:#157076; }
 .st-btn.active.s-예약확정{ background:#2e7d32; }
 .st-btn.active.s-취소{ background:#999; }
 
@@ -155,12 +155,12 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .adm-day{ font-size:12px; color:#999; padding-left:2px; }
 .adm-chips{ display:flex; flex-direction:column; gap:2px; overflow:hidden; min-width:0; }
 .adm-chip{ max-width:100%; border:0; border-radius:5px; padding:3px 5px; font-size:11px; text-align:left; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:inherit; }
-.adm-chip.s-신규{ background:#fff0e5; color:#c25f1a; }
+.adm-chip.s-신규{ background:#e2f3f1; color:#157076; }
 .adm-chip.s-예약확정{ background:#e9f7e9; color:#2e7d32; }
 .adm-chip:hover{ filter:brightness(.95); }
 .adm-cal-legend{ display:flex; gap:16px; align-items:center; margin-top:12px; font-size:13px; color:#777; }
 .adm-cal-legend .dot{ display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:middle; }
-.adm-cal-legend .dot.s-신규{ background:#ff9d63; } .adm-cal-legend .dot.s-예약확정{ background:#2e7d32; }
+.adm-cal-legend .dot.s-신규{ background:#157076; } .adm-cal-legend .dot.s-예약확정{ background:#2e7d32; }
 .adm-cal-hint{ color:#bbb; margin-left:auto; font-size:12px; }
 
 /* ===== 상세 모달 ===== */
@@ -215,7 +215,7 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 .addpk-cell.sel{ background:var(--orange); color:#fff; border-color:var(--orange); font-weight:700; }
 .addpk-cell.off, .addpk-cell.past{ color:#ccc; }
 .addpk-cell.holiday{ color:#e0a0a0; }
-.addpk-summary{ margin:10px 0; padding:9px 12px; background:#fff3ea; border-radius:8px; font-size:13px; color:#c25f1a; }
+.addpk-summary{ margin:10px 0; padding:9px 12px; background:#e2f3f1; border-radius:8px; font-size:13px; color:#157076; }
 .addpk-slots{ display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:6px; margin-top:8px; }
 .addpk-hint{ grid-column:1/-1; font-size:13px; color:#999; padding:8px 0; }
 .addpk-slot{ position:relative; border:1px solid var(--line); background:#fff; border-radius:7px; padding:8px 4px; font-size:12px; color:#444; font-family:inherit; }
@@ -256,14 +256,14 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 /* ===== 작업요청 (티켓) ===== */
 .work-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:8px; }
 .work-head h2{ margin:0; }
-.ticket-balance{ font-size:13px; color:#555; background:#fff3ea; border:1px solid #ffd8bc; border-radius:20px; padding:6px 14px; }
+.ticket-balance{ font-size:13px; color:#555; background:#e2f3f1; border:1px solid #ffd8bc; border-radius:20px; padding:6px 14px; }
 .ticket-balance b{ color:var(--orange); font-size:15px; }
 .work-hint{ font-size:13px; color:#888; line-height:1.7; margin-bottom:16px; }
 .work-form .nf-row select{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:14px; font-family:inherit; background:#fafaf8; outline:none; }
 .work-form .nf-row select:focus{ border-color:var(--orange); background:#fff; }
 .work-err{ color:#d33; font-size:13px; min-height:18px; margin:2px 0 8px; }
 .work-type{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef1f5; color:#5a6b80; }
-.tag.s-요청{ background:#fff3ea; color:#c25f1a; }
+.tag.s-요청{ background:#e2f3f1; color:#157076; }
 .tag.s-진행중{ background:#eaf2ff; color:#2864c7; }
 .tag.s-완료{ background:#e9f7e9; color:#2e7d32; }
 .tag.s-취소{ background:#f1f1f1; color:#999; }
