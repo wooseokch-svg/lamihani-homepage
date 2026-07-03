@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=21">
+<link rel="stylesheet" href="css/admin.css?v=23">
 </head>
 <body>
 
@@ -28,19 +28,18 @@
 <div id="adminView" hidden>
   <header class="adm-header">
     <span class="brand">라미한의원 관리자</span>
+    <div class="adm-substats" id="admStats" hidden>
+      <span class="stat">상품 <b id="stPlan">–</b></span>
+      <span class="stat">다음 결제 <b id="stNext">–</b></span>
+      <span class="stat">메시지 <b id="stMsg">–</b>건</span>
+      <span class="stat">작업티켓 <b id="stTkt">–</b></span>
+    </div>
     <span class="who" id="who"></span>
     <span class="spacer"></span>
     <select class="clinic-select" id="clinicSelect" hidden style="margin-right:10px;padding:6px 12px;border-radius:8px;border:1px solid #cfcfcf;font-size:14px;font-weight:600;background:#fff"></select>
     <a class="naver-link" id="naverLink" href="#" target="_blank" rel="noopener">네이버 예약 관리</a>
     <button class="logout" id="logoutBtn">로그아웃</button>
   </header>
-
-  <div class="adm-substats" id="admStats" hidden>
-    <span class="stat">상품 <b id="stPlan">–</b></span>
-    <span class="stat">다음 결제 <b id="stNext">–</b></span>
-    <span class="stat">메시지 <b id="stMsg">–</b>건</span>
-    <span class="stat">작업티켓 <b id="stTkt">–</b></span>
-  </div>
 
   <nav class="adm-tabs">
     <button data-tab="intakes" class="active">예진표 예약 <span class="badge" id="cntInt">0</span></button>
