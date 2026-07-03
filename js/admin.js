@@ -128,8 +128,29 @@
     var cid = CID;
     fetch('https://noad.ai.kr/api/clinic/status?clinicId=' + encodeURIComponent(cid))
       .then(function (r) { return r.json(); })
-      .then(function (s) { if (s && s.blockAdmin) showBlockOverlay(s.daysOverdue || 0); })
+      .then(function (s) {
+        if (s && s.blockAdmin) showBlockOverlay(s.daysOverdue || 0);
+        renderHeaderStats(s);
+      })
       .catch(function () { /* 조회 실패 → 차단 안 함(안전) */ });
+  }
+  // 관리자 헤더 요약바 — 현재 상품 / 다음 결제일 / 메시지 잔여 / 작업티켓
+  function fmtKDate(iso) {
+    if (!iso) return '–';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '–';
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  }
+  function renderHeaderStats(s) {
+    var bar = document.getElementById('admStats');
+    if (!bar || !s) return;
+    function set(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+    var plan = s.planLabel || (s.status === 'TRIAL' ? '무료체험' : (s.status ? '—' : '미설정'));
+    set('stPlan', plan);
+    set('stNext', fmtKDate(s.nextPaymentDate));
+    set('stMsg', (typeof s.messageCredits === 'number') ? s.messageCredits.toLocaleString() : '–');
+    set('stTkt', (typeof s.tickets === 'number') ? s.tickets.toLocaleString() : '–');
+    bar.hidden = false;
   }
   function showBlockOverlay(days) {
     if (document.getElementById('clinicBlock')) return;
