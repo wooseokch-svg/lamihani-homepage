@@ -45,26 +45,31 @@ Deno.serve(async (req) => {
     if (!targets.length) return json({ error: '권한이 없습니다 (관리하지 않는 병원)' }, 403);
 
     if (action === 'list') {
-      const { data: rows, error } = await svc.from('clinic_admins').select('user_id').in('clinic_id', targets);
+      const { data: rows, error } = await svc.from('clinic_admins').select('user_id, phone').in('clinic_id', targets);
       if (error) return json({ error: error.message }, 400);
+      const phoneOf = new Map<string, string>();
+      for (const r of (rows ?? []) as Array<{ user_id: string; phone?: string | null }>) {
+        if (r.phone && !phoneOf.get(r.user_id)) phoneOf.set(r.user_id, r.phone);
+      }
       const ids = [...new Set((rows ?? []).map((r: { user_id: string }) => r.user_id))].filter((id) => id !== caller.id);
-      const admins: Array<{ id: string; email?: string; last_sign_in_at?: string; created_at?: string }> = [];
+      const admins: Array<{ id: string; email?: string; phone?: string; last_sign_in_at?: string; created_at?: string }> = [];
       for (const id of ids) {
         const { data: u } = await svc.auth.admin.getUserById(id);
-        if (u?.user) admins.push({ id: u.user.id, email: u.user.email, last_sign_in_at: u.user.last_sign_in_at, created_at: u.user.created_at });
+        if (u?.user) admins.push({ id: u.user.id, email: u.user.email, phone: phoneOf.get(id) ?? '', last_sign_in_at: u.user.last_sign_in_at, created_at: u.user.created_at });
       }
       admins.sort((a, b) => ((a.created_at ?? '') < (b.created_at ?? '') ? -1 : 1));
-      return json({ ok: true, admins });
+      return json({ ok: true, admins, callerPhone: phoneOf.get(caller.id) ?? '' });
     }
 
     if (action === 'create') {
       const email = String(body.email ?? '').trim().toLowerCase();
       const password = String(body.password ?? '');
+      const phone = String(body.phone ?? '').replace(/[^0-9]/g, ''); // 하이픈 제거
       if (!email || password.length < 8) return json({ error: '이메일과 8자 이상 비밀번호가 필요합니다' }, 400);
       const { data: created, error: cErr } = await svc.auth.admin.createUser({ email, password, email_confirm: true });
       if (cErr || !created?.user) return json({ error: cErr?.message ?? '계정 생성 실패 (이미 있는 이메일일 수 있습니다)' }, 400);
-      // 대상 병원(유닛) 전부에 매핑 → 별내면 성인+소아 둘 다 관리
-      const mapRows = targets.map((c) => ({ user_id: created.user.id, clinic_id: c }));
+      // 대상 병원(유닛) 전부에 매핑 → 별내면 성인+소아 둘 다 관리. phone=알림 수신처.
+      const mapRows = targets.map((c) => ({ user_id: created.user.id, clinic_id: c, phone: phone || null }));
       const { error: mErr } = await svc.from('clinic_admins').upsert(mapRows, { onConflict: 'user_id,clinic_id' });
       if (mErr) {
         await svc.auth.admin.deleteUser(created.user.id).catch(() => {}); // 매핑 실패 시 롤백
@@ -84,6 +89,18 @@ Deno.serve(async (req) => {
       // 남은 병원 매핑이 없으면 계정도 삭제
       const { data: rest } = await svc.from('clinic_admins').select('clinic_id').eq('user_id', targetId);
       if (!rest || !rest.length) await svc.auth.admin.deleteUser(targetId).catch(() => {});
+      return json({ ok: true });
+    }
+
+    if (action === 'setPhone') {
+      const targetId = String(body.user_id ?? '') || caller.id; // 기본=본인
+      const phone = String(body.phone ?? '').replace(/[^0-9]/g, '');
+      if (targetId !== caller.id) {
+        const { data: tgt } = await svc.from('clinic_admins').select('clinic_id').eq('user_id', targetId).in('clinic_id', targets);
+        if (!tgt || !tgt.length) return json({ error: '권한이 없습니다 (다른 병원 계정)' }, 403);
+      }
+      const { error: uErr } = await svc.from('clinic_admins').update({ phone: phone || null }).eq('user_id', targetId).in('clinic_id', targets);
+      if (uErr) return json({ error: uErr.message }, 400);
       return json({ ok: true });
     }
 

@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=20">
+<link rel="stylesheet" href="css/admin.css?v=21">
 </head>
 <body>
 
@@ -187,9 +187,13 @@
           <label>비밀번호</label>
           <input id="staffPw" type="text" placeholder="8자 이상" autocomplete="off">
         </div>
+        <div class="nf-row">
+          <label>전화번호</label>
+          <input id="staffPhone" type="tel" inputmode="tel" placeholder="010-1234-5678" autocomplete="off">
+        </div>
         <button class="btn-primary" id="staffAddBtn">계정 추가</button>
         <span class="set-msg" id="staffMsg"></span>
-        <p class="set-note" style="margin-top:10px">추가하면 그 직원이 위 이메일·비밀번호로 바로 로그인할 수 있습니다. 비밀번호는 직원에게 직접 전달해 주세요.</p>
+        <p class="set-note" style="margin-top:10px">추가하면 그 직원이 위 이메일·비밀번호로 바로 로그인할 수 있습니다. 비밀번호는 직원에게 직접 전달해 주세요.<br><b>등록한 전화번호로 예약 접수·서비스 만료·요청 작업 알림이 발송됩니다.</b> (하이픈은 넣어도 자동 정리)</p>
       </div>
       <div class="panel">
         <h2>관리자 목록</h2>
@@ -247,6 +251,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=7"></script>
-<script src="js/admin.js?v=31"></script>
+<script src="js/admin.js?v=32"></script>
 </body>
 </html>

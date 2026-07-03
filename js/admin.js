@@ -247,15 +247,19 @@
       var me = (u && u.data && u.data.user) ? u.data.user : null;
       return staffApi('list').then(function (d) {
         var admins = (d.admins || []).filter(function (a) { return !me || a.id !== me.id; });
-        if (me) admins.unshift({ id: me.id, email: me.email, last_sign_in_at: me.last_sign_in_at, _self: true });
+        if (me) admins.unshift({ id: me.id, email: me.email, phone: d.callerPhone || '', last_sign_in_at: me.last_sign_in_at, _self: true });
         if (!admins.length) { $('staffList').innerHTML = '<div class="empty">등록된 관리자가 없습니다.</div>'; return; }
         $('staffList').innerHTML = admins.map(function (a) {
           var last = a.last_sign_in_at ? new Date(a.last_sign_in_at).toLocaleString('ko-KR') : '로그인 기록 없음';
-          var meBadge = a._self ? ' <span style="font-size:11px;color:#157076;font-weight:700;background:#e2f3f1;padding:2px 7px;border-radius:10px;margin-left:4px">나</span>' : '';
-          return '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid #eee">' +
-            '<div><b>' + esc(a.email || '') + '</b>' + meBadge + '<div style="font-size:12px;color:#888;margin-top:2px">최근 로그인: ' + esc(last) + '</div></div>' +
-            (a._self ? '' : '<button class="btn-ghost staff-del" data-id="' + esc(a.id) + '" data-email="' + esc(a.email || '') + '">삭제</button>') +
-            '</div>';
+          var meBadge = a._self ? ' <span class="staff-me">나</span>' : '';
+          return '<div class="staff-row">' +
+            '<div class="staff-info"><b>' + esc(a.email || '') + '</b>' + meBadge + '<div class="staff-sub">최근 로그인: ' + esc(last) + '</div></div>' +
+            '<div class="staff-act">' +
+              '<input class="staff-phone" data-id="' + esc(a.id) + '" type="tel" inputmode="tel" placeholder="알림 받을 번호" value="' + esc(a.phone || '') + '">' +
+              '<button class="btn-ghost staff-phone-save" data-id="' + esc(a.id) + '">번호저장</button>' +
+              (a._self ? '' : '<button class="btn-ghost staff-del" data-id="' + esc(a.id) + '" data-email="' + esc(a.email || '') + '">삭제</button>') +
+            '</div>' +
+          '</div>';
         }).join('');
       });
     }).catch(function (e) {
@@ -266,13 +270,14 @@
     $('staffAddBtn').addEventListener('click', function () {
       var email = $('staffEmail').value.trim();
       var pw = $('staffPw').value;
+      var phone = ($('staffPhone') && $('staffPhone').value || '').trim();
       var msg = $('staffMsg');
       msg.style.color = ''; msg.textContent = '';
       if (!email || pw.length < 8) { msg.style.color = '#c0392b'; msg.textContent = '이메일과 8자 이상 비밀번호를 입력하세요.'; return; }
       $('staffAddBtn').disabled = true; $('staffAddBtn').textContent = '추가 중...';
-      staffApi('create', { email: email, password: pw }).then(function () {
+      staffApi('create', { email: email, password: pw, phone: phone }).then(function () {
         msg.style.color = '#2e7d32'; msg.textContent = '추가됐습니다 ✓';
-        $('staffEmail').value = ''; $('staffPw').value = '';
+        $('staffEmail').value = ''; $('staffPw').value = ''; if ($('staffPhone')) $('staffPhone').value = '';
         loadStaff();
       }).catch(function (e) {
         msg.style.color = '#c0392b'; msg.textContent = '실패: ' + e.message;
@@ -281,6 +286,20 @@
       });
     });
     $('staffList').addEventListener('click', function (e) {
+      // 전화번호 저장
+      var saveBtn = e.target.closest ? e.target.closest('.staff-phone-save') : null;
+      if (saveBtn) {
+        var sid = saveBtn.getAttribute('data-id');
+        var input = document.querySelector('.staff-phone[data-id="' + sid + '"]');
+        var ph = input ? input.value.trim() : '';
+        var orig = saveBtn.textContent; saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
+        staffApi('setPhone', { user_id: sid, phone: ph }).then(function () {
+          saveBtn.textContent = '저장됨 ✓';
+          setTimeout(function () { saveBtn.textContent = orig; saveBtn.disabled = false; }, 1200);
+        }).catch(function (err) { saveBtn.textContent = orig; saveBtn.disabled = false; alert('번호 저장 실패: ' + err.message); });
+        return;
+      }
+      // 계정 삭제
       var btn = e.target.closest ? e.target.closest('.staff-del') : null;
       if (!btn) return;
       var id = btn.getAttribute('data-id'), email = btn.getAttribute('data-email');
