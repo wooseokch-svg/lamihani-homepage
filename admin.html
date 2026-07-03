@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=25">
+<link rel="stylesheet" href="css/admin.css?v=26">
 </head>
 <body>
 
@@ -35,14 +35,9 @@
       <span class="stat">작업티켓 <b id="stTkt">–</b></span>
     </div>
     <span class="spacer"></span>
-    <div class="adm-right">
-      <div class="adm-right-top">
-        <select class="clinic-select" id="clinicSelect" hidden style="margin-right:10px;padding:6px 12px;border-radius:8px;border:1px solid #cfcfcf;font-size:14px;font-weight:600;background:#fff"></select>
-        <span class="who" id="who"></span>
-        <button class="logout" id="logoutBtn">로그아웃</button>
-      </div>
-      <a class="naver-link" id="naverLink" href="#" target="_blank" rel="noopener">네이버 예약 관리</a>
-    </div>
+    <select class="clinic-select" id="clinicSelect" hidden style="margin-right:10px;padding:6px 12px;border-radius:8px;border:1px solid #cfcfcf;font-size:14px;font-weight:600;background:#fff"></select>
+    <span class="who" id="who"></span>
+    <button class="logout" id="logoutBtn">로그아웃</button>
   </header>
 
   <nav class="adm-tabs">
@@ -59,7 +54,10 @@
     <!-- 예진표 예약 -->
     <section id="tab-intakes">
       <div class="panel">
-        <h2>예약 설정</h2>
+        <div class="panel-head">
+          <h2>예약 설정</h2>
+          <a class="naver-link" id="naverLink" href="#" target="_blank" rel="noopener">네이버 예약 관리</a>
+        </div>
         <div class="set-foot">
           <label>예약 간격
             <select id="slotMinutes">
