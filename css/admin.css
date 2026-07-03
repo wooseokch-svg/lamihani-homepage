@@ -34,12 +34,14 @@ button{ font-family:inherit; cursor:pointer; }
 
 /* 헤더/탭 */
 .adm-header{
-  background:#fff; border-bottom:1px solid var(--line); padding:0 24px; height:60px;
+  background:#fff; border-bottom:1px solid var(--line); padding:0 24px; height:76px;
   display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:10;
 }
-.adm-header .brand{ font-weight:700; font-size:16px; }
+.adm-header .brand{ font-weight:700; font-size:16px; white-space:nowrap; flex-shrink:0; }
 .adm-header .who{ font-size:13px; color:var(--muted); }
 .adm-header .spacer{ flex:1; }
+.adm-right{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.adm-right-top{ display:flex; align-items:center; gap:12px; }
 .adm-header .naver-link{
   font-size:13px; color:#fff; background:#57d900; padding:8px 13px; border-radius:8px;
   text-decoration:none; font-weight:600;
@@ -64,7 +66,7 @@ button{ font-family:inherit; cursor:pointer; }
 @media (max-width:600px){ .staff-act{ width:100%; } .staff-phone{ flex:1; width:auto; } }
 .adm-tabs{
   background:#fff; border-bottom:1px solid var(--line); padding:0 16px;
-  display:flex; gap:4px; position:sticky; top:60px; z-index:9;
+  display:flex; gap:4px; position:sticky; top:76px; z-index:9;
 }
 .adm-tabs button{
   background:none; border:0; padding:14px 18px; font-size:14px; font-weight:600; color:#999;
@@ -293,12 +295,13 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
 }
 
 @media (max-width:640px){
-  /* 헤더: 한 줄 유지하되 압축 */
-  .adm-header{ padding:0 12px; gap:8px; height:54px; }
+  /* 헤더: 압축 (오른쪽 2단 = 로그아웃 / 네이버) */
+  .adm-header{ padding:0 12px; gap:8px; height:66px; }
   .adm-header .brand{ font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
   .adm-header .who{ display:none; }                 /* 로그인 이메일은 모바일에서 숨김 */
   .adm-header .naver-link{ font-size:11px; padding:6px 9px; white-space:nowrap; }
   .adm-header .logout{ font-size:11px; padding:6px 10px; white-space:nowrap; }
+  .adm-right{ gap:4px; }
 
   /* 헤더 내 요약바: 남는 공간에서 가로 스크롤 (spacer 제거해 gap 낭비 방지) */
   .adm-header .spacer{ display:none; }
@@ -307,7 +310,7 @@ main{ max-width:920px; margin:0 auto; padding:24px 18px 60px; }
   .adm-substats .stat{ font-size:11px; padding:4px 8px; }
 
   /* 탭: 가로 스크롤 */
-  .adm-tabs{ top:54px; padding:0 8px; gap:0; overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
+  .adm-tabs{ top:66px; padding:0 8px; gap:0; overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
   .adm-tabs::-webkit-scrollbar{ display:none; }
   .adm-tabs{ scrollbar-width:none; }
   .adm-tabs button{ flex:0 0 auto; padding:13px 12px; font-size:13px; white-space:nowrap; }
