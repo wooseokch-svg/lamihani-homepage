@@ -9,8 +9,9 @@
    ===================================================================== */
 (function () {
   // ── 모든 병원 공유 (Supabase 프로젝트 1개) ──
-  var SUPABASE_URL = 'https://gjopkfbwrduvxamznkhc.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqb3BrZmJ3cmR1dnhhbXpua2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjE2MTEsImV4cCI6MjA5ODAzNzYxMX0.jMfZAX1wjfgOzEuU-gQM7K9lga9OkIuRoSCnQbWK8Zo';
+  // 2026-07-17 서울 리전 이전 (구: gjopkfbwrduvxamznkhc 도쿄 — 며칠 보존 후 정지)
+  var SUPABASE_URL = 'https://zdzgieozronbgvajjwdt.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkemdpZW96cm9uYmd2YWpqd2R0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNzQ5NDksImV4cCI6MjA5OTg1MDk0OX0.oQN2dOkY8FfvET1PZpkVtCHNMhPy8M_B7YwZBwDnCmY';
 
   // ── 도메인 → 병원 매핑 (새 병원은 여기 한 줄 추가) ──
   // name = noad 결제/작업요청 페이지에 표시될 병원명 (핸드오버 토큰에 담겨 넘어감).
