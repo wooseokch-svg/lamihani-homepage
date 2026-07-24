@@ -134,6 +134,7 @@ ul{list-style:none}
 .info-card ul li{font-size:16.5px;color:#333;padding:8px 0;border-bottom:1px dashed #eee;display:flex;justify-content:space-between;gap:10px}
 .info-card ul li:last-child{border-bottom:none}
 .info-card ul li b{color:var(--green);font-weight:700}
+.info-card.notes ul{display:grid;grid-template-columns:1fr 1fr;gap:2px 32px}   /* 2열(2+2), 위 두 박스 그리드와 정렬 */
 .info-card.notes ul li{display:list-item;list-style:none;position:relative;padding-left:16px;border-bottom:none;color:#1d1d1d;font-size:18px}
 .info-card.notes ul li::before{content:"·";position:absolute;left:2px;color:var(--green);font-weight:800}
 .hcap{font-weight:600;color:#999;font-size:13px}
@@ -211,6 +212,7 @@ ul{list-style:none}
   .section{padding:48px 0}
   .doctors{grid-template-columns:1fr}
   .hours-grid{grid-template-columns:1fr}
+  .info-card.notes ul{grid-template-columns:1fr}
 }
 
 /* ---------- 예약 / 약관 모달 ---------- */
