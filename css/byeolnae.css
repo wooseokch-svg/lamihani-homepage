@@ -199,9 +199,13 @@ ul{list-style:none}
 @media(max-width:879px){
   .location-wrap{grid-template-columns:1fr}
   .location-map iframe{height:220px}
+  .header-inner .btn-reserve{display:none}   /* 모바일 헤더 예약하기 버튼 숨김 */
 }
 @media(max-width:760px){
   .reasons,.equip-feature{grid-template-columns:1fr;gap:22px}
+  /* 모바일: 섹션 제목 가운데 정렬 (본문은 좌측 유지) */
+  .eyebrow{display:block;text-align:center}
+  .sec-title{text-align:center}
 }
 @media(max-width:560px){
   .section{padding:48px 0}
