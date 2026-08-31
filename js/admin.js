@@ -403,6 +403,15 @@
       })();
     });
   }
+  var PT_PAGE_SIZE = 50;
+  var ptPage = 0;          // 0-base
+  var ptRows = [];         // 현재 페이지 데이터 (수정 폼 채우기용)
+  function ptRowHtml(r) {
+    var meta = [r.gender, (r.age != null ? r.age + '세' : '')].filter(Boolean).join(' · ');
+    return '<div class="pt-row" data-no="' + r.patient_no + '"><div><b>' + esc(r.name) + '</b>' + (meta ? ' <span class="pt-meta">' + esc(meta) + '</span>' : '') +
+      '<div class="pt-sub">No.' + r.patient_no + (r.phone ? ' · ' + fmtPhone(r.phone) : '') + '</div></div>' +
+      '<button class="btn-ghost pt-edit" data-no="' + r.patient_no + '">수정</button></div>';
+  }
   function loadPatients() {
     if (!$('ptList')) return;
     var q = ($('ptSearch').value || '').trim();
@@ -412,22 +421,75 @@
       else if (/^[0-9-]+$/.test(q)) sel = sel.ilike('phone', '%' + q.replace(/-/g, '') + '%');
       else sel = sel.ilike('name', '%' + q + '%');
     }
-    sel.order('updated_at', { ascending: false }).order('patient_no').limit(50).then(function (res) {
-      if (res.error) { $('ptList').innerHTML = '<div class="empty">불러오기 실패: ' + esc(res.error.message) + ' (patients.sql 실행 여부 확인)</div>'; return; }
-      $('ptCount').textContent = res.count || 0;
-      var rows = res.data || [];
-      if (!rows.length) { $('ptList').innerHTML = '<div class="empty">' + (q ? '검색 결과가 없습니다.' : '등록된 환자가 없습니다. 위에서 엑셀을 업로드하세요.') + '</div>'; return; }
-      $('ptList').innerHTML = rows.map(function (r) {
-        var meta = [r.gender, (r.age != null ? r.age + '세' : '')].filter(Boolean).join(' · ');
-        return '<div class="pt-row"><div><b>' + esc(r.name) + '</b>' + (meta ? ' <span class="pt-meta">' + esc(meta) + '</span>' : '') +
-          '<div class="pt-sub">No.' + r.patient_no + (r.phone ? ' · ' + fmtPhone(r.phone) : '') + '</div></div></div>';
-      }).join('') + (res.count > 50 ? '<div class="empty">외 ' + (res.count - 50) + '명 — 검색으로 찾아보세요.</div>' : '');
+    var from = ptPage * PT_PAGE_SIZE;
+    sel.order('name').order('patient_no').range(from, from + PT_PAGE_SIZE - 1).then(function (res) {
+      if (res.error) { $('ptList').innerHTML = '<div class="empty">불러오기 실패: ' + esc(res.error.message) + ' (patients.sql 실행 여부 확인)</div>'; $('ptPager').hidden = true; return; }
+      var total = res.count || 0;
+      $('ptCount').textContent = total;
+      ptRows = res.data || [];
+      if (!ptRows.length && ptPage > 0) { ptPage = 0; loadPatients(); return; } // 검색 후 빈 페이지 → 첫 페이지로
+      if (!ptRows.length) { $('ptList').innerHTML = '<div class="empty">' + (q ? '검색 결과가 없습니다.' : '등록된 환자가 없습니다. 위에서 엑셀을 업로드하세요.') + '</div>'; $('ptPager').hidden = true; return; }
+      $('ptList').innerHTML = ptRows.map(ptRowHtml).join('');
+      var last = Math.max(0, Math.ceil(total / PT_PAGE_SIZE) - 1);
+      $('ptPager').hidden = total <= PT_PAGE_SIZE;
+      $('ptPageInfo').textContent = (from + 1) + '–' + Math.min(from + PT_PAGE_SIZE, total) + ' / 총 ' + total + '명';
+      $('ptPrev').disabled = ptPage <= 0;
+      $('ptNext').disabled = ptPage >= last;
     });
   }
   var ptSearchTimer = null;
   if ($('ptSearch')) {
     $('ptSearch').addEventListener('input', function () {
-      clearTimeout(ptSearchTimer); ptSearchTimer = setTimeout(loadPatients, 300);
+      clearTimeout(ptSearchTimer);
+      ptSearchTimer = setTimeout(function () { ptPage = 0; loadPatients(); }, 300);
+    });
+    $('ptPrev').addEventListener('click', function () { if (ptPage > 0) { ptPage--; loadPatients(); } });
+    $('ptNext').addEventListener('click', function () { ptPage++; loadPatients(); });
+    // ── 인라인 수정 (이벤트 위임: 수정 → 폼 / 저장·취소) ──
+    $('ptList').addEventListener('click', function (e) {
+      var t = e.target;
+      var editBtn = t.closest ? t.closest('.pt-edit') : null;
+      if (editBtn) {
+        var no = parseInt(editBtn.dataset.no, 10);
+        var r = null;
+        ptRows.forEach(function (x) { if (x.patient_no === no) r = x; });
+        if (!r) return;
+        var row = editBtn.closest('.pt-row');
+        row.classList.add('editing');
+        row.innerHTML =
+          '<div class="pt-editform" data-no="' + no + '">' +
+            '<span class="pt-sub">No.' + no + '</span>' +
+            '<input class="pt-in" data-f="name" value="' + esc(r.name) + '" placeholder="이름">' +
+            '<input class="pt-in" data-f="phone" value="' + esc(fmtPhone(r.phone)) + '" placeholder="전화번호" inputmode="tel">' +
+            '<select class="pt-in pt-in-s" data-f="gender">' +
+              ['', '여', '남'].map(function (g) { return '<option value="' + g + '"' + ((r.gender || '') === g ? ' selected' : '') + '>' + (g || '성별') + '</option>'; }).join('') +
+            '</select>' +
+            '<input class="pt-in pt-in-s" data-f="age" type="number" min="0" max="120" value="' + (r.age == null ? '' : r.age) + '" placeholder="나이">' +
+            '<button class="btn-primary pt-save" data-no="' + no + '">저장</button>' +
+            '<button class="btn-ghost pt-cancel">취소</button>' +
+            '<span class="set-msg pt-editmsg"></span>' +
+          '</div>';
+        return;
+      }
+      if (t.closest && t.closest('.pt-cancel')) { loadPatients(); return; }
+      var saveBtn = t.closest ? t.closest('.pt-save') : null;
+      if (saveBtn) {
+        var form = saveBtn.closest('.pt-editform');
+        var no2 = parseInt(saveBtn.dataset.no, 10);
+        var get = function (f) { var el = form.querySelector('[data-f="' + f + '"]'); return el ? el.value.trim() : ''; };
+        var name = get('name');
+        var msg = form.querySelector('.pt-editmsg');
+        if (!name) { msg.style.color = '#c0392b'; msg.textContent = '이름은 비울 수 없습니다.'; return; }
+        var phone = normPtPhone(get('phone'));
+        if (get('phone') && !phone) { msg.style.color = '#c0392b'; msg.textContent = '전화번호 형식을 확인해 주세요.'; return; }
+        var age = get('age') === '' ? null : parseInt(get('age'), 10);
+        saveBtn.disabled = true; msg.style.color = ''; msg.textContent = '저장 중...';
+        db.from('patients').update({ name: name, phone: phone, gender: get('gender') || null, age: age, updated_at: new Date().toISOString() })
+          .eq('clinic_id', CID).eq('patient_no', no2).then(function (res) {
+            if (res.error) { saveBtn.disabled = false; msg.style.color = '#c0392b'; msg.textContent = '실패: ' + res.error.message; return; }
+            loadPatients();
+          });
+      }
     });
   }
 
