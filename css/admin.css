@@ -55,6 +55,26 @@ button{ font-family:inherit; cursor:pointer; }
   padding:4px 9px; border-radius:8px; white-space:nowrap;
 }
 .adm-substats .stat b{ color:var(--txt); font-weight:800; margin-left:2px; }
+/* 환자관리 */
+.pt-upload-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.pt-table{ border-collapse:collapse; width:100%; margin:12px 0 10px; font-size:13px; }
+.pt-table th,.pt-table td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
+.pt-table th{ background:#f4f7f6; color:var(--muted); font-weight:700; }
+.pt-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 2px; border-bottom:1px solid #eee; }
+.pt-row b{ font-size:14px; }
+.pt-meta{ font-size:12px; color:var(--muted); }
+.pt-sub{ font-size:12px; color:#888; margin-top:2px; }
+.pt-suggest{
+  position:absolute; left:0; right:0; top:100%; z-index:30; background:#fff;
+  border:1px solid var(--line); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.12);
+  max-height:240px; overflow-y:auto; margin-top:4px;
+}
+.pt-suggest-item{
+  display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;
+  padding:10px 12px; border:0; background:none; text-align:left; font-size:14px; cursor:pointer;
+}
+.pt-suggest-item:hover{ background:#f4f7f6; }
+.pt-suggest-item span{ font-size:12px; color:var(--muted); white-space:nowrap; }
 .staff-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 2px; border-bottom:1px solid #eee; flex-wrap:wrap; }
 .staff-info b{ font-size:14px; }
 .staff-me{ font-size:11px; color:#157076; font-weight:700; background:#e2f3f1; padding:2px 7px; border-radius:10px; margin-left:4px; }

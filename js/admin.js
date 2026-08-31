@@ -208,7 +208,7 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.adm-tabs button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      ['intakes', 'notices', 'settings', 'billing', 'work', 'msg', 'staff'].forEach(function (t) {
+      ['intakes', 'patients', 'notices', 'settings', 'billing', 'work', 'msg', 'staff'].forEach(function (t) {
         $('tab-' + t).hidden = (t !== b.dataset.tab);
       });
       // 결제·작업요청·메시지 탭은 처음 열 때 noad 페이지를 iframe 으로 로드
@@ -216,6 +216,7 @@
       if (b.dataset.tab === 'work') loadNoadFrame('work', 'workFrame', 'workLoading');
       if (b.dataset.tab === 'msg') loadNoadFrame('messaging', 'msgFrame', 'msgLoading');
       if (b.dataset.tab === 'staff') loadStaff();
+      if (b.dataset.tab === 'patients') loadPatients();
     });
   });
 
@@ -308,6 +309,158 @@
       staffApi('delete', { user_id: id }).then(function () { loadStaff(); })
         .catch(function (err) { alert('삭제 실패: ' + err.message); btn.disabled = false; });
     });
+  }
+
+  // =================== 환자관리 (patients — EMR 엑셀 업로드 + 검색) ===================
+  // 명부는 병원그룹 공통 → clinic_id = CID(primary). 키 = (clinic_id, patient_no).
+  // EMR 무헤더 포맷: A=전화(숫자 저장이라 앞 0 소실), C=이름, D=환자번호, E=성별, F=나이.
+  function normPtPhone(v) {
+    var d = String(v == null ? '' : v).replace(/[^0-9]/g, '');
+    if (!d) return null;
+    if (d.charAt(0) !== '0') d = '0' + d;            // 엑셀 숫자 저장으로 잘린 선행 0 복원
+    if (d.length < 9 || d.length > 11) return null;  // 유효 자릿수 아님 → 전화 없음 처리
+    return d;
+  }
+  function parsePatientRows(rows) {
+    var out = [], skipped = 0;
+    rows.forEach(function (r) {
+      if (!r) { skipped++; return; }
+      var name = String(r[2] == null ? '' : r[2]).trim();
+      var no = parseInt(r[3], 10);
+      if (!name || isNaN(no)) { skipped++; return; }  // 헤더/빈 행 자동 제외
+      var age = parseInt(r[5], 10);
+      out.push({
+        clinic_id: CID, patient_no: no, name: name,
+        phone: normPtPhone(r[0]),
+        gender: String(r[4] == null ? '' : r[4]).trim() || null,
+        age: isNaN(age) ? null : age,
+      });
+    });
+    return { rows: out, skipped: skipped };
+  }
+  var ptParsed = null;
+  function fmtPhone(p) {
+    if (!p) return '';
+    if (p.length === 11) return p.slice(0, 3) + '-' + p.slice(3, 7) + '-' + p.slice(7);
+    if (p.length === 10) return p.slice(0, 3) + '-' + p.slice(3, 6) + '-' + p.slice(6);
+    return p;
+  }
+  if ($('ptFile')) {
+    $('ptFile').addEventListener('change', function () {
+      var f = this.files && this.files[0];
+      var msg = $('ptFileMsg'); msg.style.color = ''; msg.textContent = '';
+      $('ptPreview').hidden = true; ptParsed = null;
+      if (!f) return;
+      if (typeof XLSX === 'undefined') { msg.style.color = '#c0392b'; msg.textContent = '엑셀 라이브러리 로드 실패 — 새로고침 후 다시 시도해 주세요.'; return; }
+      msg.textContent = '읽는 중...';
+      var rd = new FileReader();
+      rd.onload = function (e) {
+        try {
+          var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          var ws = wb.Sheets[wb.SheetNames[0]];
+          var rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
+          var p = parsePatientRows(rows);
+          if (!p.rows.length) { msg.style.color = '#c0392b'; msg.textContent = '인식된 환자가 없습니다. 파일 형식을 확인해 주세요.'; return; }
+          ptParsed = p.rows;
+          msg.textContent = '';
+          var withPhone = p.rows.filter(function (r) { return r.phone; }).length;
+          var head = '<table class="pt-table"><tr><th>환자번호</th><th>이름</th><th>전화</th><th>성별</th><th>나이</th></tr>';
+          var body = p.rows.slice(0, 5).map(function (r) {
+            return '<tr><td>' + r.patient_no + '</td><td>' + esc(r.name) + '</td><td>' + fmtPhone(r.phone) + '</td><td>' + esc(r.gender || '') + '</td><td>' + (r.age == null ? '' : r.age) + '</td></tr>';
+          }).join('');
+          $('ptPreviewTable').innerHTML = head + body + '</table>';
+          $('ptPreviewSummary').textContent = '총 ' + p.rows.length + '명 (전화번호 있음 ' + withPhone + '명' + (p.skipped ? ' · 제외 ' + p.skipped + '행' : '') + ') — 위 5명 미리보기가 맞는지 확인 후 실행하세요.';
+          $('ptApplyMsg').textContent = '';
+          $('ptPreview').hidden = false;
+        } catch (err) {
+          msg.style.color = '#c0392b'; msg.textContent = '파일을 읽지 못했습니다: ' + err.message;
+        }
+      };
+      rd.readAsArrayBuffer(f);
+    });
+    $('ptCancelBtn').addEventListener('click', function () { $('ptPreview').hidden = true; $('ptFile').value = ''; ptParsed = null; });
+    $('ptApplyBtn').addEventListener('click', function () {
+      if (!ptParsed || !ptParsed.length) return;
+      var btn = $('ptApplyBtn'), msg = $('ptApplyMsg');
+      btn.disabled = true; msg.style.color = ''; msg.textContent = '업데이트 중...';
+      var chunks = [];
+      for (var i = 0; i < ptParsed.length; i += 500) chunks.push(ptParsed.slice(i, i + 500));
+      var done = 0;
+      (function next() {
+        if (!chunks.length) {
+          btn.disabled = false; msg.style.color = '#2e7d32'; msg.textContent = done + '명 반영 완료 ✓';
+          $('ptFile').value = ''; ptParsed = null;
+          setTimeout(function () { $('ptPreview').hidden = true; }, 1500);
+          loadPatients();
+          return;
+        }
+        var c = chunks.shift();
+        db.from('patients').upsert(c, { onConflict: 'clinic_id,patient_no' }).then(function (res) {
+          if (res.error) { btn.disabled = false; msg.style.color = '#c0392b'; msg.textContent = '실패: ' + res.error.message + ' (patients.sql 실행 여부 확인)'; return; }
+          done += c.length; msg.textContent = '업데이트 중... ' + done + '/' + ptParsed.length;
+          next();
+        });
+      })();
+    });
+  }
+  function loadPatients() {
+    if (!$('ptList')) return;
+    var q = ($('ptSearch').value || '').trim();
+    var sel = db.from('patients').select('patient_no,name,phone,gender,age', { count: 'exact' }).eq('clinic_id', CID);
+    if (q) {
+      if (/^[0-9]+$/.test(q) && q.length <= 6) sel = sel.eq('patient_no', parseInt(q, 10));
+      else if (/^[0-9-]+$/.test(q)) sel = sel.ilike('phone', '%' + q.replace(/-/g, '') + '%');
+      else sel = sel.ilike('name', '%' + q + '%');
+    }
+    sel.order('updated_at', { ascending: false }).order('patient_no').limit(50).then(function (res) {
+      if (res.error) { $('ptList').innerHTML = '<div class="empty">불러오기 실패: ' + esc(res.error.message) + ' (patients.sql 실행 여부 확인)</div>'; return; }
+      $('ptCount').textContent = res.count || 0;
+      var rows = res.data || [];
+      if (!rows.length) { $('ptList').innerHTML = '<div class="empty">' + (q ? '검색 결과가 없습니다.' : '등록된 환자가 없습니다. 위에서 엑셀을 업로드하세요.') + '</div>'; return; }
+      $('ptList').innerHTML = rows.map(function (r) {
+        var meta = [r.gender, (r.age != null ? r.age + '세' : '')].filter(Boolean).join(' · ');
+        return '<div class="pt-row"><div><b>' + esc(r.name) + '</b>' + (meta ? ' <span class="pt-meta">' + esc(meta) + '</span>' : '') +
+          '<div class="pt-sub">No.' + r.patient_no + (r.phone ? ' · ' + fmtPhone(r.phone) : '') + '</div></div></div>';
+      }).join('') + (res.count > 50 ? '<div class="empty">외 ' + (res.count - 50) + '명 — 검색으로 찾아보세요.</div>' : '');
+    });
+  }
+  var ptSearchTimer = null;
+  if ($('ptSearch')) {
+    $('ptSearch').addEventListener('input', function () {
+      clearTimeout(ptSearchTimer); ptSearchTimer = setTimeout(loadPatients, 300);
+    });
+  }
+
+  // ── 예약 직접추가: 환자 이름 자동완성 (2글자↑ → 명부 검색 → 이름·전화 자동 입력) ──
+  var acTimer = null;
+  function hideSuggest() { var s = $('addNameSuggest'); if (s) { s.hidden = true; s.innerHTML = ''; } }
+  if ($('addName') && $('addNameSuggest')) {
+    $('addName').addEventListener('input', function () {
+      var q = this.value.trim();
+      clearTimeout(acTimer);
+      if (q.length < 2) { hideSuggest(); return; }
+      acTimer = setTimeout(function () {
+        db.from('patients').select('patient_no,name,phone').eq('clinic_id', CID)
+          .ilike('name', q + '%').order('name').limit(8).then(function (res) {
+            var s = $('addNameSuggest');
+            if (!s || res.error || !res.data || !res.data.length) { hideSuggest(); return; }
+            s.innerHTML = res.data.map(function (r) {
+              return '<button type="button" class="pt-suggest-item" data-name="' + esc(r.name) + '" data-phone="' + (r.phone || '') + '">' +
+                '<b>' + esc(r.name) + '</b> <span>' + fmtPhone(r.phone) + ' · No.' + r.patient_no + '</span></button>';
+            }).join('');
+            s.hidden = false;
+          });
+      }, 250);
+    });
+    $('addNameSuggest').addEventListener('mousedown', function (e) {
+      var b = e.target.closest ? e.target.closest('.pt-suggest-item') : null;
+      if (!b) return;
+      e.preventDefault();
+      $('addName').value = b.dataset.name;
+      if (b.dataset.phone) $('addPhone').value = fmtPhone(b.dataset.phone);
+      hideSuggest();
+    });
+    $('addName').addEventListener('blur', function () { setTimeout(hideSuggest, 150); });
   }
 
   // =================== 예진표 예약 (통합) ===================

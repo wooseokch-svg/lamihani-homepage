@@ -7,7 +7,7 @@
 <title>라미한의원 관리자</title>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/admin.css?v=26">
+<link rel="stylesheet" href="css/admin.css?v=27">
 </head>
 <body>
 
@@ -42,6 +42,7 @@
 
   <nav class="adm-tabs">
     <button data-tab="intakes" class="active">예진표 예약 <span class="badge" id="cntInt">0</span></button>
+    <button data-tab="patients">환자관리</button>
     <button data-tab="notices">공지사항</button>
     <button data-tab="settings">병원 운영시간 설정</button>
     <button data-tab="billing">결제</button>
@@ -101,6 +102,32 @@
         </div>
         <div id="listUpcoming"><div class="empty">불러오는 중...</div></div>
         <div id="listPast" hidden></div>
+      </div>
+    </section>
+
+    <!-- 환자관리 -->
+    <section id="tab-patients" hidden>
+      <div class="panel">
+        <h2>환자 명부 업로드 (엑셀)</h2>
+        <p class="set-note">EMR에서 내려받은 환자 연락처 엑셀(.xlsx)을 올리면 명부가 갱신됩니다. 같은 환자번호는 덮어쓰고, 새 번호는 추가됩니다.</p>
+        <div class="pt-upload-row">
+          <input type="file" id="ptFile" accept=".xlsx,.xls">
+          <span class="set-msg" id="ptFileMsg"></span>
+        </div>
+        <div id="ptPreview" hidden>
+          <div id="ptPreviewTable"></div>
+          <p class="set-note" id="ptPreviewSummary"></p>
+          <button class="btn-primary" id="ptApplyBtn">명부 업데이트 실행</button>
+          <button class="btn-ghost" id="ptCancelBtn">취소</button>
+          <span class="set-msg" id="ptApplyMsg"></span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>환자 목록 <span class="badge" id="ptCount">0</span></h2>
+          <input type="search" id="ptSearch" placeholder="이름·전화·환자번호 검색" style="max-width:220px">
+        </div>
+        <div id="ptList"><div class="empty">불러오는 중...</div></div>
       </div>
     </section>
 
@@ -220,7 +247,9 @@
     <p class="add-hint">네이버·전화·방문 예약을 캘린더에 직접 등록합니다.</p>
     <div class="add-form">
       <div class="nf-row" id="addUnitRow" hidden><label>진료</label><div id="addUnitSel" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
-      <div class="nf-row"><label>성함 *</label><input id="addName" type="text" placeholder="홍길동"></div>
+      <div class="nf-row" style="position:relative"><label>성함 *</label><input id="addName" type="text" placeholder="홍길동" autocomplete="off">
+        <div class="pt-suggest" id="addNameSuggest" hidden></div>
+      </div>
       <div class="nf-row"><label>연락처</label><input id="addPhone" type="tel" placeholder="010-0000-0000"></div>
       <div class="nf-row">
         <label>예약 날짜 · 시간 *</label>
@@ -250,8 +279,9 @@
 
 <script src="js/config.js?v=12"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=7"></script>
-<script src="js/admin.js?v=32"></script>
+<script src="js/admin.js?v=33"></script>
 </body>
 </html>
