@@ -63,6 +63,15 @@
   }
 
   // =================== 인증 ===================
+  // 로그인 전 화면도 접속 도메인의 병원명으로 (config.js CLINIC_NAME) — 별내 도메인에서 '라미한의원 관리자'가 보이던 것
+  (function () {
+    var nm = window.LAMI_CONFIG && window.LAMI_CONFIG.CLINIC_NAME;
+    if (!nm) return;
+    document.title = nm + ' 관리자';
+    var h = document.querySelector('#loginView h1'); if (h) h.textContent = nm + ' 관리자';
+    var b = document.querySelector('.adm-header .brand'); if (b) b.textContent = nm + ' 관리자';
+  })();
+
   function showAdmin(session) {
     $('loginView').hidden = true;
     $('adminView').hidden = false;
