@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /design-preview
 
-Sitemap: https://s-dental.kr/sitemap.xml
+Sitemap: https://lamihani21.co.kr/sitemap.xml
