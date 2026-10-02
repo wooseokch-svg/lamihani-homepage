@@ -18,7 +18,9 @@
   var CLINICS = {
     'lamihani21.co.kr':     { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
     'www.lamihani21.co.kr': { id: 'lamihani', name: '라미한의원', naver: 'https://map.naver.com/p/entry/place/1137949987' },
-    'sdental.noad.ai.kr':   { id: 'byeolnae_dental', name: '별내S치과', naver: 'https://naver.me/xNn9FvAE' }
+    'sdental.noad.ai.kr':   { id: 'byeolnae_dental', name: '별내S치과', naver: 'https://naver.me/xNn9FvAE' },
+    's-dental.kr':          { id: 'byeolnae_dental', name: '별내S치과', naver: 'https://naver.me/xNn9FvAE' },
+    'www.s-dental.kr':      { id: 'byeolnae_dental', name: '별내S치과', naver: 'https://naver.me/xNn9FvAE' }
     // '병원B.com':      { id: 'clinicB', name: '○○한의원', naver: 'https://map.naver.com/...' },
   };
 
