@@ -313,5 +313,11 @@
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=7"></script>
 <script src="js/byeolnae.js?v=7"></script>
+<!-- 방문자 집계 (AutoClinic 콘솔) — 하루 단위 익명, 개인정보 미저장 -->
+<script>
+(function(){try{var h=location.hostname;if(h.indexOf('s-dental.kr')<0)return;
+var b=JSON.stringify({s:'byeolnae',r:document.referrer,h:h}),u='https://noad.ai.kr/api/track';
+if(!(navigator.sendBeacon&&navigator.sendBeacon(u,b)))fetch(u,{method:'POST',body:b,keepalive:true,mode:'no-cors'});}catch(e){}})();
+</script>
 </body>
 </html>

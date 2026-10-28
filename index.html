@@ -926,5 +926,11 @@ body{padding-bottom:64px}
 <script src="js/modal.js?v=7"></script>
 <script src="js/notices.js?v=7"></script>
 <script src="js/hours.js?v=6"></script>
+<!-- 방문자 집계 (AutoClinic 콘솔) — 하루 단위 익명, 개인정보 미저장 -->
+<script>
+(function(){try{var h=location.hostname;if(h.indexOf('lamihani21')<0)return;
+var b=JSON.stringify({s:'lamihani',r:document.referrer,h:h}),u='https://noad.ai.kr/api/track';
+if(!(navigator.sendBeacon&&navigator.sendBeacon(u,b)))fetch(u,{method:'POST',body:b,keepalive:true,mode:'no-cors'});}catch(e){}})();
+</script>
 </body>
 </html>
