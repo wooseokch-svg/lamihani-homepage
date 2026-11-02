@@ -242,6 +242,7 @@ ul{list-style:none}
 .rd-check{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--green);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center}
 .reserve-done h3{font-size:20px;font-weight:800;margin-bottom:8px}
 .reserve-done p{font-size:14px;color:#666;margin-bottom:20px}
+.reserve-done p.rd-warn{font-size:13px;color:#b45309;background:#fff7ed;border-radius:10px;padding:10px 12px;line-height:1.6;margin-top:-8px}
 
 /* ---------- 예약 캘린더 ---------- */
 .rf-hint{font-size:13px;color:#999;text-align:center;padding:16px 0}

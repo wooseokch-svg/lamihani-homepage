@@ -46,7 +46,7 @@
 </script>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/byeolnae.css?v=26">
+<link rel="stylesheet" href="css/byeolnae.css?v=27">
 <link rel="stylesheet" href="css/modal.css?v=6">
 </head>
 <body>
@@ -91,8 +91,8 @@
       <h1>건강한 미소<br>행복한 일상</h1>
       <p>별내S치과와 별내S주니어치과가<br>함께 합니다</p>
       <div class="hero-cta">
-        <a class="btn-hero" href="#" role="button" onclick="openReserve('adult');return false;">성인 진료 예약</a>
-        <a class="btn-hero junior" href="#" role="button" onclick="openReserve('junior');return false;">소아 진료 예약</a>
+        <a class="btn-hero" href="#" role="button" onclick="openReserve('adult');return false;">성인진료 예약문의</a>
+        <a class="btn-hero junior" href="#" role="button" onclick="openReserve('junior');return false;">소아진료 예약문의</a>
       </div>
     </div>
     <div class="hero-photo"><img src="images/byeolnae/hero-woman.webp" alt="별내S치과 · 별내S주니어치과"></div>
@@ -285,13 +285,14 @@
         <label class="rf-label">연락처</label><input id="rPhone" type="tel" placeholder="010-0000-0000">
         <label class="rf-label">요청사항 <small>(선택)</small></label><textarea id="rMemo" rows="2" placeholder="증상이나 요청사항을 적어주세요"></textarea>
         <button class="rf-submit" id="rSubmit" onclick="submitReserve()">예약 신청하기</button>
-        <p class="rf-note">신청 후 병원에서 전화로 예약을 확정해 드립니다.</p>
+        <p class="rf-note">신청 후 병원에서 확인해 예약이 확정되면 카카오톡 또는 문자로 알려드립니다.</p>
       </div>
     </div>
     <div class="reserve-done" id="reserveDone">
       <div class="rd-check">✓</div>
       <h3>예약 신청 완료</h3>
-      <p>확인 후 곧 전화드리겠습니다.<br>감사합니다.</p>
+      <p>예약이 확정되면 카카오톡 또는 문자로<br>확정 안내를 보내드립니다.</p>
+      <p class="rd-warn">확정 안내를 받지 못하셨다면 아직 예약이 확정되지 않은 상태입니다. 진료 전에 병원으로 꼭 확인해 주세요.</p>
       <button class="rf-submit" onclick="closeReserve()">확인</button>
     </div>
   </div>
