@@ -46,7 +46,7 @@
 </script>
 <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="css/byeolnae.css?v=27">
+<link rel="stylesheet" href="css/byeolnae.css?v=28">
 <link rel="stylesheet" href="css/modal.css?v=6">
 </head>
 <body>
@@ -260,9 +260,9 @@
 
 <!-- ===== 예약 모달 (캘린더 · 2병원) ===== -->
 <div class="reserve-overlay" id="reserveOverlay" onclick="if(event.target===this)closeReserve()">
-  <div class="reserve-box">
+  <div class="reserve-box reserve-box-tall">
     <button class="reserve-close" onclick="closeReserve()" aria-label="닫기">✕</button>
-    <div class="reserve-head"><b>별내S치과</b> 진료 예약</div>
+    <div class="reserve-head"><b>별내S치과</b> 진료 예약문의</div>
     <div class="reserve-body" id="reserveForm">
       <div class="rf-top">
         <label class="rf-label">어느 진료를 예약하시나요?</label>
@@ -284,7 +284,7 @@
         <label class="rf-label">성함</label><input id="rName" type="text" placeholder="홍길동">
         <label class="rf-label">연락처</label><input id="rPhone" type="tel" placeholder="010-0000-0000">
         <label class="rf-label">요청사항 <small>(선택)</small></label><textarea id="rMemo" rows="2" placeholder="증상이나 요청사항을 적어주세요"></textarea>
-        <button class="rf-submit" id="rSubmit" onclick="submitReserve()">예약 신청하기</button>
+        <button class="rf-submit" id="rSubmit" onclick="submitReserve()">예약 문의하기</button>
         <p class="rf-note">신청 후 병원에서 확인해 예약이 확정되면 카카오톡 또는 문자로 알려드립니다.</p>
       </div>
     </div>
@@ -313,7 +313,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/db.js?v=6"></script>
 <script src="js/booking.js?v=7"></script>
-<script src="js/byeolnae.js?v=7"></script>
+<script src="js/byeolnae.js?v=8"></script>
 <!-- 방문자 집계 (AutoClinic 콘솔) — 하루 단위 익명, 개인정보 미저장 -->
 <script>
 (function(){try{var h=location.hostname;if(h.indexOf('s-dental.kr')<0)return;

@@ -216,7 +216,7 @@
     };
 
     if (!window.lamiDB) { done(); return; }
-    var btn = $('#rSubmit'), orig = btn.textContent; btn.disabled = true; btn.textContent = '신청 중...';
+    var btn = $('#rSubmit'), orig = btn.textContent; btn.disabled = true; btn.textContent = '보내는 중...';
     window.lamiDB.rpc('taken_slots', { d: RS.selDate, cid: RS.clinic }).then(function (res) {
       var taken = (res && res.data ? res.data : []).some(function (r) { var t = (r && r.t != null) ? r.t : r; return t === RS.selTime; });
       if (taken) { btn.disabled = false; btn.textContent = orig; alert('방금 다른 분이 예약했습니다. 다른 시간을 선택해 주세요.'); rPickDate(RS.selDate); return; }

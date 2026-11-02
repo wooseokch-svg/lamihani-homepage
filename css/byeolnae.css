@@ -219,6 +219,7 @@ ul{list-style:none}
 .reserve-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:18px}
 .reserve-overlay.open{display:flex}
 .reserve-box{background:#fff;border-radius:18px;width:100%;max-width:420px;height:600px;max-height:90vh;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.reserve-box-tall{height:690px} /* 예약 팝업만 세로 +15% (600→690), 약관 팝업은 그대로 */
 .reserve-close{position:absolute;top:12px;right:14px;font-size:20px;background:none;border:none;color:#fff;cursor:pointer;z-index:2}
 .reserve-head{background:var(--green);color:#fff;font-size:17px;font-weight:600;padding:20px 22px;border-radius:18px 18px 0 0;flex-shrink:0}
 .reserve-head b{font-weight:800}
